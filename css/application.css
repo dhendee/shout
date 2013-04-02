@@ -1,0 +1,9 @@
+blockquote {
+  margin: 0;
+}
+
+time, #notice {
+  font-weight: normal;
+  opacity: .5;
+  font-size: smaller;
+}
