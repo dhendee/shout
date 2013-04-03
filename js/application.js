@@ -27,7 +27,7 @@ $(document).ready(function() {
             for (var i = 0; i < results.length; i++) {
               var post = results[i];
               var createdAt = post.createdAt.toISOString();
-              list.append('<li><blockquote>&ldquo;' + post.get('message') + '&rdquo;</blockquote><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
+              list.append('<li>' + post.get('message') + ' <time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
             }
             list.listview('refresh');
             $('time.timeago').timeago();
@@ -44,15 +44,13 @@ $(document).ready(function() {
     }
 
     $('#refresh').click(function(e) {
-      e.preventDefault();
       findPosts();
+      return false;
     });
 
     findPosts();
 
     $('#post').submit(function(e) {
-      e.preventDefault();
-
       var post = new Post();
       var message = $('#message');
 
@@ -68,6 +66,7 @@ $(document).ready(function() {
           console.log(error);
         }
       });
+      return false;
     });
 
   }, function(error) {
