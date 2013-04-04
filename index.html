@@ -12,12 +12,13 @@
     <link rel="stylesheet" href="css/application.css">    
   </head>
   <body>
-    <div id="index" data-role="page" data-theme="c">
-      <header data-role="header">
+    <div data-role="page" data-theme="c">
+      <header id="header" data-role="header" data-position="fixed">
         <h1>Shout</h1>
         <a id="refresh" class="ui-btn-right" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
       </header>
-      <section data-role="content">
+      <section id="index" data-role="content">
+        <div id="map"></div>
         <form id="post">
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?">
         </form>

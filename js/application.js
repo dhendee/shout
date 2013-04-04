@@ -8,6 +8,8 @@ $(document).ready(function() {
       longitude: position.coords.longitude
     });
 
+    $('#map').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + position.coords.latitude + ',' + position.coords.longitude + '&zoom=15&size=1000x1000&maptype=terrain&sensor=true) center center no-repeat').css('background-size', 'cover');
+
     function findPosts() {
       $.mobile.loading('show');
       $('#refresh').addClass('ui-disabled');
