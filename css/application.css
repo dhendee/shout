@@ -4,11 +4,11 @@ time, #notice {
   font-size: smaller;
 }
 
-#map {
-  position: fixed;
-  top: 0;
-  left: 0;
-  opacity: .4;
-  width: 100%;
-  height: 100%;
+#map.ui-btn-corner-all {
+  -webkit-border-radius: .1em;
+  border-radius: .1em;
+}
+
+#map .ui-icon {
+  display: none;
 }

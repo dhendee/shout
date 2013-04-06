@@ -14,12 +14,13 @@
   <body>
     <div data-role="page" data-theme="c">
       <header id="header" data-role="header" data-position="fixed">
+        <!--<a id="map" class="ui-btn-left" href="#" data-icon="grid" data-iconpos="notext">Map</a>-->
         <h1>Shout</h1>
         <a id="refresh" class="ui-btn-right" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
       </header>
       <section id="index" data-role="content">
         <div id="map"></div>
-        <form id="post">
+        <form id="post" data-ajax="false">
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?">
         </form>
         <ul id="posts" data-role="listview" data-inset="true">
