@@ -1,0 +1,15 @@
+time, #notice {
+  font-weight: normal;
+  opacity: .5;
+  font-size: smaller;
+}
+
+#map.ui-btn-corner-all {
+  -webkit-border-radius: .1em;
+  border-radius: .1em;
+  cursor: default;
+}
+
+#map .ui-icon {
+  display: none;
+}
