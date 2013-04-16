@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Shout": {
+            "applicationId": "CBV56vJgLv8chR4XfRjepzFhTTc88KXdR2xiO5Ic", 
+            "masterKey": "jqee4EPmSAVzPAgsGTaM8gDQyzzkYlW2iOV71nMy"
+        }, 
+        "_default": {
+            "link": "Shout"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.3"
+    }
+}

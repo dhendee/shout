@@ -1,4 +1,8 @@
-Parse.initialize('CBV56vJgLv8chR4XfRjepzFhTTc88KXdR2xiO5Ic', 'z4ToJJNWGSeYeLh5MIEsJ5bMtOd7R7KMyuYgch0p');
+var parseApplicationId = 'CBV56vJgLv8chR4XfRjepzFhTTc88KXdR2xiO5Ic';
+var parseRestApiKey = 'piFbaPMnFN66Ah2gs3Y6MrmSQRsxFNDtKNurT70y';
+var parseJavascriptApiKey = 'z4ToJJNWGSeYeLh5MIEsJ5bMtOd7R7KMyuYgch0p';
+
+Parse.initialize(parseApplicationId, parseJavascriptApiKey);
 var Post = Parse.Object.extend('Post');
 var latitude, longitude;
 
@@ -12,7 +16,7 @@ function findPosts() {
     latitude: latitude, 
     longitude: longitude
   });
-  posts.withinMiles('location', location, 1);
+  posts.withinMiles('location', location, 1.0);
   posts.descending('createdAt');
   posts.find({
     success: function(results) {
@@ -41,12 +45,41 @@ function findPosts() {
   });
 }
 
+function updateInstallation() {
+  // update the installation with the last known location for the 'user'
+  var params = {
+    'location': {
+      '__type': 'GeoPoint',
+      'latitude': latitude,
+      'longitude': longitude
+    }
+  };
+  $.ajax({
+    type: "PUT",
+    url: 'https://api.parse.com/1/installations/' + window.localStorage.getItem('installationId'),
+    beforeSend: function(xhr) {
+      xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+      xhr.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+    },
+    data: JSON.stringify(params),
+    success: function() {
+      console.log('Location for installation updated.')
+    },
+    error: function() {
+      console.log('Location update for installation failed.')
+    },
+    dataType: 'json'
+  });
+}
+
 function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
     $('#map').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     findPosts();
+    updateInstallation();
   }, function(error) {
     console.log(error)
   }, {
@@ -62,6 +95,8 @@ $('#refresh').click(function(e) {
 });
 
 $('#post').submit(function(e) {
+  $.mobile.loading('show');
+
   var shout = new Post();
   var message = $('#message');
   var location = new Parse.GeoPoint({
@@ -81,6 +116,7 @@ $('#post').submit(function(e) {
     },
     error: function(post, error) {
       console.log(error);
+      $.mobile.loading('hide');
     }
   });
   return false;
@@ -90,45 +126,43 @@ $(document).ready(function() {
   refreshLocation();
 });
 
-/* Phonegap code */
-var app = {
-  initialize: function() {
-    this.bindEvents();
-  }, bindEvents: function() {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  }, onDeviceReady: function() {
-    var pushNotification = window.plugins.pushNotification;
-    pushNotification.registerDevice({
-      alert: true, badge: true, sound: true
-    }, function(status) {
-      var params = {
-        'deviceType': 'ios',
-        'deviceToken': status.deviceToken,
-        'channels': ['']
-      };
-      $.ajax({
-        type: "POST",
-        url: 'https://api.parse.com/1/installations',
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader('X-Parse-Application-Id', 'CBV56vJgLv8chR4XfRjepzFhTTc88KXdR2xiO5Ic');
-          xhr.setRequestHeader('X-Parse-REST-API-Key', 'piFbaPMnFN66Ah2gs3Y6MrmSQRsxFNDtKNurT70y');
-          xhr.setRequestHeader('Content-Type', 'application/json');
-        },
-        data: JSON.stringify(params),
-        success: function() {
-          console.log('Device registered for push notifications.')
-        },
-        error: function(e) {
-          console.log('Registration for push notifications failed.')
-        },
-        dataType: 'application/json'
-      });
-		});
-    app.receivedEvent('deviceready');
-  }, receivedEvent: function(id) {
-    console.log('Received Event: ' + id);
-  }
-};
+// phonegap code for push notifications
+function registerForPushNotifications() {
+  // todo: don't do this if we already have an installationId? or do we have to retry?
+  var pushNotification = window.plugins.pushNotification;
+  pushNotification.setApplicationIconBadgeNumber(0);
+  pushNotification.registerDevice({
+    alert: true, badge: true, sound: true
+  }, function(status) {
+    var params = {
+      'deviceType': 'ios',
+      'deviceToken': status.deviceToken,
+      'channels': ['']
+    };
+    $.ajax({
+      type: "POST",
+      url: 'https://api.parse.com/1/installations',
+      beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+        xhr.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+      },
+      data: JSON.stringify(params),
+      success: function(installation) {
+        window.localStorage.setItem('installationId', installation.objectId);
+        console.log('Installation registered for push notifications.');
+      },
+      error: function(installation) {
+        // todo: can we remove this or do we might still want to get back the installationId in some cases?
+        window.localStorage.setItem('installationId', installation.objectId);
+        console.log('Registration for push notifications failed.');
+      },
+      dataType: 'json'
+    });
+  });
+}
 
-app.initialize();
-
+document.addEventListener('deviceready', onDeviceReady, false);
+function onDeviceReady() {
+  registerForPushNotifications();
+}
