@@ -34,8 +34,8 @@ function findPosts() {
         list.listview('refresh');
         $('time.timeago').timeago();
       }
-      $.mobile.loading('hide');
       $('#refresh').removeClass('ui-disabled');
+      $.mobile.loading('hide');
     },
     error: function(error) {
       console.log('Error: ' + error.code + ' ' + error.message);
@@ -45,8 +45,10 @@ function findPosts() {
   });
 }
 
+// setTimeout('findPosts()', 15000);
+
 function updateInstallation() {
-  // update the installation with the last known location for the 'user'
+  // update the installation with the last known location for the 'user'  
   var params = {
     'location': {
       '__type': 'GeoPoint',
@@ -79,7 +81,9 @@ function refreshLocation () {
     longitude = position.coords.longitude;    
     $('#map').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     findPosts();
-    updateInstallation();
+    if (window.device) {
+      updateInstallation();
+    }
   }, function(error) {
     console.log(error)
   }, {
@@ -97,8 +101,10 @@ $('#refresh').click(function(e) {
 $('#post').submit(function(e) {
   $.mobile.loading('show');
 
-  var shout = new Post();
   var message = $('#message');
+  message.blur();
+
+  var shout = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
     longitude: longitude
@@ -106,8 +112,6 @@ $('#post').submit(function(e) {
 
   shout.set('location', location);
   shout.set('message', message.val());
-
-  message.blur();
 
   shout.save(null, {
     success: function(post) {
@@ -120,10 +124,6 @@ $('#post').submit(function(e) {
     }
   });
   return false;
-});
-
-$(document).ready(function() {
-  refreshLocation();
 });
 
 // phonegap code for push notifications
@@ -162,7 +162,17 @@ function registerForPushNotifications() {
   });
 }
 
-document.addEventListener('deviceready', onDeviceReady, false);
-function onDeviceReady() {
-  registerForPushNotifications();
-}
+$(document).ready(function() {
+  // from device
+  if (window.device) {
+    document.addEventListener('deviceready', onDeviceReady, false);
+    function onDeviceReady() {
+      registerForPushNotifications();
+      refreshLocation();
+    }
+  }
+  // from browser
+  else {
+    refreshLocation();
+  }
+});
