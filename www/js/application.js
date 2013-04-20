@@ -43,7 +43,6 @@ function findPosts(options) {
       $('#refresh').removeClass('ui-disabled');
     }
   });
-  setTimeout('findPosts()', 5000);
 }
 
 function updateInstallation() {
@@ -100,8 +99,9 @@ $('#refresh').click(function(e) {
 $('form#post').submit(function(e) {
   $.mobile.loading('show');
 
-  var message = $('#message');
-  message.blur();
+  var form = $(this);
+  var message = $('#message', form);
+  var type = $('#type', form);
 
   var shout = new Post();
   var location = new Parse.GeoPoint({
@@ -111,10 +111,12 @@ $('form#post').submit(function(e) {
 
   shout.set('location', location);
   shout.set('message', message.val());
+  shout.set('type', type.val());
 
   shout.save(null, {
     success: function(post) {
       message.val('');
+      type.val('say');
       findPosts();
     },
     error: function(post, error) {
