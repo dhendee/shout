@@ -6,8 +6,7 @@ Parse.initialize(parseApplicationId, parseJavascriptApiKey);
 var Post = Parse.Object.extend('Post');
 var latitude, longitude;
 
-function findPosts() {
-  $.mobile.loading('show');
+function findPosts(options) {
   $('#refresh').addClass('ui-disabled');
   $('#notice').html('');
 
@@ -17,6 +16,7 @@ function findPosts() {
     longitude: longitude
   });
   posts.withinMiles('location', location, 1.0);
+  posts.limit(100);
   posts.descending('createdAt');
   posts.find({
     success: function(results) {
@@ -43,9 +43,8 @@ function findPosts() {
       $('#refresh').removeClass('ui-disabled');
     }
   });
+  setTimeout('findPosts()', 5000);
 }
-
-// setTimeout('findPosts()', 15000);
 
 function updateInstallation() {
   // update the installation with the last known location for the 'user'  
@@ -98,7 +97,7 @@ $('#refresh').click(function(e) {
   return false;
 });
 
-$('#post').submit(function(e) {
+$('form#post').submit(function(e) {
   $.mobile.loading('show');
 
   var message = $('#message');
@@ -123,6 +122,17 @@ $('#post').submit(function(e) {
       $.mobile.loading('hide');
     }
   });
+
+  $.mobile.changePage('#index', { 
+    transition: 'slideup',
+    reverse: true
+  });
+
+  return false;
+});
+
+$('#submit').click(function() {
+  $('form#post').submit();
   return false;
 });
 
@@ -162,7 +172,8 @@ function registerForPushNotifications() {
   });
 }
 
-$(document).ready(function() {
+$(function() {
+  $.mobile.loading('show');
   // from device
   if (window.device) {
     document.addEventListener('deviceready', onDeviceReady, false);

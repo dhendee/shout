@@ -9,20 +9,33 @@
     <link rel="stylesheet" href="css/application.css">    
   </head>
   <body>
-    <div data-role="page" data-theme="c">
+    <div id="index" data-role="page" data-theme="d">
       <header id="header" data-role="header" data-position="fixed">
+        <!--
         <a id="map" class="ui-btn-left" href="#" data-icon="grid" data-iconpos="notext">Map</a>
+        -->
         <h1>Shout</h1>
+        <!--
         <a id="refresh" class="ui-btn-right" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
+        -->
+        <a class="ui-btn-right" href="#post-shout" data-transition="slideup" data-theme="b">Post</a>
       </header>
-      <section id="index" data-role="content">
-        <div id="map"></div>
-        <form id="post">
-          <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?">
-        </form>
-        <ul id="posts" data-role="listview" data-inset="true">
+      <section data-role="content">
+        <ul id="posts" data-role="listview">
         </ul>
         <div id="notice"></div>
+      </section>
+    </div>
+    <div id="post-shout" data-role="page" data-theme="d">
+      <header id="header" data-role="header" data-position="fixed">
+        <a id="cancel" class="ui-btn-left" href="#index" data-transition="slidedown">Cancel</a>
+        <h1>Post Shout</h1>
+        <a id="submit" class="ui-btn-right" href="#" data-transition="slidedown" data-theme="b">Submit</a>
+      </header>
+      <section data-role="content">
+        <form id="post">
+          <textarea id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?"></textarea>
+        </form>
       </section>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
