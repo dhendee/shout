@@ -63,11 +63,11 @@ function updateInstallation() {
       xhr.setRequestHeader('Content-Type', 'application/json');
     },
     data: JSON.stringify(params),
-    success: function() {
-      console.log('Location for installation updated.')
+    success: function(installation) {
+      console.log('Location for installation updated.');
     },
-    error: function() {
-      console.log('Location update for installation failed.')
+    error: function(installation, error) {
+      console.log('Location update for installation failed.');
     },
     dataType: 'json'
   });
@@ -77,11 +77,9 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
-    $('#map').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
+    $('#refresh').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     findPosts();
-    if (window.device) {
-      updateInstallation();
-    }
+    updateInstallation();
   }, function(error) {
     console.log(error)
   }, {
@@ -99,35 +97,38 @@ $('#refresh').click(function(e) {
 $('form#post').submit(function(e) {
   $.mobile.loading('show');
 
-  var form = $(this);
-  var message = $('#message', form);
-  var type = $('#type', form);
-
   var shout = new Post();
+
+  shout.set('installationId', window.localStorage.getItem('installationId'));
+
   var location = new Parse.GeoPoint({
     latitude: latitude, 
     longitude: longitude
   });
-
+  
   shout.set('location', location);
+
+  var form = $(this);
+  var message = $('#message', form);
+  var type = $('#type', form);
+
   shout.set('message', message.val());
   shout.set('type', type.val());
 
   shout.save(null, {
     success: function(post) {
       message.val('');
-      type.val('say');
+      type.val('public');
       findPosts();
+      $.mobile.changePage('#index', { 
+        transition: 'slideup',
+        reverse: true
+      });
     },
-    error: function(post, error) {
-      console.log(error);
+    error: function(post, response) {
+      alert(response.message);
       $.mobile.loading('hide');
     }
-  });
-
-  $.mobile.changePage('#index', { 
-    transition: 'slideup',
-    reverse: true
   });
 
   return false;
@@ -161,12 +162,12 @@ function registerForPushNotifications() {
       },
       data: JSON.stringify(params),
       success: function(installation) {
-        window.localStorage.setItem('installationId', installation.objectId);
+        storeInstallation(installation);
         console.log('Installation registered for push notifications.');
       },
-      error: function(installation) {
+      error: function(installation, error) {
         // todo: can we remove this or do we might still want to get back the installationId in some cases?
-        window.localStorage.setItem('installationId', installation.objectId);
+        storeInstallation(installation);
         console.log('Registration for push notifications failed.');
       },
       dataType: 'json'
@@ -174,18 +175,20 @@ function registerForPushNotifications() {
   });
 }
 
+function storeInstallation(installation) {
+  window.localStorage.setItem('installationId', installation.objectId);
+}
+
 $(function() {
   $.mobile.loading('show');
   // from device
-  if (window.device) {
-    document.addEventListener('deviceready', onDeviceReady, false);
-    function onDeviceReady() {
-      registerForPushNotifications();
-      refreshLocation();
-    }
+  document.addEventListener('deviceready', onDeviceReady, false);
+  function onDeviceReady() {
+    registerForPushNotifications();
+    refreshLocation();
   }
-  // from browser
-  else {
+  document.addEventListener("resume", onResume, false);
+  function onResume() {
     refreshLocation();
   }
 });
