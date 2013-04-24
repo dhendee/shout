@@ -31,7 +31,7 @@ function findPosts() {
         for (var i = 0; i < results.length; i++) {
           var post = results[i];
           var createdAt = post.createdAt.toISOString();
-          list.append('<li>' + post.get('message') + ' <time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
+          list.append('<li ' + 'class="' + post.get('type') + '"><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
         }
         list.listview('refresh');
         $('time.timeago').timeago();
