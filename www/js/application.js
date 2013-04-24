@@ -6,7 +6,7 @@ Parse.initialize(parseApplicationId, parseJavascriptApiKey);
 var Post = Parse.Object.extend('Post');
 var latitude, longitude;
 
-function findPosts(options) {
+function findPosts() {
   $('#refresh').addClass('ui-disabled');
   $('#notice').html('');
 
@@ -15,9 +15,11 @@ function findPosts(options) {
     latitude: latitude, 
     longitude: longitude
   });
+  
   posts.withinMiles('location', location, 1.0);
   posts.limit(100);
   posts.descending('createdAt');
+
   posts.find({
     success: function(results) {
       console.log('Found ' + results.length + ' posts nearby.');
@@ -38,7 +40,7 @@ function findPosts(options) {
       $.mobile.loading('hide');
     },
     error: function(error) {
-      console.log('Error: ' + error.code + ' ' + error.message);
+      alert('Error: ' + error.code + ' ' + error.message);
       $.mobile.loading('hide');
       $('#refresh').removeClass('ui-disabled');
     }
@@ -67,7 +69,7 @@ function updateInstallation() {
       console.log('Location for installation updated.');
     },
     error: function(installation, error) {
-      console.log('Location update for installation failed.');
+      alert('Location update for installation failed.');
     },
     dataType: 'json'
   });
@@ -79,9 +81,11 @@ function refreshLocation () {
     longitude = position.coords.longitude;    
     $('#refresh').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     findPosts();
-    updateInstallation();
+    if (window.phonegap) {
+      updateInstallation();
+    }
   }, function(error) {
-    console.log(error)
+    alert('Failed to update location for device.');
   }, {
     maximumAge: 60000, 
     timeout: 5000, 
@@ -90,11 +94,14 @@ function refreshLocation () {
 }
 
 $('#refresh').click(function(e) {
+  $.mobile.loading('show');
   refreshLocation();
+  findPosts();
   return false;
 });
 
 $('form#post').submit(function(e) {
+  $('#submit').addClass('ui-disabled');
   $.mobile.loading('show');
 
   var shout = new Post();
@@ -118,19 +125,19 @@ $('form#post').submit(function(e) {
   shout.save(null, {
     success: function(post) {
       message.val('');
-      type.val('public');
       findPosts();
       $.mobile.changePage('#index', { 
         transition: 'slideup',
         reverse: true
       });
+      $('#submit').removeClass('ui-disabled');
     },
     error: function(post, response) {
       alert(response.message);
       $.mobile.loading('hide');
+      $('#submit').removeClass('ui-disabled');
     }
   });
-
   return false;
 });
 
@@ -179,16 +186,31 @@ function storeInstallation(installation) {
   window.localStorage.setItem('installationId', installation.objectId);
 }
 
+function setupPostPage() {
+  $(document).delegate('#post-shout', 'pageshow', function(event, ui) {
+    $('#message', 'form#post').focus();
+  });  
+  $(document).delegate('#post-shout', 'pagehide', function(event, ui) {
+    $('#message', 'form#post').blur();
+  });  
+}
+
 $(function() {
+  window.phonegap = document.URL.indexOf('http://') == -1;
   $.mobile.loading('show');
-  // from device
-  document.addEventListener('deviceready', onDeviceReady, false);
-  function onDeviceReady() {
-    registerForPushNotifications();
+  if (window.phonegap) {
+    document.addEventListener('deviceready', onDeviceReady, false);
+    function onDeviceReady() {
+      registerForPushNotifications();
+      refreshLocation();
+      setupPostPage();
+    }
+    document.addEventListener("resume", onResume, false);
+    function onResume() {
+      refreshLocation();
+    }
+  } else {
     refreshLocation();
-  }
-  document.addEventListener("resume", onResume, false);
-  function onResume() {
-    refreshLocation();
+    setupPostPage();
   }
 });

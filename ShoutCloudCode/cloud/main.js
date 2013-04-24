@@ -22,18 +22,19 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
     postQuery.first({
       success: function(post) {
         var now = new Date();
-        if (post != undefined && request.object.get('type') == 'broadcast' && now.getTime() - post.createdAt.getTime() < 1000 * 60 * 60 * 24) {
+        if (false && post != undefined && request.object.get('type') == 'broadcast' && now.getTime() - post.createdAt.getTime() < 1000 * 60 * 60 * 24) {
           console.log('Installation attempted to shout more than once in a 24 hour period.');
-          // make a pretty vesion of the time until the next post
-          var nextPost = '';
-          var minutes = (now.getTime() - post.createdAt.getTime()) / 1000 / 60 / 60;
-          if (minutes > 60) { 
-            var hours = minutes % 60;
-            nextPost += hours + 'h ';
+          // make a pretty version of the time until the next post
+          var nextPostText = '';
+          var nextPostTime = post.createdAt.getTime() + (1000 * 60 * 60 * 24);
+          var minutesUntilNextPost = (nextPostTime - now.getTime()) / 1000 / 60;
+          if (minutesUntilNextPost > 60) {
+            var hoursUntilNextPost = Math.floor(minutesUntilNextPost / 60);
+            nextPostText += hoursUntilNextPost + 'h ';
           }
-          nextPost += Math.round(minutes) + 'm'
+          nextPostText += Math.round(minutesUntilNextPost % 60) + 'm'
           // alert the user
-          response.error('You cannot shout twice in a day. Don\'t shout your message or wait ' + nextPost + '.');
+          response.error('You can\'t shout twice in a day. Don\'t shout your message or wait ' + nextPostText + '.');
         } else {
           // clean up the message
           var message = request.object.get('message');
@@ -56,22 +57,24 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 Parse.Cloud.afterSave('Post', function(request) {
   console.log('Saved a Post.');
 
-  var pushQuery = new Parse.Query(Parse.Installation);
+  if (request.object.get('type') == 'broadcast') {
+    var pushQuery = new Parse.Query(Parse.Installation);
 
-  pushQuery.equalTo('type', 'broadcast');
-  pushQuery.withinMiles('location', request.object.get('location'), 1.0);
-   
-  Parse.Push.send({
-    where: pushQuery,
-    data: {
-      alert: request.object.get('message')
-    }
-  }, {
-    success: function() {
-      console.log('Sent a push notification.');
-    },
-    error: function(error) {
-      console.log('Error: ' + error.code + ' ' + error.message);
-    }
-  });
+    pushQuery.withinMiles('location', request.object.get('location'), 1.0);
+     
+    Parse.Push.send({
+      where: pushQuery,
+      data: {
+        alert: request.object.get('message')
+      }
+    }, {
+      success: function() {
+        console.log('Sent a push notification.');
+      },
+      error: function(error) {
+        console.log('Error: ' + error.code + ' ' + error.message);
+      }
+    });
+  }
+
 });
