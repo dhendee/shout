@@ -8,6 +8,12 @@ function filter(text) {
   return text;
 }
 
+// Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
+//   console.log('Updating installation.');
+//   console.log(request);
+//   response.success();
+// });
+
 Parse.Cloud.beforeSave('Post', function(request, response) {
   if (request.object.get('message') == '') {
     response.error('Message must not be empty.');
@@ -65,7 +71,8 @@ Parse.Cloud.afterSave('Post', function(request) {
     Parse.Push.send({
       where: pushQuery,
       data: {
-        alert: request.object.get('message')
+        alert: request.object.get('message'),
+        badge: "Increment"
       }
     }, {
       success: function() {

@@ -48,13 +48,15 @@ function findPosts() {
 }
 
 function updateInstallation() {
-  // update the installation with the last known location for the 'user'  
+  // update the installation with the last known location and local date for the 'user'  
+  var today = new Date();
   var params = {
     'location': {
       '__type': 'GeoPoint',
       'latitude': latitude,
       'longitude': longitude
-    }
+    },
+    'localUpdatedAt': today
   };
   $.ajax({
     type: "PUT",
@@ -180,6 +182,10 @@ function registerForPushNotifications() {
       dataType: 'json'
     });
   });
+  document.addEventListener('push-notification', function(event) {
+    findPosts();
+    pushNotification.setApplicationIconBadgeNumber(0);
+  });
 }
 
 function storeInstallation(installation) {
@@ -199,16 +205,14 @@ $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
   $.mobile.loading('show');
   if (window.phonegap) {
-    document.addEventListener('deviceready', onDeviceReady, false);
-    function onDeviceReady() {
+    document.addEventListener('deviceready', function onDeviceReady() {
       registerForPushNotifications();
       refreshLocation();
       setupPostPage();
-    }
-    document.addEventListener("resume", onResume, false);
-    function onResume() {
+    });
+    document.addEventListener('resume', function onResume() {
       refreshLocation();
-    }
+    });    
   } else {
     refreshLocation();
     setupPostPage();

@@ -13,7 +13,7 @@
       <header id="header" data-role="header" data-position="fixed">
         <a id="refresh" class="ui-btn-left" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
         <h1>Shout</h1>
-        <a class="ui-btn-right" href="#post-shout" data-transition="slideup" data-theme="b">Post</a>
+        <a class="ui-btn-right" href="#post-shout" data-transition="slideup" data-icon="plus" data-theme="b">Post</a>
       </header>
       <section data-role="content">
         <ul id="posts" data-role="listview">
@@ -30,10 +30,13 @@
       <section data-role="content">
         <form id="post">
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?"/>
+          <input type="hidden" name="type" value="broadcast"/>
+          <!--
           <select id="type" name="type" data-role="slider">
             <option value="public">Say</option>
             <option value="broadcast">Shout</option>
           </select> 
+          -->
         </form>
       </section>
     </div>
