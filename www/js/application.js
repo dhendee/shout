@@ -38,7 +38,7 @@ function findPosts() {
         for (var i = 0; i < results.length; i++) {
           var post = results[i];
           var createdAt = post.createdAt.toISOString();
-          list.append('<li ' + 'class="' + post.get('type') + '"><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
+          list.append('<li><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
         }
         list.listview('refresh');
         $('time.timeago').timeago();
@@ -101,14 +101,14 @@ function login() {
 }
 
 function checkIn() {
-  var currentUser = Parse.User.current();
+  var user = Parse.User.current();
   var location = new Parse.GeoPoint({
     latitude: latitude,
     longitude: longitude
   });
-  currentUser.set('location', location);
-  currentUser.set('lastCheckIn', new Date());
-  currentUser.save(null, {
+  user.set('location', location);
+  user.set('lastCheckIn', new Date());
+  user.save(null, {
     success: function(user) {
       console.log('User checked in.');
       if (window.phonegap) {
@@ -126,7 +126,8 @@ function updateInstallation() {
       '__type': 'GeoPoint',
       'latitude': latitude,
       'longitude': longitude
-    }
+    },
+    'badge': 0
   };
   $.ajax({
     type: 'PUT',
@@ -181,7 +182,6 @@ $('form#post').submit(function(e) {
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message.val());
-  post.set('type', type.val());
   post.save(null, {
     success: function(post) {
       message.val('');

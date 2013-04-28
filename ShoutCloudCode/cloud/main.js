@@ -9,55 +9,35 @@ function filter(text) {
 }
 
 function getDay(date) {
-  return date.getFullYear() + date.getMonth() + date.getDate();
+  return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
 }
 
-/*
-Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
-  console.log('Updating installation: ' + request.object.id);
-  var installationQuery = new Parse.Query(Parse.Installation);
-  installationQuery.find({
-    success: function(results) {
-      console.log("Successfully retrieved " + results.length + " scores.");
-    },
-    error: function(error) {
-      console.log("Error: " + error.code + " " + error.message);
+Parse.Cloud.afterSave(Parse.User, function(request) {
+  console.log('Updating user: ' + request.object.id);
+  var user = request.object;  
+  console.log('Testing user check-in to see if point should be awarded.');
+  if (user.get('points') == null) {
+    console.log('New user, awarding a point.');
+    user.set('points', 1);
+    user.save();
+    console.log('User saved.');
+  } else {
+    // give the user a point for checking in if it's been at least a day
+    var lastDay = getDay(user.get('lastCheckIn'));
+    var today = getDay(request.object.get('lastCheckIn'));
+    var serverDay = getDay(new Date());
+    if (today - lastDay >= 1 && today - serverDay <= 2) {
+      user.set('points', user.get('points') + 1);
+      user.save();
+      console.log('User checking in, awarding a point.');
+    } else {
+      // just in case they tried to set extra points.
+      user.set('points', user.get('points'));
+      user.save();
+      console.log('User does not get a point.');
     }
-  });
-  // Clients aren't allowed to perform the find operation on the installation collection
-  // need to make a user object?
-  installationQuery.equalTo('installationId', request.object.id);
-  installationQuery.first({
-    success: function(installation) {
-      console.log('Checking installation to see if point should be awarded.');
-      if (installation.get('points') == null) {
-        installation.set('points', 1);
-        console.log('New installation, awarding one point.');
-        response.success('You\ve earned a point for checking in today.');
-      } else {
-        // give the user a point for checking in if it's been at least a day
-        var oldClientDay = getDay(installation.get('clientUpdatedAt'));
-        var newClientDay = getDay(request.object.get('clientUpdatedAt'));
-        var serverDay = getDay(new Date());
-        if (newDay - oldDay >= 1 && newDay - serverDay <= 2) {
-          installation.set('points', installation.get('points') + 1);
-          console.log('User checking in, awarding a point.');
-          response.success('You\'ve earned a point for checking in today.');
-        } else {
-          // just in case they tried to set extra points.
-          installation.set('points', installation.get('points'));
-          response.success();
-        }
-      }
-      response.success();
-    },
-    error: function(installation, error) {
-      console.log('Could not retrieve installation with id: ' + request.object.id);
-      response.success();
-    }
-  });
+  }
 });
-*/
 
 Parse.Cloud.beforeSave('Post', function(request, response) {
   if (request.object.get('message') == '') {
@@ -108,23 +88,20 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 
 Parse.Cloud.afterSave('Post', function(request) {
   console.log('Saved a Post.');
-  if (request.object.get('type') == 'broadcast') {
-    var pushQuery = new Parse.Query(Parse.Installation);
-    pushQuery.withinMiles('location', request.object.get('location'), 1.0);
-    Parse.Push.send({
-      where: pushQuery,
-      data: {
-        alert: request.object.get('message'),
-        badge: "Increment"
-      }
-    }, {
-      success: function() {
-        console.log('Sent a push notification.');
-      },
-      error: function(error) {
-        console.log('Error: ' + error.code + ' ' + error.message);
-      }
-    });
-  }
-
+  var pushQuery = new Parse.Query(Parse.Installation);
+  pushQuery.withinMiles('location', request.object.get('location'), 1.0);
+  Parse.Push.send({
+    where: pushQuery,
+    data: {
+      alert: request.object.get('message'),
+      badge: 'Increment'
+    }
+  }, {
+    success: function() {
+      console.log('Sent a push notification.');
+    },
+    error: function(error) {
+      console.log('Error: ' + error.code + ' ' + error.message);
+    }
+  });
 });
