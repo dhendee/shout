@@ -8,11 +8,56 @@ function filter(text) {
   return text;
 }
 
-// Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
-//   console.log('Updating installation.');
-//   console.log(request);
-//   response.success();
-// });
+function getDay(date) {
+  return date.getFullYear() + date.getMonth() + date.getDate();
+}
+
+/*
+Parse.Cloud.beforeSave(Parse.Installation, function(request, response) {
+  console.log('Updating installation: ' + request.object.id);
+  var installationQuery = new Parse.Query(Parse.Installation);
+  installationQuery.find({
+    success: function(results) {
+      console.log("Successfully retrieved " + results.length + " scores.");
+    },
+    error: function(error) {
+      console.log("Error: " + error.code + " " + error.message);
+    }
+  });
+  // Clients aren't allowed to perform the find operation on the installation collection
+  // need to make a user object?
+  installationQuery.equalTo('installationId', request.object.id);
+  installationQuery.first({
+    success: function(installation) {
+      console.log('Checking installation to see if point should be awarded.');
+      if (installation.get('points') == null) {
+        installation.set('points', 1);
+        console.log('New installation, awarding one point.');
+        response.success('You\ve earned a point for checking in today.');
+      } else {
+        // give the user a point for checking in if it's been at least a day
+        var oldClientDay = getDay(installation.get('clientUpdatedAt'));
+        var newClientDay = getDay(request.object.get('clientUpdatedAt'));
+        var serverDay = getDay(new Date());
+        if (newDay - oldDay >= 1 && newDay - serverDay <= 2) {
+          installation.set('points', installation.get('points') + 1);
+          console.log('User checking in, awarding a point.');
+          response.success('You\'ve earned a point for checking in today.');
+        } else {
+          // just in case they tried to set extra points.
+          installation.set('points', installation.get('points'));
+          response.success();
+        }
+      }
+      response.success();
+    },
+    error: function(installation, error) {
+      console.log('Could not retrieve installation with id: ' + request.object.id);
+      response.success();
+    }
+  });
+});
+*/
 
 Parse.Cloud.beforeSave('Post', function(request, response) {
   if (request.object.get('message') == '') {
@@ -28,6 +73,7 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
     postQuery.first({
       success: function(post) {
         var now = new Date();
+        // for now let them always shout
         if (false && post != undefined && request.object.get('type') == 'broadcast' && now.getTime() - post.createdAt.getTime() < 1000 * 60 * 60 * 24) {
           console.log('Installation attempted to shout more than once in a 24 hour period.');
           // make a pretty version of the time until the next post
@@ -62,12 +108,9 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 
 Parse.Cloud.afterSave('Post', function(request) {
   console.log('Saved a Post.');
-
   if (request.object.get('type') == 'broadcast') {
     var pushQuery = new Parse.Query(Parse.Installation);
-
     pushQuery.withinMiles('location', request.object.get('location'), 1.0);
-     
     Parse.Push.send({
       where: pushQuery,
       data: {

@@ -6,6 +6,13 @@ Parse.initialize(parseApplicationId, parseJavascriptApiKey);
 var Post = Parse.Object.extend('Post');
 var latitude, longitude;
 
+function clearData() {
+  localStorage.removeItem('username');
+  localStorage.removeItem('password');
+  localStorage.removeItem('installationId');
+  Parse.User.logOut();
+}
+
 function findPosts() {
   $('#refresh').addClass('ui-disabled');
   $('#notice').html('');
@@ -47,19 +54,82 @@ function findPosts() {
   });
 }
 
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
+
+function login() {
+  if (Parse.User.current()) {
+    console.log('User already logged in.');
+    checkIn();
+  } else {
+    var username = window.localStorage.getItem('username');
+    var password = window.localStorage.getItem('password');
+    if (username != null && password != null) {
+      console.log('We have saved user info, loggin in.');
+      Parse.User.logIn(username, password, {
+        success: function(user) {
+          checkIn();
+        },
+        error: function(user, error) {
+          alert('Error: ' + error.code + ' ' + error.message);
+        }
+      });      
+    } else {
+      // generate a random username and password for this client
+      console.log('No saved user info, signing up.');
+      var user = new Parse.User();
+      var username = guid();
+      var password = guid();
+      user.set('username', username);
+      user.set('password', password);
+      user.signUp(null, {
+        success: function(user) {
+          window.localStorage.setItem('username', username);
+          window.localStorage.setItem('password', password);
+          checkIn();
+        },
+        error: function(user, error) {
+          alert('Error: ' + error.code + ' ' + error.message);
+        }
+      });    
+    }
+  }
+}
+
+function checkIn() {
+  var currentUser = Parse.User.current();
+  var location = new Parse.GeoPoint({
+    latitude: latitude,
+    longitude: longitude
+  });
+  currentUser.set('location', location);
+  currentUser.set('lastCheckIn', new Date());
+  currentUser.save(null, {
+    success: function(user) {
+      console.log('User checked in.');
+      if (window.phonegap) {
+        registerForPushNotifications();      
+      }
+    }
+  });
+  findPosts();
+}
+
 function updateInstallation() {
-  // update the installation with the last known location and local date for the 'user'  
-  var today = new Date();
+  // update the installation with the last known location for the 'user'  
   var params = {
     'location': {
       '__type': 'GeoPoint',
       'latitude': latitude,
       'longitude': longitude
-    },
-    'localUpdatedAt': today
+    }
   };
   $.ajax({
-    type: "PUT",
+    type: 'PUT',
     url: 'https://api.parse.com/1/installations/' + window.localStorage.getItem('installationId'),
     beforeSend: function(xhr) {
       xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
@@ -71,7 +141,7 @@ function updateInstallation() {
       console.log('Location for installation updated.');
     },
     error: function(installation, error) {
-      alert('Location update for installation failed.');
+      alert('Location update for installation failed: ' + error.message);
     },
     dataType: 'json'
   });
@@ -82,56 +152,41 @@ function refreshLocation () {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
     $('#refresh').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
-    findPosts();
-    if (window.phonegap) {
-      updateInstallation();
-    }
+    login();
   }, function(error) {
-    alert('Failed to update location for device.');
+    alert('Failed to update location for device: ' + error.message);
   }, {
-    maximumAge: 60000, 
-    timeout: 5000, 
-    enableHighAccuracy: true
+    maximumAge: 0, 
+    timeout: 10000
   });  
 }
 
 $('#refresh').click(function(e) {
   $.mobile.loading('show');
   refreshLocation();
-  findPosts();
   return false;
 });
 
 $('form#post').submit(function(e) {
   $('#submit').addClass('ui-disabled');
   $.mobile.loading('show');
-
-  var shout = new Post();
-
-  shout.set('installationId', window.localStorage.getItem('installationId'));
-
+  var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
     longitude: longitude
   });
-  
-  shout.set('location', location);
-
   var form = $(this);
   var message = $('#message', form);
   var type = $('#type', form);
-
-  shout.set('message', message.val());
-  shout.set('type', type.val());
-
-  shout.save(null, {
+  post.set('user', Parse.User.current());
+  post.set('location', location);
+  post.set('message', message.val());
+  post.set('type', type.val());
+  post.save(null, {
     success: function(post) {
       message.val('');
       findPosts();
-      $.mobile.changePage('#index', { 
-        transition: 'slideup',
-        reverse: true
-      });
+      $.mobile.changePage('#index');
       $('#submit').removeClass('ui-disabled');
     },
     error: function(post, response) {
@@ -150,7 +205,6 @@ $('#submit').click(function() {
 
 // phonegap code for push notifications
 function registerForPushNotifications() {
-  // todo: don't do this if we already have an installationId? or do we have to retry?
   var pushNotification = window.plugins.pushNotification;
   pushNotification.setApplicationIconBadgeNumber(0);
   pushNotification.registerDevice({
@@ -162,7 +216,7 @@ function registerForPushNotifications() {
       'channels': ['']
     };
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: 'https://api.parse.com/1/installations',
       beforeSend: function(xhr) {
         xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
@@ -171,13 +225,14 @@ function registerForPushNotifications() {
       },
       data: JSON.stringify(params),
       success: function(installation) {
-        storeInstallation(installation);
+        window.localStorage.setItem('installationId', installation.objectId);
+        updateInstallation();
         console.log('Installation registered for push notifications.');
       },
       error: function(installation, error) {
-        // todo: can we remove this or do we might still want to get back the installationId in some cases?
-        storeInstallation(installation);
-        console.log('Registration for push notifications failed.');
+        window.localStorage.setItem('installationId', installation.objectId);
+        updateInstallation();
+        console.log('Registration for push notifications failed: ' + error.message);
       },
       dataType: 'json'
     });
@@ -186,10 +241,6 @@ function registerForPushNotifications() {
     findPosts();
     pushNotification.setApplicationIconBadgeNumber(0);
   });
-}
-
-function storeInstallation(installation) {
-  window.localStorage.setItem('installationId', installation.objectId);
 }
 
 function setupPostPage() {
@@ -202,11 +253,10 @@ function setupPostPage() {
 }
 
 $(function() {
-  window.phonegap = document.URL.indexOf('http://') == -1;
   $.mobile.loading('show');
+  window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
-      registerForPushNotifications();
       refreshLocation();
       setupPostPage();
     });

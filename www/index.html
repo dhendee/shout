@@ -13,7 +13,7 @@
       <header id="header" data-role="header" data-position="fixed">
         <a id="refresh" class="ui-btn-left" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
         <h1>Shout</h1>
-        <a class="ui-btn-right" href="#post-shout" data-transition="slideup" data-icon="plus" data-theme="b">Post</a>
+        <a class="ui-btn-right" href="#post-shout" data-icon="plus" data-theme="b">Post</a>
       </header>
       <section data-role="content">
         <ul id="posts" data-role="listview">
@@ -23,14 +23,14 @@
     </div>
     <div id="post-shout" data-role="page" data-theme="d">
       <header id="header" data-role="header" data-position="fixed">
-        <a id="cancel" class="ui-btn-left" href="#index" data-transition="slidedown">Cancel</a>
+        <a id="cancel" class="ui-btn-left" href="#index">Cancel</a>
         <h1>Post Shout</h1>
-        <a id="submit" class="ui-btn-right" href="#" data-transition="slidedown" data-theme="b">Submit</a>
+        <a id="submit" class="ui-btn-right" href="#" data-theme="b">Submit</a>
       </header>
       <section data-role="content">
         <form id="post">
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?"/>
-          <input type="hidden" name="type" value="broadcast"/>
+          <input id="type" type="hidden" name="type" value="broadcast"/>
           <!--
           <select id="type" name="type" data-role="slider">
             <option value="public">Say</option>
