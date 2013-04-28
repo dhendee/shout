@@ -12,31 +12,31 @@ function getDay(date) {
   return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
 }
 
+// this works, but no message. try one more time with before save, but test for null user better.??
 Parse.Cloud.afterSave(Parse.User, function(request) {
   console.log('Updating user: ' + request.object.id);
   var user = request.object;  
   console.log('Testing user check-in to see if point should be awarded.');
-  if (user.get('points') == null) {
+  if (user.get('points') == null || user.get('lastCheckIn') == null) {
     console.log('New user, awarding a point.');
     user.set('points', 1);
-    user.save();
     console.log('User saved.');
   } else {
     // give the user a point for checking in if it's been at least a day
     var lastDay = getDay(user.get('lastCheckIn'));
-    var today = getDay(request.object.get('lastCheckIn'));
+    var today = getDay(request.object.get('checkIn'));
     var serverDay = getDay(new Date());
     if (today - lastDay >= 1 && today - serverDay <= 2) {
       user.set('points', user.get('points') + 1);
-      user.save();
       console.log('User checking in, awarding a point.');
     } else {
       // just in case they tried to set extra points.
       user.set('points', user.get('points'));
-      user.save();
       console.log('User does not get a point.');
     }
   }
+  user.set('lastCheckIn', request.object.get('checkIn'));
+  user.save();
 });
 
 Parse.Cloud.beforeSave('Post', function(request, response) {

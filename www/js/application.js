@@ -107,7 +107,7 @@ function checkIn() {
     longitude: longitude
   });
   user.set('location', location);
-  user.set('lastCheckIn', new Date());
+  user.set('checkIn', new Date());
   user.save(null, {
     success: function(user) {
       console.log('User checked in.');
@@ -120,7 +120,7 @@ function checkIn() {
 }
 
 function updateInstallation() {
-  // update the installation with the last known location for the 'user'  
+  // update the installation with the last known location for the user's device  
   var params = {
     'location': {
       '__type': 'GeoPoint',
