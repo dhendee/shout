@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/application.css">    
   </head>
   <body>
-    <div id="index" data-role="page" data-theme="d">
+    <div id="index" data-role="page">
       <header id="header" data-role="header" data-position="fixed">
         <a id="refresh" class="ui-btn-left" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
         <h1>Shout</h1>
@@ -21,17 +21,33 @@
         <div id="notice"></div>
       </section>
     </div>
-    <div id="post-shout" data-role="page" data-theme="d">
+    <div id="post-shout" data-role="page">
       <header id="header" data-role="header" data-position="fixed">
         <a id="cancel" class="ui-btn-left" href="#index">Cancel</a>
         <h1>Post Shout</h1>
         <a id="submit" class="ui-btn-right" href="#" data-theme="b">Submit</a>
       </header>
       <section data-role="content">
-        <form id="post">
+        <form id="post">          
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?"/>
+          <select id="distance" name="distance">
+             <option value="0">Block</option>
+             <option value="1" selected="selected">Neighborhood</option>
+             <option value="10">City</option>
+             <option value="100">World</option>
+          </select>        
         </form>
+        <small>(<span id="points"></span> points available.)</small>
       </section>
+    </div>
+    <div id="alert" data-role="dialog">
+      <div data-role="header">
+        <h1>Alert</h1>
+      </div>
+      <div data-role="content"> 
+        <p id="alert-content"></p>
+        <a href="#" data-role="button" data-rel="back">Roger That</a>
+      </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>

@@ -14,7 +14,7 @@ function clearData() {
 }
 
 function findPosts() {
-  $('#refresh').addClass('ui-disabled');
+  $('#refresh').addClass('loading');
   $('#notice').html('');
 
   var posts = new Parse.Query(Post);
@@ -43,13 +43,13 @@ function findPosts() {
         list.listview('refresh');
         $('time.timeago').timeago();
       }
-      $('#refresh').removeClass('ui-disabled');
+      $('#refresh').removeClass('loading');
       $.mobile.loading('hide');
     },
     error: function(error) {
       alert('Error: ' + error.code + ' ' + error.message);
       $.mobile.loading('hide');
-      $('#refresh').removeClass('ui-disabled');
+      $('#refresh').removeClass('loading');
     }
   });
 }
@@ -111,6 +111,11 @@ function checkIn() {
   user.save(null, {
     success: function(user) {
       console.log('User checked in.');
+      $('#points').html(user.get('points'));
+      if (user.get('alert')) {
+        $('#alert-content').html(user.get('alert'));
+        $.mobile.changePage('#alert');
+      }
       if (window.phonegap) {
         registerForPushNotifications();      
       }
@@ -163,6 +168,7 @@ function refreshLocation () {
 }
 
 $('#refresh').click(function(e) {
+  $('#refresh').addClass('loading');
   $.mobile.loading('show');
   refreshLocation();
   return false;
@@ -249,7 +255,7 @@ function setupPostPage() {
   });  
   $(document).delegate('#post-shout', 'pagehide', function(event, ui) {
     $('#message', 'form#post').blur();
-  });  
+  });
 }
 
 $(function() {

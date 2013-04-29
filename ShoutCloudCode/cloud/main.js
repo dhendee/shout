@@ -19,22 +19,24 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     success: function(user) {
       if (user.get('points') == null || user.get('checkIn') == null) {
         console.log('New user, awarding a point.');
+        request.object.set('alert', 'Congrats! You earned a point for using Shout.');
         request.object.set('points', 1);
-        response.success(request.object, 'You just earned a point for signing up.');
+        response.success();
       } else {
         console.log('Testing user check-in to see if point should be awarded.');
         var lastDay = getDay(user.get('checkIn'));
         var today = getDay(request.object.get('checkIn'));
         var serverDay = getDay(new Date());
         if (today - lastDay >= 1 && today - serverDay <= 2) {
-          request.object.set('points', user.get('points') + 1);
           console.log('User checking in, awarding a point.');
-          response.success(request.object, 'You just earned a point for checking in.');
+          request.object.set('alert', 'Congrats! You earned a point for checking in today.');
+          request.object.set('points', user.get('points') + 1);
+          response.success();
         } else {
           // just in case they tried to set extra points.
-          request.object.set('points', user.get('points'));
           console.log('User does not get a point.');
-          response.success(request.object, 'You do not get points for checking in more than once a day.');
+          request.object.set('points', user.get('points'));
+          response.success();
         }
       }
     },
@@ -44,34 +46,17 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   });
 });
 
-/*
-// this works, but no message. try one more time with before save, but test for null user better.??
 Parse.Cloud.afterSave(Parse.User, function(request) {
-  console.log('Updating user: ' + request.object.id);
-  var user = request.object;  
-  console.log('Testing user check-in to see if point should be awarded.');
-  if (user.get('points') == null || user.get('lastCheckIn') == null) {
-    console.log('New user, awarding a point.');
-    user.set('points', 1);
-  } else {
-    // give the user a point for checking in if it's been at least a day
-    var lastDay = getDay(user.get('lastCheckIn'));
-    var today = getDay(request.object.get('checkIn'));
-    var serverDay = getDay(new Date());
-    if (today - lastDay >= 1 && today - serverDay <= 2) {
-      user.set('points', user.get('points') + 1);
-      console.log('User checking in, awarding a point.');
-    } else {
-      // just in case they tried to set extra points.
-      user.set('points', user.get('points'));
-      console.log('User does not get a point.');
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.get(request.object.id, {
+    success: function(user) {
+      if (user.get('alert')) {
+        user.remove('alert');
+        user.save();
+      }
     }
-  }
-  user.set('lastCheckIn', request.object.get('checkIn'));
-  user.save();
-  console.log('User saved.');
+  });
 });
-*/
 
 Parse.Cloud.beforeSave('Post', function(request, response) {
   if (request.object.get('message') == '') {
@@ -121,6 +106,7 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 });
 
 Parse.Cloud.afterSave('Post', function(request) {
+  //      range.val(0.1 * Math.pow(10, loudness.val()));
   console.log('Saved a Post.');
   var pushQuery = new Parse.Query(Parse.Installation);
   pushQuery.withinMiles('location', request.object.get('location'), 1.0);
