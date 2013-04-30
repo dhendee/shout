@@ -38,7 +38,21 @@ function findPosts() {
         for (var i = 0; i < results.length; i++) {
           var post = results[i];
           var createdAt = post.createdAt.toISOString();
-          list.append('<li><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></li>');
+          var distance;
+          switch (post.get('distance')) {
+            case '0':
+              distance = 'a block away';
+              break;
+            case '1':
+              distance = 'in your neighborhood';
+              break;
+            case '10':
+              distance = 'somewhere in your city';
+              break;
+            default:
+              distance = 'somewhere in the world';
+          }
+          list.append('<li><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><small>, ' + distance +  '</small></li>');
         }
         list.listview('refresh');
         $('time.timeago').timeago();
@@ -110,11 +124,12 @@ function checkIn() {
   user.set('checkIn', new Date());
   user.save(null, {
     success: function(user) {
-      console.log('User checked in.');
       $('#points').html(user.get('points'));
-      if (user.get('alert')) {
+      if (user.get('alert') != null) {
         $('#alert-content').html(user.get('alert'));
         $.mobile.changePage('#alert');
+        user.set('alert', null);
+        user.save();
       }
       if (window.phonegap) {
         registerForPushNotifications();      
@@ -184,13 +199,15 @@ $('form#post').submit(function(e) {
   });
   var form = $(this);
   var message = $('#message', form);
-  var type = $('#type', form);
+  var distance = $('#distance', form);
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message.val());
+  post.set('distance', distance.val());
   post.save(null, {
     success: function(post) {
       message.val('');
+      distance.val(1);
       findPosts();
       $.mobile.changePage('#index');
       $('#submit').removeClass('ui-disabled');

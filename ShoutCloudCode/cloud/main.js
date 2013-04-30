@@ -1,17 +1,3 @@
-function filter(text) {
-  var words = ['shit', 'piss', 'fuck', 'cunt', 'cocksucker', 'motherfucker', 'tits'];
-  var replacement = '@#$%&!';
-  for (var i = 0; i < words.length; i++) {
-    var pattern = new RegExp('\\b' + words[i] + '\\b', 'gi');
-    text = text.replace(pattern, replacement);
-  }  
-  return text;
-}
-
-function getDay(date) {
-  return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
-}
-
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   console.log('Updating user: ' + request.object.id);
   var userQuery = new Parse.Query(Parse.User);
@@ -46,18 +32,6 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   });
 });
 
-Parse.Cloud.afterSave(Parse.User, function(request) {
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.get(request.object.id, {
-    success: function(user) {
-      if (user.get('alert')) {
-        user.remove('alert');
-        user.save();
-      }
-    }
-  });
-});
-
 Parse.Cloud.beforeSave('Post', function(request, response) {
   if (request.object.get('message') == '') {
     response.error('Message must not be empty.');
@@ -71,30 +45,13 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
     postQuery.descending('createdAt');
     postQuery.first({
       success: function(post) {
-        var now = new Date();
-        // for now let them always shout
-        if (false && post != undefined && request.object.get('type') == 'broadcast' && now.getTime() - post.createdAt.getTime() < 1000 * 60 * 60 * 24) {
-          console.log('Installation attempted to shout more than once in a 24 hour period.');
-          // make a pretty version of the time until the next post
-          var nextPostText = '';
-          var nextPostTime = post.createdAt.getTime() + (1000 * 60 * 60 * 24);
-          var minutesUntilNextPost = (nextPostTime - now.getTime()) / 1000 / 60;
-          if (minutesUntilNextPost > 60) {
-            var hoursUntilNextPost = Math.floor(minutesUntilNextPost / 60);
-            nextPostText += hoursUntilNextPost + 'h ';
-          }
-          nextPostText += Math.round(minutesUntilNextPost % 60) + 'm'
-          // alert the user
-          response.error('You can\'t shout twice in a day. Don\'t shout your message or wait ' + nextPostText + '.');
-        } else {
-          // clean up the message
-          var message = request.object.get('message');
-          message = filter(message);
-          message = message.substring(0, 256);
-          request.object.set('message', message);
-          console.log('Cleaned up the post post.')
-          response.success();
-        }
+        // clean up the message
+        var message = request.object.get('message');
+        message = filter(message);
+        message = message.substring(0, 256);
+        request.object.set('message', message);
+        console.log('Cleaned up the post post.')
+        response.success();
       },
       error: function(error) {
         console.log('Error: ' + error.code + ' ' + error.message);
@@ -106,10 +63,18 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 });
 
 Parse.Cloud.afterSave('Post', function(request) {
-  //      range.val(0.1 * Math.pow(10, loudness.val()));
   console.log('Saved a Post.');
   var pushQuery = new Parse.Query(Parse.Installation);
-  pushQuery.withinMiles('location', request.object.get('location'), 1.0);
+  var location = request.object.get('location');
+  var distance;
+  if (request.object.get('distance') == 0) {
+    distance = 0.1;
+  } else if (request.object.get('distance') == 100) {
+    distance = 3958.8; // the radius of the earth
+  } else {
+    distance = request.object.get('distance');
+  }
+  pushQuery.withinMiles('location', location, distance);
   Parse.Push.send({
     where: pushQuery,
     data: {
@@ -125,3 +90,17 @@ Parse.Cloud.afterSave('Post', function(request) {
     }
   });
 });
+
+function filter(text) {
+  var words = ['shit', 'piss', 'fuck', 'cunt', 'cocksucker', 'motherfucker', 'tits'];
+  var replacement = '@#$%&!';
+  for (var i = 0; i < words.length; i++) {
+    var pattern = new RegExp('\\b' + words[i] + '\\b', 'gi');
+    text = text.replace(pattern, replacement);
+  }  
+  return text;
+}
+
+function getDay(date) {
+  return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
+}
