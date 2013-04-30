@@ -17,13 +17,27 @@ function findPosts() {
   $('#refresh').addClass('loading');
   $('#notice').html('');
 
-  var posts = new Parse.Query(Post);
   var location = new Parse.GeoPoint({
     latitude: latitude, 
     longitude: longitude
   });
+
+  var worldPosts = new Parse.Query(Post);
+  worldPosts.equalTo('distance', '100');
+
+  var cityPosts = new Parse.Query(Post);
+  cityPosts.equalTo('distance', '10');
+  cityPosts.withinMiles('location', location, 10);
+
+  var neighborhoodPosts = new Parse.Query(Post);
+  neighborhoodPosts.equalTo('distance', '1');
+  neighborhoodPosts.withinMiles('location', location, 1);
+
+  var blockPosts = new Parse.Query(Post);
+  blockPosts.equalTo('distance', '0.1');
+  blockPosts.withinMiles('location', location, 0.1);
   
-  posts.withinMiles('location', location, 1.0);
+  var posts = Parse.Query.or(worldPosts, cityPosts, neighborhoodPosts, blockPosts);
   posts.limit(100);
   posts.descending('createdAt');
 
@@ -50,7 +64,7 @@ function findPosts() {
               distance = 'somewhere in your city';
               break;
             default:
-              distance = 'somewhere in the world';
+              distance = 'somewhere on earth';
           }
           list.append('<li><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><small>, ' + distance +  '</small></li>');
         }
@@ -115,28 +129,35 @@ function login() {
 }
 
 function checkIn() {
-  var user = Parse.User.current();
-  var location = new Parse.GeoPoint({
-    latitude: latitude,
-    longitude: longitude
-  });
-  user.set('location', location);
-  user.set('checkIn', new Date());
-  user.save(null, {
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.get(Parse.User.current().id, {
     success: function(user) {
-      $('#points').html(user.get('points'));
-      if (user.get('alert') != null) {
-        $('#alert-content').html(user.get('alert'));
-        $.mobile.changePage('#alert');
-        user.set('alert', null);
-        user.save();
-      }
-      if (window.phonegap) {
-        registerForPushNotifications();      
-      }
+      var location = new Parse.GeoPoint({
+        latitude: latitude,
+        longitude: longitude
+      });
+      user.set('location', location);
+      user.set('checkIn', new Date());
+      user.save(null, {
+        success: function(user) {
+          $('#points').html(user.get('points'));
+          if (user.get('alert') != null) {
+            $('#alert-content').html(user.get('alert'));
+            $.mobile.changePage('#alert');
+            user.set('alert', null);
+            user.save();
+          }
+          if (window.phonegap) {
+            registerForPushNotifications();      
+          }
+        }
+      });
+      findPosts();
+    },
+    error: function(user, error) {
+      alert('Error: ' + error.code + ' ' + error.message);
     }
   });
-  findPosts();
 }
 
 function updateInstallation() {
@@ -207,8 +228,8 @@ $('form#post').submit(function(e) {
   post.save(null, {
     success: function(post) {
       message.val('');
-      distance.val(1);
-      findPosts();
+      distance.val(1).selectmenu('refresh');
+      checkIn();
       $.mobile.changePage('#index');
       $('#submit').removeClass('ui-disabled');
     },

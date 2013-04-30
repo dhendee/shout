@@ -19,9 +19,8 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
           request.object.set('points', user.get('points') + 1);
           response.success();
         } else {
-          // just in case they tried to set extra points.
-          console.log('User does not get a point.');
-          request.object.set('points', user.get('points'));
+          // user does not get a point
+          console.log('Leaving user as is, with existing points: ' + user.get('points'));
           response.success();
         }
       }
@@ -33,32 +32,45 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
 });
 
 Parse.Cloud.beforeSave('Post', function(request, response) {
-  if (request.object.get('message') == '') {
+  var message = request.object.get('message');
+  var distance = parseInt(request.object.get('distance'), 10);
+  if (message == '') {
     response.error('Message must not be empty.');
+  } else if (distance != 0 && distance != 1 && distance != 10 && distance != 100) {
+    response.error('Distance is invalid.');
   } else {
-    // throw an error if the device has already issued a broadcast message today    
-    // find the most recent post by the device
-    var Post = Parse.Object.extend('Post');
-    var postQuery = new Parse.Query(Post);
-    postQuery.equalTo('installationId', request.object.get('installationId'));
-    postQuery.equalTo('type', 'broadcast');
-    postQuery.descending('createdAt');
-    postQuery.first({
-      success: function(post) {
-        // clean up the message
-        var message = request.object.get('message');
-        message = filter(message);
-        message = message.substring(0, 256);
-        request.object.set('message', message);
-        console.log('Cleaned up the post post.')
-        response.success();
+    // load the user
+    var userQuery = new Parse.Query(Parse.User);
+    userQuery.get(request.object.get('user').id, {
+      success: function(user) {
+        var points = parseInt(user.get('points'), 10);
+        // check to see if they have enough points
+        if (points < distance) {
+          // if they don't have enough points, send an error
+          response.error('Insufficient points for distance.');
+        } else {
+          // clean up the message
+          message = filter(message);
+          message = message.substring(0, 256);
+          request.object.set('message', message);
+          console.log('Cleaned up the post post.')
+          // otherwise remove the points
+          user.set('points', points - distance);
+          user.save(null, {
+            success: function(user) {
+              console.log('User saved with updated points total: ' + user.get('points'));
+              response.success();
+            },
+            error: function(object, error) {
+              response.error('Failed to save user: ' + error.message);
+            }
+          });
+        }
       },
-      error: function(error) {
-        console.log('Error: ' + error.code + ' ' + error.message);
-        response.error(error.message);
+      error: function(object, error) {
+        response.error('Failed to retrieve user: ' + error.message);
       }
     });
-
   }
 });
 
