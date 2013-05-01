@@ -8,6 +8,9 @@ time, small, #notice {
   overflow: hidden;
   height: 36px;
   margin-top: -13px;
+  transition: all .25s;
+  -webkit-transition: all .25s;
+  -moz-transition: all .25s;
 }
 
 #post-content.open {
