@@ -34,8 +34,8 @@ function findPosts() {
   neighborhoodPosts.withinMiles('location', location, 1);
 
   var blockPosts = new Parse.Query(Post);
-  blockPosts.equalTo('distance', '0.1');
-  blockPosts.withinMiles('location', location, 0.1);
+  blockPosts.equalTo('distance', '0');
+  blockPosts.withinMiles('location', location, 0.25);
   
   var posts = Parse.Query.or(worldPosts, cityPosts, neighborhoodPosts, blockPosts);
   posts.limit(100);
@@ -128,6 +128,10 @@ function login() {
   }
 }
 
+function getDay(date) {
+  return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
+}
+
 function checkIn() {
   var userQuery = new Parse.Query(Parse.User);
   userQuery.get(Parse.User.current().id, {
@@ -137,10 +141,10 @@ function checkIn() {
         longitude: longitude
       });
       user.set('location', location);
-      user.set('checkIn', new Date());
+      user.set('checkIn', getDay(new Date()));
       user.save(null, {
         success: function(user) {
-          $('#points').html(user.get('points'));
+          $('#points').html(user.get('points') + ' point' + (user.get('points') == 1 ? '' : 's'));
           if (user.get('alert') != null) {
             $('#alert-content').html(user.get('alert'));
             $.mobile.changePage('#alert');
@@ -193,10 +197,11 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
-    $('#refresh').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=50x50&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
+    // $('#post-content').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1000x100&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
+    $.mobile.loading('hide');
   }, {
     maximumAge: 0, 
     timeout: 10000
@@ -210,7 +215,7 @@ $('#refresh').click(function(e) {
   return false;
 });
 
-$('form#post').submit(function(e) {
+$('form#post').on('submit', function() {
   $('#submit').addClass('ui-disabled');
   $.mobile.loading('show');
   var post = new Post();
@@ -230,21 +235,18 @@ $('form#post').submit(function(e) {
       message.val('');
       distance.val(1).selectmenu('refresh');
       checkIn();
-      $.mobile.changePage('#index');
-      $('#submit').removeClass('ui-disabled');
+      $('#post-content').removeClass('open');
     },
     error: function(post, response) {
       alert(response.message);
       $.mobile.loading('hide');
-      $('#submit').removeClass('ui-disabled');
     }
   });
   return false;
 });
 
-$('#submit').click(function() {
-  $('form#post').submit();
-  return false;
+$('#posts-content, #header, #refresh, #points').on('click', function() {
+  $('#post-content').removeClass('open');
 });
 
 // phonegap code for push notifications
@@ -287,14 +289,9 @@ function registerForPushNotifications() {
   });
 }
 
-function setupPostPage() {
-  $(document).delegate('#post-shout', 'pageshow', function(event, ui) {
-    $('#message', 'form#post').focus();
-  });  
-  $(document).delegate('#post-shout', 'pagehide', function(event, ui) {
-    $('#message', 'form#post').blur();
-  });
-}
+$('#message').on('focus', function() {
+  $('#post-content').addClass('open');
+});
 
 $(function() {
   $.mobile.loading('show');
@@ -302,13 +299,11 @@ $(function() {
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
       refreshLocation();
-      setupPostPage();
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();
     });    
   } else {
     refreshLocation();
-    setupPostPage();
   }
 });

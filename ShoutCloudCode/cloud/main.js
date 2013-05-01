@@ -10,8 +10,8 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         response.success();
       } else {
         console.log('Testing user check-in to see if point should be awarded.');
-        var lastDay = getDay(user.get('checkIn'));
-        var today = getDay(request.object.get('checkIn'));
+        var lastDay = user.get('checkIn');
+        var today = request.object.get('checkIn');
         var serverDay = getDay(new Date());
         if (today - lastDay >= 1 && today - serverDay <= 2) {
           console.log('User checking in, awarding a point.');
@@ -80,12 +80,13 @@ Parse.Cloud.afterSave('Post', function(request) {
   var location = request.object.get('location');
   var distance;
   if (request.object.get('distance') == 0) {
-    distance = 0.1;
+    distance = 0.25;
   } else if (request.object.get('distance') == 100) {
     distance = 3958.8; // the radius of the earth
   } else {
     distance = request.object.get('distance');
   }
+  console.log('Sending notifications to installations within ' + distance + ' miles.');
   pushQuery.withinMiles('location', location, distance);
   Parse.Push.send({
     where: pushQuery,

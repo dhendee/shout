@@ -11,33 +11,26 @@
   <body>
     <div id="index" data-role="page">
       <header id="header" data-role="header" data-position="fixed">
-        <a id="refresh" class="ui-btn-left" href="#" data-icon="refresh" data-iconpos="notext">Refresh</a>
+        <a class="ui-btn-left" href="#"><span id="points">&nbsp;</span></a>
         <h1>Shout</h1>
-        <a class="ui-btn-right" href="#post-shout" data-icon="plus" data-theme="b">Post</a>
+        <a id="refresh" class="ui-btn-right" href="#" data-icon="refresh" data-iconpos="notext"></a>
       </header>
-      <section data-role="content">
-        <ul id="posts" data-role="listview">
-        </ul>
-        <div id="notice"></div>
-      </section>
-    </div>
-    <div id="post-shout" data-role="page">
-      <header id="header" data-role="header" data-position="fixed">
-        <a id="cancel" class="ui-btn-left" href="#index">Cancel</a>
-        <h1>Post Shout</h1>
-        <a id="submit" class="ui-btn-right" href="#" data-theme="b">Submit</a>
-      </header>
-      <section data-role="content">
-        <form id="post">          
+      <section id="post-content" data-role="content">
+        <form id="post">       
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What's up?"/>
           <select id="distance" name="distance">
              <option value="0">Block: 0 points</option>
-             <option value="1" selected="selected">Neighborhood: 1 point</option>
+             <option value="1" selected="selected ">Neighborhood: 1 point</option>
              <option value="10">City: 10 points</option>
              <option value="100">World: 100 points</option>
-          </select>        
+          </select>
+          <button type="submit" data-role="button" data-theme="b">Post</button>        
         </form>
-        <small>(<span id="points"></span> points available.)</small>
+      </section>      
+      <section id="posts-content" data-role="content">
+        <ul id="posts" data-role="listview">
+        </ul>
+        <div id="notice"></div>
       </section>
     </div>
     <div id="alert" data-role="dialog">

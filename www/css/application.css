@@ -4,9 +4,30 @@ time, small, #notice {
   font-size: smaller;
 }
 
-#refresh {
-  padding: 3px;
-  margin-top: -2px;
+#post-content {
+  overflow: hidden;
+  height: 36px;
+  margin-top: -13px;
+}
+
+#post-content.open {
+  height: 140px;
+}
+
+#post-content .ui-submit {
+  margin-top: -20px;
+}
+
+#header .ui-btn,
+#header .ui-btn-inner,
+#header .ui-icon {
+  border: none;
+  box-shadow: none;
+}
+
+#header .ui-btn {
+  background: none;
+  margin-top: 2px;
 }
 
 @-webkit-keyframes rotate {
