@@ -1,34 +1,27 @@
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
   console.log('Updating user: ' + request.object.id);
-  var userQuery = new Parse.Query(Parse.User);
-  userQuery.get(request.object.id, {
-    success: function(user) {
-      if (user.get('points') == null || user.get('checkIn') == null) {
-        console.log('New user, awarding a point.');
-        request.object.set('alert', 'Congrats! You earned a point for using Shout.');
-        request.object.set('points', 1);
-        response.success();
-      } else {
-        console.log('Testing user check-in to see if point should be awarded.');
-        var lastDay = user.get('checkIn');
-        var today = request.object.get('checkIn');
-        var serverDay = getDay(new Date());
-        if (today - lastDay >= 1 && today - serverDay <= 2) {
-          console.log('User checking in, awarding a point.');
-          request.object.set('alert', 'Congrats! You earned a point for checking in today.');
-          request.object.set('points', user.get('points') + 1);
-          response.success();
-        } else {
-          // user does not get a point
-          console.log('Leaving user as is, with existing points: ' + user.get('points'));
-          response.success();
-        }
-      }
-    },
-    error: function(object, error) {
-      response.error('Failed to retrieve user: ' + error.message);
+  var user = request.object;
+  if (user.get('points') == null || user.get('checkIn') == null) {
+    console.log('New user, awarding a point.');
+    request.object.set('alert', 'Congrats! You earned a point for using Shout. Check in once a day to earn points. The more points you have, the louder you can shout.');
+    request.object.set('points', 1);
+    response.success();
+  } else {
+    console.log('Testing user check-in to see if point should be awarded.');
+    var lastDay = user.get('checkIn');
+    var today = request.object.get('checkIn');
+    var serverDay = getDay(new Date());
+    if (today - lastDay >= 1 && today - serverDay <= 2) {
+      console.log('User checking in, awarding a point.'); 
+      request.object.set('alert', 'Congrats! You earned a point for checking in today. Keep checking in each day so you can shout louder. Or buy some points and cheat.');
+      request.object.set('points', user.get('points') + 1);
+      response.success();
+    } else {
+      // user does not get a point
+      console.log('Leaving user as is, with existing points: ' + user.get('points'));
+      response.success();
     }
-  });
+  }
 });
 
 Parse.Cloud.beforeSave('Post', function(request, response) {
