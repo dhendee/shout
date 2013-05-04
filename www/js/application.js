@@ -54,9 +54,6 @@ function findPosts() {
           var createdAt = post.createdAt.toISOString();
           var distance;
           switch (post.get('distance')) {
-            case '0':
-              distance = 'a block away';
-              break;
             case '1':
               distance = 'in your neighborhood';
               break;
@@ -250,6 +247,10 @@ $('form#post').on('submit', function() {
   return false;
 });
 
+$('#message').on('focus', function() {
+  $('#post-content').addClass('open');
+});
+
 $('#posts-content, #header, #refresh, #points').on('click', function() {
   $('#post-content').removeClass('open');
 });
@@ -294,19 +295,37 @@ function registerForPushNotifications() {
   });
 }
 
-$('#message').on('focus', function() {
-  $('#post-content').addClass('open');
-});
+// phonegap code for in-app purchases
+function setupInAppPurchases() {
+  console.log('Setting up in-app purchases.');
+  var purchaseManager = window.plugins.inAppPurchaseManager;
+  console.log('Fetching available products.');
+  purchaseManager.requestProductData('com.davidhendee.shout.1', 
+    function(productId, title, description, price) {
+      console.log('productId: ' + productId + ' title: ' + title + ' description: ' + description + ' price: ' + price);
+      // purchaseManager.makePurchase(productId, 1);
+    }, 
+    function(id) {
+      console.log('Invalid product id: ' + id);
+    }
+  );
+}
+
+// phonegap setup
+function setupPhonegap() {
+  refreshLocation();
+  setupInAppPurchases();
+}
 
 $(function() {
   $.mobile.loading('show');
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
-      refreshLocation();
+      setupPhonegap();
     });
     document.addEventListener('resume', function onResume() {
-      refreshLocation();
+      setupPhonegap();
     });    
   } else {
     refreshLocation();

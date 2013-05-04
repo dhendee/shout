@@ -21,18 +21,6 @@ time, small, #notice {
   margin-top: -20px;
 }
 
-#header .ui-btn,
-#header .ui-btn-inner,
-#header .ui-icon {
-  border: none;
-  box-shadow: none;
-}
-
-#header .ui-btn {
-  background: none;
-  margin-top: 2px;
-}
-
 @-webkit-keyframes rotate {
   from {
     -webkit-transform: rotate(0deg);

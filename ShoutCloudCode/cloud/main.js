@@ -53,7 +53,7 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
   var distance = parseInt(request.object.get('distance'), 10);
   if (message == '') {
     response.error('Message must not be empty.');
-  } else if (distance != 0 && distance != 1 && distance != 10 && distance != 100) {
+  } else if (distance != 1 && distance != 10 && distance != 100) {
     response.error('Distance is invalid.');
   } else {
     // load the user
@@ -99,9 +99,7 @@ Parse.Cloud.afterSave('Post', function(request) {
   var pushQuery = new Parse.Query(Parse.Installation);
   var location = request.object.get('location');
   var distance;
-  if (request.object.get('distance') == 0) {
-    distance = 0.25;
-  } else if (request.object.get('distance') == 100) {
+  if (request.object.get('distance') == 100) {
     distance = 3958.8; // the radius of the earth
   } else {
     distance = request.object.get('distance');
