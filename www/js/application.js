@@ -144,16 +144,21 @@ function checkIn() {
       user.set('checkIn', getDay(new Date()));
       user.save(null, {
         success: function(user) {
-          $('#points').html(user.get('points') + ' point' + (user.get('points') == 1 ? '' : 's'));
-          if (user.get('alert') != null) {
-            $('#alert-content').html(user.get('alert'));
-            $.mobile.changePage('#alert');
-            user.set('alert', null);
-            user.save();
-          }
-          if (window.phonegap) {
-            registerForPushNotifications();      
-          }
+          var account = user.get('account');
+          account.fetch({
+            success: function(account) {
+              $('#points').html(account.get('points') + ' point' + (account.get('points') == 1 ? '' : 's'));
+              if (user.get('alert') != null) {
+                $('#alert-content').html(user.get('alert'));
+                $.mobile.changePage('#alert');
+                user.set('alert', null);
+                user.save();
+              }
+              if (window.phonegap) {
+                registerForPushNotifications();      
+              }
+            }
+          });
         }
       });
       findPosts();
