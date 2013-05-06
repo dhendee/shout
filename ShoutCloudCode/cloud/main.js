@@ -10,7 +10,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     account.save(null, {
       success: function(account) {
         user.set('account', account);
-        user.set('alert', 'Congrats! You earned 10 shouts just for showing up. Check in once a day to earn more shouts. The more shouts you have, the more (and louder) you can shout.');
+        user.set('alert', 'Congrats! You earned 10 points just for showing up. Check in once a day to earn more points. The more points you have, the more (and louder) you can shout.');
         response.success();
       }, 
       error: function(object, error) {
@@ -28,7 +28,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         if (today - lastDay >= 1 && today - serverDay <= 2) {
           console.log('User checking in, awarding a point.'); 
           account.set('points', account.get('points') + 10);
-          user.set('alert', 'Congrats! You earned another 10 shouts for checking in today. Keep checking in each day so you can shout louder. Or buy some shouts and cheat.');
+          user.set('alert', 'Congrats! You earned another 10 points for checking in today. Keep checking in each day so you can shout louder. Or buy some points and cheat.');
         } else {
           // user does not get a point
           console.log('Leaving user as is, with existing points: ' + account.get('points'));
@@ -121,7 +121,7 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
             // check to see if they have enough points
             if (points < distance) {
               // if they don't have enough points, send an error
-              response.error('Insufficient shouts for distance.');
+              response.error('Insufficient points for distance.');
             } else {
               // clean up the message
               message = filter(message);

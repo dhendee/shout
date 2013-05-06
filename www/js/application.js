@@ -150,7 +150,7 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(numberWithCommas(account.get('points')) + ' shout' + (account.get('points') == 1 ? '' : 's'));
+              $('#points').html(numberWithCommas(account.get('points')) + ' points' + (account.get('points') == 1 ? '' : 's'));
               $('#account').show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
