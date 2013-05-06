@@ -21,6 +21,10 @@ time, small, #notice {
   margin-top: -20px;
 }
 
+#account {
+  display: none;
+}
+
 @-webkit-keyframes rotate {
   from {
     -webkit-transform: rotate(0deg);

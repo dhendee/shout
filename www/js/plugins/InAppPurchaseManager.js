@@ -5,8 +5,9 @@
  * Copyright (c) Guillaume Charhon 2012
  */
 
+
 var InAppPurchaseManager = function() { 
-	cordova.exec('InAppPurchaseManager.setup');
+  cordova.exec('InAppPurchaseManager.setup');
 }
 
 /**
@@ -17,11 +18,11 @@ var InAppPurchaseManager = function() {
  */
 
 InAppPurchaseManager.prototype.makePurchase = function(productId, quantity) {
-	var q = parseInt(quantity);
-	if(!q) {
-		q = 1;
-	}
-    return cordova.exec('InAppPurchaseManager.makePurchase', productId, q);		
+  var q = parseInt(quantity);
+  if(!q) {
+    q = 1;
+  }
+    return cordova.exec('InAppPurchaseManager.makePurchase', productId, q);   
 }
 
 /**
@@ -31,7 +32,7 @@ InAppPurchaseManager.prototype.makePurchase = function(productId, quantity) {
  */
 
 InAppPurchaseManager.prototype.restoreCompletedTransactions = function() {
-    return cordova.exec('InAppPurchaseManager.restoreCompletedTransactions');		
+    return cordova.exec('InAppPurchaseManager.restoreCompletedTransactions');   
 }
 
 
@@ -45,8 +46,8 @@ InAppPurchaseManager.prototype.restoreCompletedTransactions = function() {
  */
 
 InAppPurchaseManager.prototype.requestProductData = function(productId, successCallback, failCallback) {
-	var key = 'f' + this.callbackIdx++;
-	window.plugins.inAppPurchaseManager.callbackMap[key] = {
+  var key = 'f' + this.callbackIdx++;
+  window.plugins.inAppPurchaseManager.callbackMap[key] = {
     success: function(productId, title, description, price ) {
         if (productId == '__DONE') {
             delete window.plugins.inAppPurchaseManager.callbackMap[key]
@@ -55,9 +56,9 @@ InAppPurchaseManager.prototype.requestProductData = function(productId, successC
         successCallback(productId, title, description, price);
     },
     fail: failCallback
-	}
-	var callback = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
-    cordova.exec('InAppPurchaseManager.requestProductData', productId, callback + '.success', callback + '.fail');	
+  }
+  var callback = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
+    cordova.exec('InAppPurchaseManager.requestProductData', productId, callback + '.success', callback + '.fail');  
 }
 
 /**
@@ -85,13 +86,13 @@ InAppPurchaseManager.prototype.requestProductData = function(productId, successC
  *  strings which were rejected by the app store.
  */
 InAppPurchaseManager.prototype.requestProductsData = function(productIds, callback) {
-	var key = 'b' + this.callbackIdx++;
-	window.plugins.inAppPurchaseManager.callbackMap[key] = function(validProducts, invalidProductIds) {
-		delete window.plugins.inAppPurchaseManager.callbackMap[key];
-		callback(validProducts, invalidProductIds);
-	};
-	var callbackName = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
-	cordova.exec('InAppPurchaseManager.requestProductsData', callbackName, {productIds: productIds});
+  var key = 'b' + this.callbackIdx++;
+  window.plugins.inAppPurchaseManager.callbackMap[key] = function(validProducts, invalidProductIds) {
+    delete window.plugins.inAppPurchaseManager.callbackMap[key];
+    callback(validProducts, invalidProductIds);
+  };
+  var callbackName = 'window.plugins.inAppPurchaseManager.callbackMap.' + key;
+  cordova.exec('InAppPurchaseManager.requestProductsData', callbackName, {productIds: productIds});
 };
 
 /* function(transactionIdentifier, productId, transactionReceipt) */
@@ -111,28 +112,43 @@ InAppPurchaseManager.prototype.onRestoreCompletedTransactionsFailed = null;
 
 /* This is called from native.*/
 
-InAppPurchaseManager.prototype.updatedTransactionCallback = function(state, errorCode, errorText, transactionIdentifier, productId, transactionReceipt) {
-    alert(state);
-	switch(state) {
-		case "PaymentTransactionStatePurchased":
-			if(window.plugins.inAppPurchaseManager.onPurchased)
-                window.plugins.inAppPurchaseManager.onPurchased(transactionIdentifier, productId, transactionReceipt);
-			
-			return; 
-			
-		case "PaymentTransactionStateFailed":
-			if(window.plugins.inAppPurchaseManager.onFailed)
-				window.plugins.inAppPurchaseManager.onFailed(errorCode, errorText);
-			
-			return;
+InAppPurchaseManager.prototype.updatedTransactionCallback =
+function(state, errorCode, errorText, transactionIdentifier,
+         productId, transactionReceipt) {
+    switch(state) {
+        case "PaymentTransactionStatePurchased":
+            if(window.plugins.inAppPurchaseManager.onPurchased) {
+                
+                window.plugins.inAppPurchaseManager.onPurchased(transactionIdentifier,
+                                                                productId, transactionReceipt);
+            } else {
+                this.eventQueue.push(arguments);
+                this.watchQueue();
+            }
+            return;
             
-		case "PaymentTransactionStateRestored":
-            if(window.plugins.inAppPurchaseManager.onRestored)
-                window.plugins.inAppPurchaseManager.onRestored(transactionIdentifier, productId, transactionReceipt);
-			return;
-	}
+        case "PaymentTransactionStateFailed":
+            if(window.plugins.inAppPurchaseManager.onFailed) {
+                window.plugins.inAppPurchaseManager.onFailed(errorCode,
+                                                             errorText);
+            } else {
+                this.eventQueue.push(arguments);
+                this.watchQueue();
+            }
+            return;
+            
+        case "PaymentTransactionStateRestored":
+            if(window.plugins.inAppPurchaseManager.onRestored) {
+               
+                window.plugins.inAppPurchaseManager.onRestored(transactionIdentifier,
+                                                               productId, transactionReceipt);
+            } else {
+                this.eventQueue.push(arguments);
+                this.watchQueue();
+            }
+            return;
+    }
 };
-
 InAppPurchaseManager.prototype.restoreCompletedTransactionsFinished = function() {
     if (this.onRestoreCompletedTransactionsFinished) {
         this.onRestoreCompletedTransactionsFinished();
@@ -153,33 +169,33 @@ InAppPurchaseManager.prototype.restoreCompletedTransactionsFailed = function(err
  */
 
 InAppPurchaseManager.prototype.runQueue = function() {
-	if(!this.eventQueue.length || (!this.onPurchased && !this.onFailed && !this.onRestored)) {
-		return;
-	}
-	var args;
-	/* We can't work directly on the queue, because we're pushing new elements onto it */
-	var queue = this.eventQueue.slice();
-	this.eventQueue = [];
-	while(args = queue.shift()) {
-		this.updatedTransactionCallback.apply(this, args);
-	}
-	if(!this.eventQueue.length) {	
-		this.unWatchQueue();
-	}
+  if(!this.eventQueue.length || (!this.onPurchased && !this.onFailed && !this.onRestored)) {
+    return;
+  }
+  var args;
+  /* We can't work directly on the queue, because we're pushing new elements onto it */
+  var queue = this.eventQueue.slice();
+  this.eventQueue = [];
+  while(args = queue.shift()) {
+    this.updatedTransactionCallback.apply(this, args);
+  }
+  if(!this.eventQueue.length) { 
+    this.unWatchQueue();
+  }
 }
 
 InAppPurchaseManager.prototype.watchQueue = function() {
-	if(this.timer) {
-		return;
-	}
-	this.timer = setInterval("window.plugins.inAppPurchaseManager.runQueue()", 10000);
+  if(this.timer) {
+    return;
+  }
+  this.timer = setInterval("window.plugins.inAppPurchaseManager.runQueue()", 10000);
 }
 
 InAppPurchaseManager.prototype.unWatchQueue = function() {
-	if(this.timer) {
-		clearInterval(this.timer);
-		this.timer = null;
-	}
+  if(this.timer) {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
 }
 
 
@@ -189,14 +205,14 @@ InAppPurchaseManager.prototype.eventQueue = [];
 InAppPurchaseManager.prototype.timer = null;
 
 cordova.addConstructor(function()  {
-					   
-					   // shim to work in 1.5 and 1.6
-					   if (!window.Cordova) {
-					   window.Cordova = cordova;
-					   };
-					   
-					   if(!window.plugins) {
-					   window.plugins = {};
-					   }
-					   window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
-					   });
+             
+             // shim to work in 1.5 and 1.6
+             if (!window.Cordova) {
+             window.Cordova = cordova;
+             };
+             
+             if(!window.plugins) {
+             window.plugins = {};
+             }
+             window.plugins.inAppPurchaseManager = InAppPurchaseManager.manager = new InAppPurchaseManager();
+             });

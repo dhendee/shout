@@ -23,7 +23,10 @@ function findPosts() {
   });
 
   var worldPosts = new Parse.Query(Post);
-  worldPosts.equalTo('distance', '100');
+  worldPosts.equalTo('distance', '1000');
+
+  var statePosts = new Parse.Query(Post);
+  statePosts.equalTo('distance', '100');
 
   var cityPosts = new Parse.Query(Post);
   cityPosts.equalTo('distance', '10');
@@ -33,11 +36,7 @@ function findPosts() {
   neighborhoodPosts.equalTo('distance', '1');
   neighborhoodPosts.withinMiles('location', location, 1);
 
-  var blockPosts = new Parse.Query(Post);
-  blockPosts.equalTo('distance', '0');
-  blockPosts.withinMiles('location', location, 0.25);
-  
-  var posts = Parse.Query.or(worldPosts, cityPosts, neighborhoodPosts, blockPosts);
+  var posts = Parse.Query.or(worldPosts, statePosts, cityPosts, neighborhoodPosts);
   posts.limit(100);
   posts.descending('createdAt');
 
@@ -45,7 +44,7 @@ function findPosts() {
     success: function(results) {
       console.log('Found ' + results.length + ' posts nearby.');
       if (results.length == 0) {
-        $('#notice').append('<p>No posts found nearby.</p>');
+        $('#notice').append('<p>No shouts found nearby.</p>');
       } else {
         var list = $('#posts');
         list.html('');
@@ -59,6 +58,9 @@ function findPosts() {
               break;
             case '10':
               distance = 'somewhere in your city';
+              break;
+            case '100':
+              distance = 'somewhere in your state';
               break;
             default:
               distance = 'somewhere on earth';
@@ -84,6 +86,10 @@ function guid() {
     var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
     return v.toString(16);
   });
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function login() {
@@ -144,7 +150,8 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(account.get('points') + ' point' + (account.get('points') == 1 ? '' : 's'));
+              $('#points').html(numberWithCommas(account.get('points')) + ' shout' + (account.get('points') == 1 ? '' : 's'));
+              $('#account').show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
                 $.mobile.changePage('#alert');
@@ -281,7 +288,7 @@ function registerForPushNotifications() {
         updateInstallation();
         console.log('Installation registered for push notifications.');
       },
-      error: function(installation, error) {
+      error: function(error) {
         window.localStorage.setItem('installationId', installation.objectId);
         updateInstallation();
         console.log('Registration for push notifications failed: ' + error.message);
@@ -299,22 +306,45 @@ function registerForPushNotifications() {
 function setupInAppPurchases() {
   console.log('Setting up in-app purchases.');
   var purchaseManager = window.plugins.inAppPurchaseManager;
+  var productIds = ['com.davidhendee.shout.points.10', 'com.davidhendee.shout.points.100', 'com.davidhendee.shout.points.1000'];
   console.log('Fetching available products.');
-  purchaseManager.requestProductData('com.davidhendee.shout.1', 
-    function(productId, title, description, price) {
-      console.log('productId: ' + productId + ' title: ' + title + ' description: ' + description + ' price: ' + price);
-      // purchaseManager.makePurchase(productId, 1);
-    }, 
-    function(id) {
-      console.log('Invalid product id: ' + id);
+  purchaseManager.requestProductsData(productIds,
+    function(products) {
+      var html = '';
+      for (var i = 0; i < products.length; i++) {
+        var product = products[i];
+        html += '<a id="' + product.id + '" class="product" data-product="' + product.id + '" href="#" data-role="button">' + product.title + ' (' + product.price + ')</a>';
+      }
+      $('#products').html(html);
+      $('.product', '#products').on('click', function() {
+        var button = $(this);
+        window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
+      });
+    },
+    function(ids) {
+      console.log('Invalid product ids: ' + ids.join(', '));
     }
   );
-}
-
-// phonegap setup
-function setupPhonegap() {
-  refreshLocation();
-  setupInAppPurchases();
+  var Transaction = Parse.Object.extend('Transaction');
+  window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
+    $('#store').dialog('close');
+    $.mobile.loading('show');
+    var transaction = new Transaction();
+    transaction.set('user', Parse.User.current());
+    transaction.set('transactionId', transactionId);
+    transaction.set('productId', productId);
+    transaction.set('receipt', receipt);
+    transaction.save(null, {
+      success: function(transaction) {
+        console.log('Saved transaction: ' + transactionId);
+        $.mobile.loading('hide');
+        checkIn();
+      },
+      error: function(object, error) {
+        console.log('Could not save transaction: ' + error.message);
+      }
+    });
+  }
 }
 
 $(function() {
@@ -322,10 +352,11 @@ $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
-      setupPhonegap();
+      refreshLocation();
+      setupInAppPurchases();
     });
     document.addEventListener('resume', function onResume() {
-      setupPhonegap();
+      refreshLocation();
     });    
   } else {
     refreshLocation();
