@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+  </head>
+  <body>
+    <canvas id="canvas" width="640" height="960"></canvas>
+    <img id="image" src="" width="640" height="960"/>
+    <script>
+      function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        var words = text.split(' ');
+        var line = '';
+
+        for(var n = 0; n < words.length; n++) {
+          var testLine = line + words[n] + ' ';
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          if(testWidth > maxWidth) {
+            context.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        }
+        context.fillText(line, x, y);
+      }
+
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      var text = 'Please turn down that music. It\'s driving me nuts, even though it is quite pretty.';
+      var maxWidth = 540;
+      var lineHeight = 68;
+      var x = (canvas.width - maxWidth) / 2;
+      var y = 120;
+
+      context.fillStyle = '#57554A';
+      context.fillRect(0, 0, 640, 960);
+
+      context.fillStyle = '#ffffff';
+      context.font = 'bold 60px helvetica';
+      wrapText(context, text, x, y, maxWidth, lineHeight);
+
+      context.font = 'bold 18px helvetica';
+      context.fillText('Shout. Your virtual soapbox.', 50, 880);
+
+      // save canvas image as data url (png format by default)
+      var image = document.getElementById('image');      
+      image.src = canvas.toDataURL();
+    </script>
+  </body>
+</html>
