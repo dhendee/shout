@@ -54,13 +54,13 @@ function findPosts() {
           var distance;
           switch (post.get('distance')) {
             case '1':
-              distance = 'in your neighborhood';
+              distance = 'a few blocks away';
               break;
             case '10':
-              distance = 'somewhere in your city';
+              distance = 'in your city';
               break;
             case '100':
-              distance = 'somewhere in your state';
+              distance = 'in your state';
               break;
             default:
               distance = 'somewhere on earth';
@@ -211,9 +211,11 @@ function refreshLocation () {
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
     $.mobile.loading('hide');
+    $('#refresh').addClass('loading');
   }, {
-    maximumAge: 0, 
-    timeout: 10000
+    maximumAge: 10000, 
+    enableHighAccuracy: true,
+    timeout: 20000
   });  
 }
 

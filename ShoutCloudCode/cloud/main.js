@@ -152,10 +152,14 @@ Parse.Cloud.afterSave('Post', function(request) {
   var pushQuery = new Parse.Query(Parse.Installation);
   var location = request.object.get('location');
   var distance;
-  if (request.object.get('distance') == 1000) {
+  if (request.object.get('distance') == 1) {
+    distance = 0.25; // a few blocks
+  } else if (request.object.get('distance') == 10) {
+    distance = 1; // one mile
+  } else if (request.object.get('distance') == 1000) {
+    distance = 500; // the length of california
+  } else if (request.object.get('distance') == 1000) {
     distance = 3958.8; // the radius of the earth
-  } else {
-    distance = request.object.get('distance');
   }
   console.log('Sending notifications to installations within ' + distance + ' miles.');
   pushQuery.withinMiles('location', location, distance);

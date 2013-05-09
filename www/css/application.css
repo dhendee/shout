@@ -4,6 +4,26 @@ time, small, #notice {
   font-size: smaller;
 }
 
+#header .ui-btn {
+  top: 6px;
+}
+
+#header .ui-btn-icon-notext {
+  top: 9px;
+}
+
+#header .ui-shadow,
+#header .ui-btn-inner,
+#header .ui-icon-shadow {
+  box-shadow: none;
+  border: none;
+}
+
+#header .ui-shadow,
+#header .ui-btn-inner {
+  background: none;
+}
+
 #post-content {
   overflow: hidden;
   height: 36px;
