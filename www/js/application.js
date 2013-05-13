@@ -54,19 +54,23 @@ function findPosts() {
           var distance;
           switch (post.get('distance')) {
             case '1':
-              distance = 'a few blocks away';
+              distance = 'within &frac14; mile';
               break;
             case '10':
-              distance = 'in your city';
+              distance = 'within 1 mile';
               break;
             case '100':
-              distance = 'in your state';
+              distance = 'within 500 miles';
               break;
             default:
-              distance = 'somewhere on earth';
+              distance = 'somewhere in the world';
           }
-          list.append('<li><span class="message">' + post.get('message') + ' </span><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><small>, ' + distance +  '</small></li>');
+          list.append('<li><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
         }
+        list.find('li').on('click', function() {
+          $('#share-content').html($(this).find('.message').html());
+          $.mobile.changePage('#share');
+        });
         list.listview('refresh');
         $('time.timeago').timeago();
       }
@@ -215,7 +219,7 @@ function refreshLocation () {
   }, {
     maximumAge: 10000, 
     enableHighAccuracy: true,
-    timeout: 20000
+    timeout: 144000
   });  
 }
 
@@ -349,6 +353,33 @@ function setupInAppPurchases() {
   }
 }
 
+function facebookLogin() {
+  FB.login(function(response) {
+    if (response.session) {
+      alert('logged in');
+    } else {
+      alert('not logged in');
+    }
+  },
+  { 
+    scope: "email" 
+  });
+}
+
+function facebookWallPost() {
+  console.log('Debug 1');
+  var params = {
+    method: 'feed',
+    name: 'Facebook Dialogs',
+    link: 'https://developers.facebook.com/docs/reference/dialogs/',
+    picture: 'http://fbrell.com/f8.jpg',
+    caption: 'Reference Documentation',
+    description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+  };
+  console.log(params);
+  FB.ui(params, function(obj) { console.log(obj);});
+}
+
 $(function() {
   $.mobile.loading('show');
   window.phonegap = document.URL.indexOf('http://') == -1;
@@ -356,6 +387,11 @@ $(function() {
     document.addEventListener('deviceready', function onDeviceReady() {
       refreshLocation();
       setupInAppPurchases();
+      FB.init({ 
+        appId: '460489950704243', 
+        nativeInterface: CDV.FB, 
+        useCachedDialogs: false 
+      });
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();

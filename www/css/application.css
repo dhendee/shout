@@ -1,9 +1,10 @@
-time, small, #notice {
+small, #notice {
   font-weight: normal;
   opacity: .5;
   font-size: smaller;
 }
 
+/*
 #header .ui-btn {
   top: 6px;
 }
@@ -23,6 +24,7 @@ time, small, #notice {
 #header .ui-btn-inner {
   background: none;
 }
+*/
 
 #post-content {
   overflow: hidden;
@@ -31,6 +33,7 @@ time, small, #notice {
   transition: all .25s;
   -webkit-transition: all .25s;
   -moz-transition: all .25s;
+  height: 140px;
 }
 
 #post-content.open {
@@ -39,6 +42,10 @@ time, small, #notice {
 
 #post-content .ui-submit {
   margin-top: -20px;
+}
+
+#posts small {
+  display: block;
 }
 
 #account {

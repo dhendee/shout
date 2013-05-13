@@ -1,0 +1,43 @@
+body {
+  padding: 55px 0 0 0;
+}
+
+.navbar .brand,
+.nav-collapse {
+    float: none;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.navbar-inner > .container { 
+  text-align:center; 
+}
+
+.table li {
+  padding: 8px;
+  line-height: 20px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+
+@media (max-width: 979px) {
+  .navbar-fixed-top, .navbar-fixed-bottom {
+    position: fixed;
+  }
+
+  .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    padding: 0;
+  }
+
+  .navbar .container {
+    padding: 0 5px;
+  }
+}
