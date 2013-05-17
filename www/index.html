@@ -16,8 +16,6 @@
         <a id="refresh" class="ui-btn-right" href="#" data-icon="refresh" data-iconpos="notext"></a>
       </header>
       <section id="post-content" data-role="content">
-        <button onclick="facebookLogin();">facebookLogin</button>
-        <button onclick="facebookWallPost();">facebookWallPost</button>
         <form id="post">       
           <input id="message" type="text" name="message" value="" data-clear-btn="true" placeholder="What’s on your mind?"/>
           <select id="distance" name="distance">
@@ -58,16 +56,17 @@
         <h1>Share</h1>
       </div>
       <div data-role="content"> 
-        <h2 id="share-content"></h2>
-        <a href="#facebook" data-role="button" data-theme="b">Share With Facebook <small>(10 points)</small></a>
+        <a id="share-facebook" href="#facebook" data-role="button" data-theme="b">Share With Facebook</a>
+        <img id="share-image">
+        <h2 id="share-message"></h2>
       </div>
     </div>
     <div id="fb-root"></div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>
     <script src="js/jquery.timeago.js"></script>
     <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
-    <script src="js/cordova-2.7.0.js"></script>
+    <script src="cordova-2.7.0.js"></script>
     <script src="js/plugins/PushNotification.js"></script>
     <script src="js/plugins/InAppPurchaseManager.js"></script>
     <script src="js/plugins/cdv-plugin-fb-connect.js"></script>

@@ -65,10 +65,12 @@ function findPosts() {
             default:
               distance = 'somewhere in the world';
           }
-          list.append('<li><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
+          list.append('<li data-image="' + post.get('image').url + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
         }
         list.find('li').on('click', function() {
-          $('#share-content').html($(this).find('.message').html());
+          var item = $(this);
+          $('#share-message').html($('.message', item).html());
+          $('#share-image').attr('src', item.data('image'));
           $.mobile.changePage('#share');
         });
         list.listview('refresh');
@@ -210,7 +212,7 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
-    // $('#post-content').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1000x100&maptype=terrain&sensor=true&&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
+    // $('#post-content').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1000x100&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
@@ -222,51 +224,6 @@ function refreshLocation () {
     timeout: 144000
   });  
 }
-
-$('#refresh').click(function(e) {
-  $('#refresh').addClass('loading');
-  $.mobile.loading('show');
-  refreshLocation();
-  return false;
-});
-
-$('form#post').on('submit', function() {
-  $('#submit').addClass('ui-disabled');
-  $.mobile.loading('show');
-  var post = new Post();
-  var location = new Parse.GeoPoint({
-    latitude: latitude, 
-    longitude: longitude
-  });
-  var form = $(this);
-  var message = $('#message', form);
-  var distance = $('#distance', form);
-  post.set('user', Parse.User.current());
-  post.set('location', location);
-  post.set('message', message.val());
-  post.set('distance', distance.val());
-  post.save(null, {
-    success: function(post) {
-      message.val('');
-      distance.val(1).selectmenu('refresh');
-      checkIn();
-      $('#post-content').removeClass('open');
-    },
-    error: function(post, response) {
-      alert(response.message);
-      $.mobile.loading('hide');
-    }
-  });
-  return false;
-});
-
-$('#message').on('focus', function() {
-  $('#post-content').addClass('open');
-});
-
-$('#posts-content, #header, #refresh, #points').on('click', function() {
-  $('#post-content').removeClass('open');
-});
 
 // phonegap code for push notifications
 function registerForPushNotifications() {
@@ -353,31 +310,93 @@ function setupInAppPurchases() {
   }
 }
 
-function facebookLogin() {
-  FB.login(function(response) {
-    if (response.session) {
-      alert('logged in');
-    } else {
-      alert('not logged in');
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+  var words = text.split(' ');
+  var line = '';
+
+  for (var n = 0; n < words.length; n++) {
+    var testLine = line + words[n] + ' ';
+    var metrics = context.measureText(testLine);
+    var testWidth = metrics.width;
+    if (testWidth > maxWidth) {
+      context.fillText(line, x, y);
+      line = words[n] + ' ';
+      y += lineHeight;
     }
-  },
-  { 
-    scope: "email" 
+    else {
+      line = testLine;
+    }
+  }
+  context.fillText(line, x, y);
+}
+
+function dataURItoBlob(dataURI) {
+  var byteString = atob(dataURI.split(',')[1]);
+  var ab = new ArrayBuffer(byteString.length);
+  var ia = new Uint8Array(ab);
+  for (var i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
+}
+
+function textToImage(text) {
+  var width = 640;
+  var height = 960;
+  $('body').append('<canvas id="canvas" width="' + width + '" height="' + height + '" style="display: none"></canvas>');
+  var canvas = document.getElementById('canvas');
+  var context = canvas.getContext('2d');
+  var maxWidth = 540;
+  var lineHeight = 60;
+  var x = (canvas.width - maxWidth) / 2;
+  var y = 120;
+
+  context.fillStyle = '#000000';
+  context.fillRect(0, 0, 640, 960);
+
+  context.fillStyle = '#ffffff';
+  context.font = 'bold 50px helvetica';
+  wrapText(context, text, x, y, maxWidth, lineHeight);
+
+  context.font = 'bold 18px helvetica';
+  context.fillText('Download Shout from the app store.', 50, 880);
+
+  var blob = dataURItoBlob(canvas.toDataURL('image/png'));
+
+  return blob;
+}
+
+function shareToFacebook(text, image) {
+  var params = {
+    method: 'feed',
+    name: 'Shout',
+    link: 'http://www.shout.com',
+    picture: image,
+    caption: text,
+    description: 'Download Shout today.'
+  };
+  FB.ui(params, function(obj) { 
+    console.log(obj);
   });
 }
 
-function facebookWallPost() {
-  console.log('Debug 1');
-  var params = {
-    method: 'feed',
-    name: 'Facebook Dialogs',
-    link: 'https://developers.facebook.com/docs/reference/dialogs/',
-    picture: 'http://fbrell.com/f8.jpg',
-    caption: 'Reference Documentation',
-    description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
-  };
-  console.log(params);
-  FB.ui(params, function(obj) { console.log(obj);});
+function share(text, image) {
+  FB.getLoginStatus(function(response) {
+    if (response.status == 'connected') {
+      shareToFacebook(text, image);
+    } else {
+      FB.login(function(response) {
+        if (response.session) {
+          shareToFacebook(text, image);
+        } else {
+          alert('You must login to Facebook to share posts.');
+        }
+      },
+      { 
+        scope: email
+      });
+    }
+  });
 }
 
 $(function() {
@@ -399,4 +418,95 @@ $(function() {
   } else {
     refreshLocation();
   }
+
+  $('#refresh').on('click', function(e) {
+    $('#refresh').addClass('loading');
+    $.mobile.loading('show');
+    refreshLocation();
+    return false;
+  });
+
+  $('form#post').on('submit', function() {
+    $('#submit').addClass('ui-disabled');
+    $.mobile.loading('show');
+    var post = new Post();
+    var location = new Parse.GeoPoint({
+      latitude: latitude, 
+      longitude: longitude
+    });
+    var form = $(this);
+    var message = $('#message', form);
+    var distance = $('#distance', form);
+    post.set('user', Parse.User.current());
+    post.set('location', location);
+    post.set('message', message.val());
+    post.set('distance', distance.val());
+    post.save(null, {
+      success: function(post) {
+        var image = textToImage(message.val());
+        $.ajax({
+          type: "POST",
+          beforeSend: function(request) {
+            request.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+            request.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+            request.setRequestHeader('Content-Type', 'image/png');
+          },
+          url: 'https://api.parse.com/1/files/' + post.id + '.png',
+          data: image,
+          processData: false,
+          contentType: false,
+          success: function(image) {
+            console.log('Image uploaded: ' + image.url);
+            var params = {
+              'image': {
+                '__type': 'File',
+                'name': image.name
+              }
+            };
+            $.ajax({
+              type: 'PUT',
+              url: 'https://api.parse.com/1/classes/Post/' + post.id,
+              beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+                xhr.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+              },
+              data: JSON.stringify(params),
+              success: function(post) {
+                console.log('Post image saved: ' + post.image.url);
+                message.val('');
+                distance.val(1).selectmenu('refresh');
+                checkIn();
+                $('#post-content').removeClass('open');
+              },
+              error: function(post, error) {
+                alert('Post image save failed: ' + error.message);
+              },
+              dataType: 'json'
+            });
+          },
+          error: function(error) {
+            console.log('Image upload failed: ' + error.message);
+          }
+        });
+      },
+      error: function(object, response) {
+        alert(response.message);
+        $.mobile.loading('hide');
+      }
+    });
+    return false;
+  });
+
+  $('#message').on('focus', function() {
+    $('#post-content').addClass('open');
+  });
+
+  $('#posts-content, #header, #refresh, #points').on('click', function() {
+    $('#post-content').removeClass('open');
+  });  
+
+  $('#share-facebook').on('click', function() {
+    share($('#share-message').text(), $('#share-image').attr('src'));
+  });
 });

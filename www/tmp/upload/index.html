@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Shout</title>
+  </head>
+  <body>
+    <form id="fileupload" name="fileupload" enctype="multipart/form-data" method="post">
+      <fieldset>
+        <input type="file" name="fileselect" id="fileselect"></input>
+        <input id="uploadbutton" type="button" value="Upload to Parse"/>
+      </fieldset>
+    </form>
+    <img id="image" src="test.png">
+    <img id="data" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://www.parsecdn.com/js/parse-1.2.2.min.js"></script>
+    <script>
+      function dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: 'image/png' });
+      }
+
+      $(function() {
+        var file;
+
+        var dataURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+        var blob = dataURItoBlob(dataURL);
+
+        // This function is called when the user clicks on Upload to Parse. It will create the REST API request to upload this image to Parse.
+        $('#uploadbutton').click(function() {
+          var serverUrl = 'https://api.parse.com/1/files/test.png';
+
+          $.ajax({
+            type: "POST",
+            beforeSend: function(request) {
+              request.setRequestHeader("X-Parse-Application-Id", 'CBV56vJgLv8chR4XfRjepzFhTTc88KXdR2xiO5Ic');
+              request.setRequestHeader("X-Parse-REST-API-Key", 'piFbaPMnFN66Ah2gs3Y6MrmSQRsxFNDtKNurT70y');
+              request.setRequestHeader("Content-Type", 'image/png');
+            },
+            url: serverUrl,
+            data: blob,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+              alert("File available at: " + data.url);
+            },
+            error: function(data) {
+              var obj = jQuery.parseJSON(data);
+              alert(obj.error);
+            }
+          });
+        });
+
+
+      });
+    </script>
+  </body>
+</html>
