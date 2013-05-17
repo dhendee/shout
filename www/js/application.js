@@ -69,7 +69,7 @@ function findPosts() {
         }
         list.find('li').on('click', function() {
           var item = $(this);
-          $('#share-message').html($('.message', item).html());
+          $('#share-text').html($('.message', item).html());
           $('#share-image').attr('src', item.data('image'));
           $.mobile.changePage('#share');
         });
@@ -507,6 +507,6 @@ $(function() {
   });  
 
   $('#share-facebook').on('click', function() {
-    share($('#share-message').text(), $('#share-image').attr('src'));
+    share($('#share-text').text(), $('#share-image').attr('src'));
   });
 });

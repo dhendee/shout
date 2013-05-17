@@ -161,7 +161,6 @@ Parse.Cloud.afterSave('Post', function(request) {
   } else if (request.object.get('distance') == 1000) {
     distance = 3958.8; // the radius of the earth
   }
-  if (distance == 0.25) return;
   console.log('Sending notifications to installations within ' + distance + ' miles.');
   pushQuery.withinMiles('location', location, distance);
   Parse.Push.send({

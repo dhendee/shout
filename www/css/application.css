@@ -52,6 +52,14 @@ small, #notice {
   display: none;
 }
 
+#share-image {
+  width: 100%;
+}
+
+#share-text {
+  display: none;
+}
+
 @-webkit-keyframes rotate {
   from {
     -webkit-transform: rotate(0deg);
