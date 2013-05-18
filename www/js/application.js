@@ -69,8 +69,9 @@ function findPosts() {
         }
         list.find('li').on('click', function() {
           var item = $(this);
-          $('#share-text').html($('.message', item).html());
-          $('#share-image').attr('src', item.data('image'));
+          var shareContent = $('#share-content');
+          shareContent.html($('.message', item).html());
+          shareContent.data('image', item.data('image'));
           $.mobile.changePage('#share');
         });
         list.listview('refresh');
@@ -87,16 +88,85 @@ function findPosts() {
   });
 }
 
-function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-    return v.toString(16);
-  });
-}
+$('#message').on('focus', function() {
+  $('#post-content').addClass('open');
+});
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+$('#posts-content, #header, #refresh, #points').on('click', function() {
+  $('#post-content').removeClass('open');
+});  
+
+$('form#post').on('submit', function() {
+  $('#submit').addClass('ui-disabled');
+  $.mobile.loading('show');
+  var post = new Post();
+  var location = new Parse.GeoPoint({
+    latitude: latitude, 
+    longitude: longitude
+  });
+  var form = $(this);
+  var message = $('#message', form);
+  var distance = $('#distance', form);
+  post.set('user', Parse.User.current());
+  post.set('location', location);
+  post.set('message', message.val());
+  post.set('distance', distance.val());
+  post.save(null, {
+    success: function(post) {
+      var image = textToImage(message.val());
+      $.ajax({
+        type: "POST",
+        beforeSend: function(request) {
+          request.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+          request.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+          request.setRequestHeader('Content-Type', 'image/png');
+        },
+        url: 'https://api.parse.com/1/files/' + post.id + '.png',
+        data: image,
+        processData: false,
+        contentType: false,
+        success: function(image) {
+          console.log('Image uploaded: ' + image.url);
+          var params = {
+            'image': {
+              '__type': 'File',
+              'name': image.name
+            }
+          };
+          $.ajax({
+            type: 'PUT',
+            url: 'https://api.parse.com/1/classes/Post/' + post.id,
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
+              xhr.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+            },
+            data: JSON.stringify(params),
+            success: function(post) {
+              console.log('Post image saved: ' + post.image.url);
+              message.val('');
+              distance.val(1).selectmenu('refresh');
+              checkIn();
+              $('#post-content').removeClass('open');
+            },
+            error: function(post, error) {
+              alert('Post image save failed: ' + error.message);
+            },
+            dataType: 'json'
+          });
+        },
+        error: function(error) {
+          console.log('Image upload failed: ' + error.message);
+        }
+      });
+    },
+    error: function(object, response) {
+      alert(response.message);
+      $.mobile.loading('hide');
+    }
+  });
+  return false;
+});
 
 function login() {
   if (Parse.User.current()) {
@@ -135,6 +205,13 @@ function login() {
       });    
     }
   }
+}
+
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
 }
 
 function getDay(date) {
@@ -177,6 +254,10 @@ function checkIn() {
       alert('Error: ' + error.code + ' ' + error.message);
     }
   });
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function updateInstallation() {
@@ -224,6 +305,13 @@ function refreshLocation () {
     timeout: 144000
   });  
 }
+
+$('#refresh').on('click', function(e) {
+  $('#refresh').addClass('loading');
+  $.mobile.loading('show');
+  refreshLocation();
+  return false;
+});
 
 // phonegap code for push notifications
 function registerForPushNotifications() {
@@ -366,6 +454,12 @@ function textToImage(text) {
   return blob;
 }
 
+$('#share-facebook').on('click', function() {
+  var shareContent = $('#share-content');
+  console.log(shareContent.data('image'));
+  share(shareContent.text(), shareContent.data('image'));
+});
+
 function shareToFacebook(text, image) {
   var params = {
     method: 'feed',
@@ -417,96 +511,9 @@ $(function() {
     });    
   } else {
     refreshLocation();
+    // todo: get this working on web for easier testing(?)
+    FB.init({ 
+      appId: '460489950704243'
+    });
   }
-
-  $('#refresh').on('click', function(e) {
-    $('#refresh').addClass('loading');
-    $.mobile.loading('show');
-    refreshLocation();
-    return false;
-  });
-
-  $('form#post').on('submit', function() {
-    $('#submit').addClass('ui-disabled');
-    $.mobile.loading('show');
-    var post = new Post();
-    var location = new Parse.GeoPoint({
-      latitude: latitude, 
-      longitude: longitude
-    });
-    var form = $(this);
-    var message = $('#message', form);
-    var distance = $('#distance', form);
-    post.set('user', Parse.User.current());
-    post.set('location', location);
-    post.set('message', message.val());
-    post.set('distance', distance.val());
-    post.save(null, {
-      success: function(post) {
-        var image = textToImage(message.val());
-        $.ajax({
-          type: "POST",
-          beforeSend: function(request) {
-            request.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
-            request.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
-            request.setRequestHeader('Content-Type', 'image/png');
-          },
-          url: 'https://api.parse.com/1/files/' + post.id + '.png',
-          data: image,
-          processData: false,
-          contentType: false,
-          success: function(image) {
-            console.log('Image uploaded: ' + image.url);
-            var params = {
-              'image': {
-                '__type': 'File',
-                'name': image.name
-              }
-            };
-            $.ajax({
-              type: 'PUT',
-              url: 'https://api.parse.com/1/classes/Post/' + post.id,
-              beforeSend: function(xhr) {
-                xhr.setRequestHeader('X-Parse-Application-Id', parseApplicationId);
-                xhr.setRequestHeader('X-Parse-REST-API-Key', parseRestApiKey);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-              },
-              data: JSON.stringify(params),
-              success: function(post) {
-                console.log('Post image saved: ' + post.image.url);
-                message.val('');
-                distance.val(1).selectmenu('refresh');
-                checkIn();
-                $('#post-content').removeClass('open');
-              },
-              error: function(post, error) {
-                alert('Post image save failed: ' + error.message);
-              },
-              dataType: 'json'
-            });
-          },
-          error: function(error) {
-            console.log('Image upload failed: ' + error.message);
-          }
-        });
-      },
-      error: function(object, response) {
-        alert(response.message);
-        $.mobile.loading('hide');
-      }
-    });
-    return false;
-  });
-
-  $('#message').on('focus', function() {
-    $('#post-content').addClass('open');
-  });
-
-  $('#posts-content, #header, #refresh, #points').on('click', function() {
-    $('#post-content').removeClass('open');
-  });  
-
-  $('#share-facebook').on('click', function() {
-    share($('#share-text').text(), $('#share-image').attr('src'));
-  });
 });

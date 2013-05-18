@@ -33,7 +33,6 @@ small, #notice {
   transition: all .25s;
   -webkit-transition: all .25s;
   -moz-transition: all .25s;
-  height: 140px;
 }
 
 #post-content.open {
