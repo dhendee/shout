@@ -456,42 +456,20 @@ function textToImage(text) {
 
 $('#share-facebook').on('click', function() {
   var shareContent = $('#share-content');
-  console.log(shareContent.data('image'));
-  share(shareContent.text(), shareContent.data('image'));
-});
-
-function shareToFacebook(text, image) {
+  var text = shareContent.text();
+  var image = shareContent.data('image');
   var params = {
     method: 'feed',
-    name: 'Shout',
-    link: 'http://www.shout.com',
+    link: image,
     picture: image,
-    caption: text,
-    description: 'Download Shout today.'
+    name: 'Shoutsy',
+    caption: 'Shout anonymously to your block, your city, or to the world.',
+    description: text
   };
   FB.ui(params, function(obj) { 
     console.log(obj);
   });
-}
-
-function share(text, image) {
-  FB.getLoginStatus(function(response) {
-    if (response.status == 'connected') {
-      shareToFacebook(text, image);
-    } else {
-      FB.login(function(response) {
-        if (response.session) {
-          shareToFacebook(text, image);
-        } else {
-          alert('You must login to Facebook to share posts.');
-        }
-      },
-      { 
-        scope: email
-      });
-    }
-  });
-}
+});
 
 $(function() {
   $.mobile.loading('show');
@@ -500,7 +478,7 @@ $(function() {
     document.addEventListener('deviceready', function onDeviceReady() {
       refreshLocation();
       setupInAppPurchases();
-      FB.init({ 
+      FB.init({
         appId: '460489950704243', 
         nativeInterface: CDV.FB, 
         useCachedDialogs: false 
@@ -511,9 +489,5 @@ $(function() {
     });    
   } else {
     refreshLocation();
-    // todo: get this working on web for easier testing(?)
-    FB.init({ 
-      appId: '460489950704243'
-    });
   }
 });
