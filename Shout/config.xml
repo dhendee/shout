@@ -60,6 +60,7 @@
         <plugin name="PushNotification" value="PushNotification" />
         <plugin name="InAppPurchaseManager" value="InAppPurchaseManager" />
         <plugin name="org.apache.cordova.facebook.Connect" value="FacebookConnectPlugin" />
+        <plugin name="KeyboardToolbarRemover" value="KeyboardToolbarRemover" />
     </plugins>
 
     <access origin="*" />

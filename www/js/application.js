@@ -65,7 +65,9 @@ function findPosts() {
             default:
               distance = 'somewhere in the world';
           }
-          list.append('<li data-image="' + post.get('image').url + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
+          // todo: placeholder image for failed image saves?
+          var image = post.get('image') ? post.get('image').url : '';
+          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
         }
         list.find('li').on('click', function() {
           var item = $(this);
@@ -81,7 +83,7 @@ function findPosts() {
       $.mobile.loading('hide');
     },
     error: function(error) {
-      alert('Error: ' + error.code + ' ' + error.message);
+      alert('Error finding posts: ' + error.code + ' ' + error.message);
       $.mobile.loading('hide');
       $('#refresh').removeClass('loading');
     }
@@ -160,8 +162,8 @@ $('form#post').on('submit', function() {
         }
       });
     },
-    error: function(object, response) {
-      alert(response.message);
+    error: function(object, error) {
+      alert('Post save failed: ' + error.message);
       $.mobile.loading('hide');
     }
   });
@@ -182,7 +184,7 @@ function login() {
           checkIn();
         },
         error: function(user, error) {
-          alert('Error: ' + error.code + ' ' + error.message);
+          alert('Error logging in: ' + error.code + ' ' + error.message);
         }
       });      
     } else {
@@ -200,7 +202,7 @@ function login() {
           checkIn();
         },
         error: function(user, error) {
-          alert('Error: ' + error.code + ' ' + error.message);
+          alert('Error signing up: ' + error.code + ' ' + error.message);
         }
       });    
     }
@@ -251,7 +253,7 @@ function checkIn() {
       findPosts();
     },
     error: function(user, error) {
-      alert('Error: ' + error.code + ' ' + error.message);
+      alert('Error getting user: ' + error.code + ' ' + error.message);
     }
   });
 }
@@ -359,23 +361,20 @@ function setupInAppPurchases() {
   var purchaseManager = window.plugins.inAppPurchaseManager;
   var productIds = ['com.davidhendee.shout.points.10', 'com.davidhendee.shout.points.100', 'com.davidhendee.shout.points.1000'];
   console.log('Fetching available products.');
-  purchaseManager.requestProductsData(productIds,
-    function(products) {
-      var html = '';
-      for (var i = 0; i < products.length; i++) {
-        var product = products[i];
-        html += '<a id="' + product.id + '" class="product" data-product="' + product.id + '" href="#" data-role="button">' + product.title + ' (' + product.price + ')</a>';
+  for (var i = 0; i < productIds.length; i++) {
+    window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
+      function(result) {
+        $('#products').append('<a id="' + result.id + '" class="product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
+        $('#' + result.id).on('click', function() {
+          var button = $(this);
+          window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
+        });
+      }, 
+      function(id) {
+        console.log("Invalid product id: " + result);
       }
-      $('#products').html(html);
-      $('.product', '#products').on('click', function() {
-        var button = $(this);
-        window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
-      });
-    },
-    function(ids) {
-      console.log('Invalid product ids: ' + ids.join(', '));
-    }
-  );
+    );
+  }
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
     $('#store').dialog('close');
@@ -483,6 +482,8 @@ $(function() {
         nativeInterface: CDV.FB, 
         useCachedDialogs: false 
       });
+      var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
+      toolbar.hide();
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();

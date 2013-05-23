@@ -50,6 +50,7 @@
 		6397BF0C173F2E0D00DA9C76 /* FacebookConnectPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 6397BF0B173F2E0D00DA9C76 /* FacebookConnectPlugin.m */; };
 		639F171F17179CF3005FC957 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 639F171D17179CF3005FC957 /* OpenUDID.m */; };
 		63EC6A4E17146B46003CB4EA /* PushNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EC6A4D17146B46003CB4EA /* PushNotification.m */; };
+		63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */; };
 		63F101C61740725E0073304C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F101C51740725E0073304C /* FacebookSDK.framework */; };
 		63F101C8174072860073304C /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 63F101C7174072860073304C /* FacebookSDKResources.bundle */; };
 		63F101EE174073020073304C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F101ED174073020073304C /* Security.framework */; };
@@ -128,6 +129,8 @@
 		639F171E17179CF3005FC957 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
 		63EC6A4C17146B46003CB4EA /* PushNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushNotification.h; sourceTree = "<group>"; };
 		63EC6A4D17146B46003CB4EA /* PushNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushNotification.m; sourceTree = "<group>"; };
+		63EE17DC174DC2A3004BAC70 /* KeyboardToolbarRemover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardToolbarRemover.h; sourceTree = "<group>"; };
+		63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardToolbarRemover.m; sourceTree = "<group>"; };
 		63F101C51740725E0073304C /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		63F101C7174072860073304C /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = ../../Documents/FacebookSDK/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		63F101CA1740729C0073304C /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
@@ -326,6 +329,7 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				63EE17DB174DC293004BAC70 /* KeyboardToolbarRemover */,
 				6397BF09173F2DCD00DA9C76 /* ios */,
 				636E0E941734BE40006D4E55 /* InAppPurchaseManager */,
 				63EC6A4B17146B46003CB4EA /* PushNotification */,
@@ -401,6 +405,15 @@
 				63EC6A4D17146B46003CB4EA /* PushNotification.m */,
 			);
 			path = PushNotification;
+			sourceTree = "<group>";
+		};
+		63EE17DB174DC293004BAC70 /* KeyboardToolbarRemover */ = {
+			isa = PBXGroup;
+			children = (
+				63EE17DC174DC2A3004BAC70 /* KeyboardToolbarRemover.h */,
+				63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */,
+			);
+			name = KeyboardToolbarRemover;
 			sourceTree = "<group>";
 		};
 		63F101C91740729C0073304C /* DeprecatedHeaders */ = {
@@ -573,6 +586,7 @@
 				636E0E971734BE79006D4E55 /* InAppPurchaseManager.m in Sources */,
 				636E0E9A1734BF49006D4E55 /* SKProduct+LocalizedPrice.m in Sources */,
 				6397BF0C173F2E0D00DA9C76 /* FacebookConnectPlugin.m in Sources */,
+				63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
