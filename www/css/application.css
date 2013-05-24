@@ -1,30 +1,18 @@
+@font-face {
+  font-family: 'Avant Garde Bold';
+  src: url('fonts/Avant Garde Bold.eof');
+  src: local('☺'), url('fonts/Avant Garde Bold.woff') format('woff'), url('fonts/Avant Garde Bold.ttf') format('truetype'), url('fonts/Avant Garde Bold.svg') format('svg');
+}
+
+#foo {
+  font-family: 'Avant Garde Bold';
+}
+
 small, #notice {
   font-weight: normal;
   opacity: .5;
   font-size: smaller;
 }
-
-/*
-#header .ui-btn {
-  top: 6px;
-}
-
-#header .ui-btn-icon-notext {
-  top: 9px;
-}
-
-#header .ui-shadow,
-#header .ui-btn-inner,
-#header .ui-icon-shadow {
-  box-shadow: none;
-  border: none;
-}
-
-#header .ui-shadow,
-#header .ui-btn-inner {
-  background: none;
-}
-*/
 
 #post-content {
   overflow: hidden;

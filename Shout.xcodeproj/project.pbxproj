@@ -51,6 +51,16 @@
 		639F171F17179CF3005FC957 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 639F171D17179CF3005FC957 /* OpenUDID.m */; };
 		63EC6A4E17146B46003CB4EA /* PushNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EC6A4D17146B46003CB4EA /* PushNotification.m */; };
 		63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */; };
+		63EE17E9174DCFBA004BAC70 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17DF174DCFBA004BAC70 /* Icon-72.png */; };
+		63EE17EA174DCFBA004BAC70 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E0174DCFBA004BAC70 /* Icon-72@2x.png */; };
+		63EE17EB174DCFBA004BAC70 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E1174DCFBA004BAC70 /* Icon-Small-50.png */; };
+		63EE17EC174DCFBA004BAC70 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E2174DCFBA004BAC70 /* Icon-Small-50@2x.png */; };
+		63EE17ED174DCFBA004BAC70 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E3174DCFBA004BAC70 /* Icon-Small.png */; };
+		63EE17EE174DCFBA004BAC70 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E4174DCFBA004BAC70 /* Icon-Small@2x.png */; };
+		63EE17EF174DCFBA004BAC70 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E5174DCFBA004BAC70 /* Icon.png */; };
+		63EE17F0174DCFBA004BAC70 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E6174DCFBA004BAC70 /* Icon@2x.png */; };
+		63EE17F1174DCFBA004BAC70 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E7174DCFBA004BAC70 /* iTunesArtwork.png */; };
+		63EE17F2174DCFBA004BAC70 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17E8174DCFBA004BAC70 /* iTunesArtwork@2x.png */; };
 		63F101C61740725E0073304C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F101C51740725E0073304C /* FacebookSDK.framework */; };
 		63F101C8174072860073304C /* FacebookSDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 63F101C7174072860073304C /* FacebookSDKResources.bundle */; };
 		63F101EE174073020073304C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63F101ED174073020073304C /* Security.framework */; };
@@ -79,7 +89,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Shout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shout.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Shoutsy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shoutsy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1F766FDD13BBADB100FB74C0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		1F766FE013BBADB100FB74C0 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Localizable.strings; sourceTree = "<group>"; };
@@ -131,6 +141,16 @@
 		63EC6A4D17146B46003CB4EA /* PushNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushNotification.m; sourceTree = "<group>"; };
 		63EE17DC174DC2A3004BAC70 /* KeyboardToolbarRemover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardToolbarRemover.h; sourceTree = "<group>"; };
 		63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyboardToolbarRemover.m; sourceTree = "<group>"; };
+		63EE17DF174DCFBA004BAC70 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		63EE17E0174DCFBA004BAC70 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		63EE17E1174DCFBA004BAC70 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		63EE17E2174DCFBA004BAC70 /* Icon-Small-50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50@2x.png"; sourceTree = "<group>"; };
+		63EE17E3174DCFBA004BAC70 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		63EE17E4174DCFBA004BAC70 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		63EE17E5174DCFBA004BAC70 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		63EE17E6174DCFBA004BAC70 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		63EE17E7174DCFBA004BAC70 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
+		63EE17E8174DCFBA004BAC70 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		63F101C51740725E0073304C /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
 		63F101C7174072860073304C /* FacebookSDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKResources.bundle; path = ../../Documents/FacebookSDK/FacebookSDK.framework/Versions/A/Resources/FacebookSDKResources.bundle; sourceTree = "<group>"; };
 		63F101CA1740729C0073304C /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
@@ -223,7 +243,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Shout.app */,
+				1D6058910D05DD3D006BFB54 /* Shoutsy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -341,6 +361,16 @@
 		308D052D1370CCF300D202BF /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				63EE17DF174DCFBA004BAC70 /* Icon-72.png */,
+				63EE17E0174DCFBA004BAC70 /* Icon-72@2x.png */,
+				63EE17E1174DCFBA004BAC70 /* Icon-Small-50.png */,
+				63EE17E2174DCFBA004BAC70 /* Icon-Small-50@2x.png */,
+				63EE17E3174DCFBA004BAC70 /* Icon-Small.png */,
+				63EE17E4174DCFBA004BAC70 /* Icon-Small@2x.png */,
+				63EE17E5174DCFBA004BAC70 /* Icon.png */,
+				63EE17E6174DCFBA004BAC70 /* Icon@2x.png */,
+				63EE17E7174DCFBA004BAC70 /* iTunesArtwork.png */,
+				63EE17E8174DCFBA004BAC70 /* iTunesArtwork@2x.png */,
 				308D052E1370CCF300D202BF /* icon-72.png */,
 				308D052F1370CCF300D202BF /* icon.png */,
 				308D05301370CCF300D202BF /* icon@2x.png */,
@@ -478,7 +508,7 @@
 			);
 			name = Shout;
 			productName = Shout;
-			productReference = 1D6058910D05DD3D006BFB54 /* Shout.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Shoutsy.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -551,6 +581,16 @@
 				3088BBC2154F3926009F9C59 /* Default~iphone.png in Resources */,
 				D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */,
 				63F101C8174072860073304C /* FacebookSDKResources.bundle in Resources */,
+				63EE17E9174DCFBA004BAC70 /* Icon-72.png in Resources */,
+				63EE17EA174DCFBA004BAC70 /* Icon-72@2x.png in Resources */,
+				63EE17EB174DCFBA004BAC70 /* Icon-Small-50.png in Resources */,
+				63EE17EC174DCFBA004BAC70 /* Icon-Small-50@2x.png in Resources */,
+				63EE17ED174DCFBA004BAC70 /* Icon-Small.png in Resources */,
+				63EE17EE174DCFBA004BAC70 /* Icon-Small@2x.png in Resources */,
+				63EE17EF174DCFBA004BAC70 /* Icon.png in Resources */,
+				63EE17F0174DCFBA004BAC70 /* Icon@2x.png in Resources */,
+				63EE17F1174DCFBA004BAC70 /* iTunesArtwork.png in Resources */,
+				63EE17F2174DCFBA004BAC70 /* iTunesArtwork@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -655,7 +695,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Shout/Shout-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = Shout;
+				PRODUCT_NAME = Shoutsy;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -677,7 +717,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Shout/Shout-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				PRODUCT_NAME = Shout;
+				PRODUCT_NAME = Shoutsy;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
