@@ -9,7 +9,7 @@
   </head>
   <body>
     <div id="index">
-      <header>
+      <header id="header">
         <a id="points" class="btn-left" href="#"></a>
         <h1>Shout</h1>
         <a id="refresh" class="btn-right btn-icon btn-refresh" href="#">Refresh</a>
@@ -18,10 +18,10 @@
         <form id="post">       
           <input id="message" name="message" type="text" placeholder="What’s on your mind?">
           <select id="distance" name="distance">
-             <option value="1" selected="selected">&frac14; mile: 1 point</option>
-             <option value="10">1 mile: 10 points</option>
-             <option value="100">500 miles: 100 points</option>
-             <option value="1000">The World: 1,000 points</option>
+             <option value="1" selected="selected">Your Block: 1 point</option>
+             <option value="10">Your City: 10 pts</option>
+             <option value="100">Your Country: 100 pts</option>
+             <option value="1000">The World: 1,000 pts</option>
           </select>
         </form>
       </section>      
@@ -35,10 +35,11 @@
     <div id="alert" class="modal">
       <header>
         <h1>Alert</h1>
+        <a class="btn-right btn-icon btn-close" href="#">Close</a>
       </header>
       <div> 
         <p id="alert-content"></p>
-        <a href="#index">Roger That</a>
+        <a class="btn btn-primary btn-close" href="#">Roger That</a>
       </div>
     </div>
     <div id="store" class="modal">
@@ -46,14 +47,12 @@
         <h1>Shop</h1>
         <a class="btn-right btn-icon btn-close" href="#">Close</a>
       </header>
-      <div class="content"> 
-        <p id="store-content">Sure, you can check in once a day to get 10 free points. But why wait when you can <em>cheat</em> and buy them? Then you can shout as much and as loud as you want.</p>
-        <p id="products"></p>
-      </div>
+      <p id="store-content">Sure, you can check in once a day to get 10 free points. But why wait when you can <em>cheat</em> and buy them? Then you can shout as much and as loud as you want.</p>
+      <p id="products"></p>
     </div>
     <div id="share" class="modal">
       <header>
-        <h1>Shout</h1>
+        <h1>Actions</h1>
         <a id="share-facebook" href="#">Share</a>
       </header>
       <div> 
@@ -61,6 +60,7 @@
       </div>
     </div>
     <div id="fb-root"></div>
+    <div id="modal-background"></div>
     <!-- Phonegap files -->
     <script src="cordova-2.7.0.js"></script>
     <script src="js/plugins/PushNotification.js"></script>

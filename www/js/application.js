@@ -74,7 +74,7 @@ function findPosts() {
           var shareContent = $('#share-content');
           shareContent.html($('.message', item).html());
           shareContent.data('image', item.data('image'));
-          //$.mobile.changePage('#share');
+          $('#share, #modal-background').show();
         });
         $('time.timeago').timeago();
       }
@@ -89,15 +89,13 @@ function findPosts() {
 
 $('#message').fastClick(function() {
   $('#post-content').addClass('open');
-  $('#refresh').addClass('btn-close');
 });
 
 $('#distance').on('change', function() {
   $('#message').trigger('focus');
 });
 
-$('#posts-content, #header, #refresh, #points, .btn-close').on('click', function() {
-  $('#refresh').removeClass('btn-close');
+$('#posts-content, #header, #refresh, #points').on('click', function() {
   $('#post-content').removeClass('open');
 });  
 
@@ -237,10 +235,10 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(numberWithCommas(account.get('points')) + ' point' + (account.get('points') == 1 ? '' : 's')).show();
+              $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
-                //$.mobile.changePage('#alert');
+                $('#alert, #modal-background').show();
                 user.set('alert', null);
                 user.save();
               }
@@ -296,7 +294,7 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
-    $('#post-content').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1136x1136&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
+    $('#post-content').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=15&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
@@ -363,7 +361,7 @@ function setupInAppPurchases() {
   for (var i = 0; i < productIds.length; i++) {
     window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
       function(result) {
-        $('#products').append('<a id="' + result.id + '" class="btn product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
+        $('#products').append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
         $('#' + result.id).fastClick(function() {
           var button = $(this);
           window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
@@ -376,7 +374,7 @@ function setupInAppPurchases() {
   }
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
-    // $('#store').dialog('close');
+    $('#store, #modal-background').hide();
     $('#refresh').addClass('loading');
     var transaction = new Transaction();
     transaction.set('user', Parse.User.current());
@@ -470,12 +468,12 @@ $('#share-facebook').fastClick(function() {
 });
 
 $('#points').fastClick(function() {
-  $('#store').show();
+  $('#store, #modal-background').show();
   return false;
 });
 
 $('.btn-close').fastClick(function() {
-  $('.modal').hide();
+  $('.modal, #modal-background').hide();
 });
 
 $(function() {
@@ -498,4 +496,5 @@ $(function() {
   } else {
     refreshLocation();
   }
+  document.addEventListener('touchstart', function() { }, false);
 });

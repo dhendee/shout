@@ -10,6 +10,8 @@
   margin: 0;
   font-weight: normal;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 body, input, select, textarea {
@@ -23,6 +25,7 @@ body, input, select, textarea {
 
 body {
   padding-top: 40px;
+  width: 320px;
 }
 
 input, textarea {
@@ -31,7 +34,7 @@ input, textarea {
 
 a {
   text-decoration: none;
-  color: #8e949a;
+  color: #bcc3c7;
 }
 
 p {
@@ -44,17 +47,19 @@ header, header a {
 
 header {
   background: #31485f;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 39px;
+  height: 38px;
+  border-top: 1px solid #3d5a77;
   border-bottom: 1px solid #283a4c;
   box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, .25);  
+  position: fixed;
+  top: 0;
+  width: 320px;
 }
 
 header h1 {
   font-size: 24px;
-  line-height: 40px;
+  line-height: 42px;
   text-align: center;
 }
 
@@ -63,7 +68,7 @@ header h1 {
 }
 
 small, #notice {
-  color: #cbced0;
+  color: #bcc3c7;
 }
 
 #notice {
@@ -74,7 +79,7 @@ small, #notice {
   overflow: hidden;
   height: 33px;
   padding: 10px;
-  background: #e4e4e2 center center no-repeat;
+  background: #ebf0f1 center center no-repeat;
   background-size: 568px 568px;
   /*
   transition: all .5s;
@@ -93,20 +98,25 @@ input[type=text], select, .btn {
   padding: 0 10px;
   margin: 0 0 10px 0;
   background: #fff;
-  border: 1px solid #cacac6;
+  border: 1px solid #cacfd3;
   border-radius: 5px;
   width: 278px;
   height: 30px;
   line-height: 38px;
 }
 
+.btn:hover, .btn:active, .btn.pressed {
+  background: #bcc3c7;
+  color: #fff;
+}
+
 select, .btn {
-  box-shadow: 0 2px 0 rgba(0, 0, 0, .25); 
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, .25); 
   line-height: 36px;
 }
 
 input[type=text] {
-  box-shadow: inset 0 2px 0 rgba(0, 0, 0, .25);   
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, .25);   
 }
 
 input[type=text]::-webkit-input-placeholder,
@@ -116,6 +126,17 @@ select {
 
 select {
  height: 42px; 
+}
+
+.btn-primary {
+  border: 1px solid #31485f;
+  color: #fff;
+  background: #31485f;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary.pressed {
+  background: #3d5a77;
+  border-color: #3d5a77;
 }
 
 .btn-icon {
@@ -141,7 +162,7 @@ select {
   -webkit-animation-timing-function: linear;
 }
 
-.btn-close {
+header .btn-close {
   background-image: url(../img/close.png);
   background-size: 20px 20px;
   top: 10px;
@@ -154,6 +175,7 @@ header a {
 header .btn-left, 
 header .btn-right {
   position: absolute;
+  top: 10px;
 }
 
 header .btn-left {
@@ -165,7 +187,7 @@ header .btn-right {
 }
 
 #points {
-  top: 13px;
+  top: 12px;
   display: none;
 }
 
@@ -185,12 +207,18 @@ header .btn-right {
   padding: 10px;
   font-size: 24px;
   line-height: 28px;
-  border-bottom: 1px solid #ebf0f1;
+  border-bottom: 1px solid #ebf0f1; 
 }
 
 #posts .message {
   display: block;
   margin: 0 0 5px 0;
+  background: #2d2d2d;
+  color: #fff;
+  padding: 10px;
+  min-height: 280px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, .25);
+
 }
 
 #posts small {
@@ -202,17 +230,46 @@ header .btn-right {
 .modal {
   display: none;
   position: fixed;
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  z-index: 1001;
+  background: #fff;
+  color: #556471;
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);  
+  border: 1px solid #cacfd3;
+  border-radius: 5px;
+  padding: 50px 10px 10px 10px;
+}
+
+.modal header {
+  width: 300px;
+  left: 10px;
+  top: 10px;
+  background: #bcc3c7;
+  height: 40px;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.modal .btn {
+  width: 258px;
+}
+
+#modal-background {
+  display: none;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 1000;
-  background: #ebf0f1;
-}
-
-.content {
-  padding: 50px 10px 10px 10px;
-  color: #8e949a;
+  background: #000;
+  opacity: .5;
 }
 
 @-webkit-keyframes rotate {
