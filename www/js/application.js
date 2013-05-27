@@ -69,38 +69,41 @@ function findPosts() {
           var image = post.get('image') ? post.get('image').url : '';
           list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
         }
-        list.find('li').on('click', function() {
+        list.find('.action').fastClick(function() {
           var item = $(this);
           var shareContent = $('#share-content');
           shareContent.html($('.message', item).html());
           shareContent.data('image', item.data('image'));
-          $.mobile.changePage('#share');
+          //$.mobile.changePage('#share');
         });
-        list.listview('refresh');
         $('time.timeago').timeago();
       }
       $('#refresh').removeClass('loading');
-      $.mobile.loading('hide');
     },
     error: function(error) {
       alert('Error finding posts: ' + error.code + ' ' + error.message);
-      $.mobile.loading('hide');
       $('#refresh').removeClass('loading');
     }
   });
 }
 
-$('#message').on('focus', function() {
+$('#message').fastClick(function() {
   $('#post-content').addClass('open');
+  $('#refresh').addClass('btn-close');
 });
 
-$('#posts-content, #header, #refresh, #points').on('click', function() {
+$('#distance').on('change', function() {
+  $('#message').trigger('focus');
+});
+
+$('#posts-content, #header, #refresh, #points, .btn-close').on('click', function() {
+  $('#refresh').removeClass('btn-close');
   $('#post-content').removeClass('open');
 });  
 
 $('form#post').on('submit', function() {
-  $('#submit').addClass('ui-disabled');
-  $.mobile.loading('show');
+  $('#refresh').addClass('loading');
+  $('#message').trigger('blur');
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
@@ -147,7 +150,7 @@ $('form#post').on('submit', function() {
             success: function(post) {
               console.log('Post image saved: ' + post.image.url);
               message.val('');
-              distance.val(1).selectmenu('refresh');
+              distance.val(1);
               checkIn();
               $('#post-content').removeClass('open');
             },
@@ -164,7 +167,6 @@ $('form#post').on('submit', function() {
     },
     error: function(object, error) {
       alert('Post save failed: ' + error.message);
-      $.mobile.loading('hide');
     }
   });
   return false;
@@ -235,11 +237,10 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(numberWithCommas(account.get('points')) + ' point' + (account.get('points') == 1 ? '' : 's'));
-              $('#account').show();
+              $('#points').html(numberWithCommas(account.get('points')) + ' point' + (account.get('points') == 1 ? '' : 's')).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
-                $.mobile.changePage('#alert');
+                //$.mobile.changePage('#alert');
                 user.set('alert', null);
                 user.save();
               }
@@ -295,11 +296,10 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude;    
-    // $('#post-content').css('background', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1000x100&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8) center center no-repeat').css('background-size', 'cover');
+    $('#post-content').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=10&size=1136x1136&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
-    $.mobile.loading('hide');
     $('#refresh').addClass('loading');
   }, {
     maximumAge: 10000, 
@@ -308,9 +308,8 @@ function refreshLocation () {
   });  
 }
 
-$('#refresh').on('click', function(e) {
+$('#refresh').fastClick(function(e) {
   $('#refresh').addClass('loading');
-  $.mobile.loading('show');
   refreshLocation();
   return false;
 });
@@ -364,8 +363,8 @@ function setupInAppPurchases() {
   for (var i = 0; i < productIds.length; i++) {
     window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
       function(result) {
-        $('#products').append('<a id="' + result.id + '" class="product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
-        $('#' + result.id).on('click', function() {
+        $('#products').append('<a id="' + result.id + '" class="btn product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
+        $('#' + result.id).fastClick(function() {
           var button = $(this);
           window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
         });
@@ -373,12 +372,12 @@ function setupInAppPurchases() {
       function(id) {
         console.log("Invalid product id: " + result);
       }
-    );
+    ); 
   }
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
-    $('#store').dialog('close');
-    $.mobile.loading('show');
+    // $('#store').dialog('close');
+    $('#refresh').addClass('loading');
     var transaction = new Transaction();
     transaction.set('user', Parse.User.current());
     transaction.set('transactionId', transactionId);
@@ -387,7 +386,7 @@ function setupInAppPurchases() {
     transaction.save(null, {
       success: function(transaction) {
         console.log('Saved transaction: ' + transactionId);
-        $.mobile.loading('hide');
+        $('#refresh').removeClass('loading');
         checkIn();
       },
       error: function(object, error) {
@@ -453,7 +452,7 @@ function textToImage(text) {
   return blob;
 }
 
-$('#share-facebook').on('click', function() {
+$('#share-facebook').fastClick(function() {
   var shareContent = $('#share-content');
   var text = shareContent.text();
   var image = shareContent.data('image');
@@ -470,8 +469,16 @@ $('#share-facebook').on('click', function() {
   });
 });
 
+$('#points').fastClick(function() {
+  $('#store').show();
+  return false;
+});
+
+$('.btn-close').fastClick(function() {
+  $('.modal').hide();
+});
+
 $(function() {
-  $.mobile.loading('show');
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {

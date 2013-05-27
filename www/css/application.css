@@ -1,50 +1,218 @@
 @font-face {
   font-family: 'Avant Garde Bold';
-  src: url('fonts/Avant Garde Bold.eof');
-  src: local('☺'), url('fonts/Avant Garde Bold.woff') format('woff'), url('fonts/Avant Garde Bold.ttf') format('truetype'), url('fonts/Avant Garde Bold.svg') format('svg');
+  src: url('fonts/ITCAvantGardeStd-Bold.eof');
+  src: local('☺'), url('fonts/ITCAvantGardeStd-Bold.woff') format('woff'), url('fonts/ITCAvantGardeStd-Bold.ttf') format('truetype'), url('fonts/ITCAvantGardeStd-Bold.svg') format('svg');
+  font-weight: bold;
 }
 
-#foo {
-  font-family: 'Avant Garde Bold';
+* {
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+  -webkit-user-select: none;
+}
+
+body, input, select, textarea {
+  font-family: 'Avant Garde Bold', Helvetica, Arial, sans-serif;
+  color: #31485f;  
+  font-weight: bold;
+  -webkit-text-size-adjust: none;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+body {
+  padding-top: 40px;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+}
+
+a {
+  text-decoration: none;
+  color: #8e949a;
+}
+
+p {
+  margin: 0 0 10px 0;
+}
+
+header, header a {
+  color: #fff;
+}
+
+header {
+  background: #31485f;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 39px;
+  border-bottom: 1px solid #283a4c;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
+}
+
+header h1 {
+  font-size: 24px;
+  line-height: 40px;
+  text-align: center;
+}
+
+#posts-content {
+  box-shadow: 0 -5px 0 rgba(0, 0, 0, .25);  
 }
 
 small, #notice {
-  font-weight: normal;
-  opacity: .5;
-  font-size: smaller;
+  color: #cbced0;
+}
+
+#notice {
+  padding: 10px;
 }
 
 #post-content {
   overflow: hidden;
-  height: 36px;
-  margin-top: -13px;
-  transition: all .25s;
-  -webkit-transition: all .25s;
-  -moz-transition: all .25s;
+  height: 33px;
+  padding: 10px;
+  background: #e4e4e2 center center no-repeat;
+  background-size: 568px 568px;
+  /*
+  transition: all .5s;
+  -webkit-transition: all .5s;
+  -moz-transition: all .5s;
+  */
 }
 
 #post-content.open {
-  height: 140px;
+  height: 73px;
 }
 
-#post-content .ui-submit {
-  margin-top: -20px;
+input[type=text], select, .btn {
+  -webkit-appearance: none;
+  display: block;
+  padding: 0 10px;
+  margin: 0 0 10px 0;
+  background: #fff;
+  border: 1px solid #cacac6;
+  border-radius: 5px;
+  width: 278px;
+  height: 30px;
+  line-height: 38px;
+}
+
+select, .btn {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .25); 
+  line-height: 36px;
+}
+
+input[type=text] {
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, .25);   
+}
+
+input[type=text]::-webkit-input-placeholder,
+select {
+  color: #8e949a;
+}
+
+select {
+ height: 42px; 
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  overflow: hidden;
+  text-indent: -2000px;
+}
+
+.btn-refresh {
+  background-image: url(../img/refresh.png);
+  background-size: 20px 40px;
+}
+
+.btn-refresh.loading {
+  background-position: 0 -20px;
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: .75s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+}
+
+.btn-close {
+  background-image: url(../img/close.png);
+  background-size: 20px 20px;
+  top: 10px;
+}
+
+header a {
+  opacity: .5;
+}
+
+header .btn-left, 
+header .btn-right {
+  position: absolute;
+}
+
+header .btn-left {
+  left: 10px;
+}
+
+header .btn-right {
+  right: 10px;
+}
+
+#points {
+  top: 13px;
+  display: none;
+}
+
+#refresh {
+  top: 10px;
+}
+
+#distance {
+  width: 300px;
+  height: 30px;
+  line-height: 36px;
+  background: #fff url(../img/select.png) no-repeat right top;
+  background-size: 26px 30px;
+}
+
+#posts li {
+  padding: 10px;
+  font-size: 24px;
+  line-height: 28px;
+  border-bottom: 1px solid #ebf0f1;
+}
+
+#posts .message {
+  display: block;
+  margin: 0 0 5px 0;
 }
 
 #posts small {
   display: block;
+  font-size: 12px;
+  line-height: 12px;
 }
 
-#account {
+.modal {
   display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  background: #ebf0f1;
 }
 
-#share-image {
-  width: 100%;
-}
-
-#share-text {
-  display: none;
+.content {
+  padding: 50px 10px 10px 10px;
+  color: #8e949a;
 }
 
 @-webkit-keyframes rotate {
@@ -54,11 +222,4 @@ small, #notice {
   to { 
     -webkit-transform: rotate(360deg);
   }
-}
-
-#refresh.loading .ui-icon-refresh {
-  -webkit-animation-name: rotate; 
-  -webkit-animation-duration: 1s; 
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
 }
