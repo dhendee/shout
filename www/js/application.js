@@ -96,10 +96,13 @@ $('#distance').on('change', function() {
 });
 
 $('#posts-content, #header, #refresh, #points').on('click', function() {
+  $('#message').val('');
   $('#post-content').removeClass('open');
 });  
 
 $('form#post').on('submit', function() {
+  var form = $(this);
+  $('input, textarea, select, button', form).attr('disabled', true);
   $('#refresh').addClass('loading');
   $('#message').trigger('blur');
   var post = new Post();
@@ -107,7 +110,6 @@ $('form#post').on('submit', function() {
     latitude: latitude, 
     longitude: longitude
   });
-  var form = $(this);
   var message = $('#message', form);
   var distance = $('#distance', form);
   post.set('user', Parse.User.current());
@@ -151,6 +153,7 @@ $('form#post').on('submit', function() {
               distance.val(1);
               checkIn();
               $('#post-content').removeClass('open');
+              $('input, textarea, select, button', form).attr('disabled', false);
             },
             error: function(post, error) {
               alert('Post image save failed: ' + error.message);
@@ -487,14 +490,14 @@ $(function() {
         nativeInterface: CDV.FB, 
         useCachedDialogs: false 
       });
-      var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
-      toolbar.hide();
+      // var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
+      // toolbar.hide();
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();
     });    
+    document.addEventListener('touchstart', function() { }, false);
   } else {
     refreshLocation();
   }
-  document.addEventListener('touchstart', function() { }, false);
 });
