@@ -10,7 +10,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     account.save(null, {
       success: function(account) {
         user.set('account', account);
-        user.set('alert', 'Congrats! You earned 10 points just for showing up. Check in once a day to earn more points. The more points you have, the more (and louder) you can shout.');
+        user.set('alert', 'Welcome to Schowt! You earned 10 points just for showing up. Check in once a day to earn more points. The more points you have, the more (and louder) you can shout.');
         response.success();
       }, 
       error: function(object, error) {

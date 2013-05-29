@@ -123,6 +123,7 @@ $('#distance').on('change', function() {
 
 function closeMessageContent() {
   $('#message').val('');
+  $('#message').trigger('blur');
   $('#post-content').removeClass('open');
 }
 
@@ -285,7 +286,9 @@ function checkIn() {
       findPosts();
     },
     error: function(user, error) {
-      alert('Error getting user: ' + error.code + ' ' + error.message);
+      // todo: this fails a lot on resume, so we should figure out why.
+      // but it's not hurting things overall and is worse as an alert.
+      // alert('Error getting user: ' + error.code + ' ' + error.message);
     }
   });
 }
@@ -396,7 +399,7 @@ function setupInAppPurchases() {
     window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
       function(result) {
         $('#products').append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
-        $('#' + result.id).fastClick(function() {
+        $('.product[data-product="' + result.id + '"]').on('click', function() {
           var button = $(this);
           window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
           return false;
@@ -491,9 +494,9 @@ $('#share-facebook').fastClick(function() {
   var image = shareContent.data('image');
   var params = {
     method: 'feed',
-    link: image,
+    link: 'http://www.schowt.com',
     picture: image,
-    name: 'Shoutsy',
+    name: 'Schowt',
     caption: 'Shout anonymously to your block, your city, or to the world.',
     description: text
   };
