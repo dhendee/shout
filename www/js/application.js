@@ -75,6 +75,7 @@ function findPosts() {
           shareContent.html($('.message', item).html());
           shareContent.data('image', item.data('image'));
           $('#share, #modal-background').show();
+          return false;
         });
         $('time.timeago').timeago();
       }
@@ -87,24 +88,53 @@ function findPosts() {
   });
 }
 
-$('#message').fastClick(function() {
+$('#message, #header h1').fastClick(function() {
+  window.scrollTo(0, 0);
   $('#post-content').addClass('open');
+  $('#message').trigger('focus');
+  return false;
 });
 
+function setMapImage(val) {
+  var zoom;
+  val = parseInt(val, 10);
+  switch (val) {
+    case 1:
+      zoom = 15;
+      break;
+    case 10:
+      zoom = 11;
+      break;
+    case 100:
+      zoom = 5;
+      break;
+    default:
+      zoom = 1;
+  }
+  var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
+  $('#post-content').css('background-image', 'url(' + url + ')').css('background-size', 'cover');
+}
+
 $('#distance').on('change', function() {
+  var field = $(this);
+  setMapImage(field.val());
   $('#message').trigger('focus');
 });
 
-$('#posts-content, #header, #refresh, #points').on('click', function() {
+function closeMessageContent() {
   $('#message').val('');
   $('#post-content').removeClass('open');
+}
+
+$('#posts-content, #header, #refresh, #points').on('click', function() {
+  closeMessageContent();
+  return false;
 });  
 
 $('form#post').on('submit', function() {
   var form = $(this);
-  $('input, textarea, select, button', form).attr('disabled', true);
   $('#refresh').addClass('loading');
-  $('#message').trigger('blur');
+  $('#submit-post', form).attr('disabled', true);
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
@@ -153,7 +183,7 @@ $('form#post').on('submit', function() {
               distance.val(1);
               checkIn();
               $('#post-content').removeClass('open');
-              $('input, textarea, select, button', form).attr('disabled', false);
+              $('#submit-post', form).attr('disabled', false);
             },
             error: function(post, error) {
               alert('Post image save failed: ' + error.message);
@@ -294,10 +324,11 @@ function updateInstallation() {
 }
 
 function refreshLocation () {
+  closeMessageContent();
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
-    longitude = position.coords.longitude;    
-    $('#post-content').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=15&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
+    longitude = position.coords.longitude; 
+    setMapImage(1);   
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message);
@@ -368,6 +399,7 @@ function setupInAppPurchases() {
         $('#' + result.id).fastClick(function() {
           var button = $(this);
           window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
+          return false;
         });
       }, 
       function(id) {
@@ -468,6 +500,7 @@ $('#share-facebook').fastClick(function() {
   FB.ui(params, function(obj) { 
     console.log(obj);
   });
+  return false;
 });
 
 $('#points').fastClick(function() {
@@ -477,6 +510,7 @@ $('#points').fastClick(function() {
 
 $('.btn-close').fastClick(function() {
   $('.modal, #modal-background').hide();
+  return false;
 });
 
 $(function() {

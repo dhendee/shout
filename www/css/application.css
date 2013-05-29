@@ -87,7 +87,11 @@ button.btn {
   line-height: 34px;
 }
 
-input[type=text], select, .btn, #message {
+#submit-post:disabled {
+  -webkit-text-fill-color: #fff;
+}
+
+input[type=text], select, .btn {
   height: 30px;
   line-height: 38px;
 }
@@ -137,15 +141,18 @@ small, #notice {
   */
 }
 
+#message {
+  height: 22px;
+  line-height: 20px;
+  padding-top: 8px;
+}
+
 #post-content.open {
   height: 140px;
 }
 
 #post-content.open #message {
   height: 50px;
-  line-height: 20px;
-  padding-top: 8px;
-  text-transform: uppercase;
 }
 
 #post-content.open #message::-webkit-input-placeholder {
@@ -202,7 +209,9 @@ header a {
 }
 
 header a#points:hover,
-header a#points:active {
+header a#points:active,
+header a.btn-close:hover,
+header a.btn-close:active {
   opacity: 1;
 }
 
@@ -264,10 +273,10 @@ header .btn-right {
 .modal {
   display: none;
   position: fixed;
-  top: 10px;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: 20px;
   z-index: 1001;
   background: #fff;
   color: #556471;
@@ -278,20 +287,16 @@ header .btn-right {
 }
 
 .modal header {
-  width: 300px;
-  left: 10px;
-  top: 10px;
-  background: #bcc3c7;
+  width: 280px;
+  left: 20px;
+  top: 20px;
   height: 40px;
-  border: none;
-  box-shadow: none;
-  text-shadow: none;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
 .modal .btn {
-  width: 258px;
+  width: 238px;
 }
 
 #modal-background {
@@ -302,8 +307,8 @@ header .btn-right {
   bottom: 0;
   left: 0;
   z-index: 1000;
-  background: #000;
-  opacity: .25;
+  background: #fff;
+  opacity: .75;
 }
 
 @-webkit-keyframes rotate {
