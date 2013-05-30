@@ -283,7 +283,12 @@ header .btn-right {
   box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);  
   border: 1px solid #cacfd3;
   border-radius: 5px;
-  padding: 50px 10px 10px 10px;
+  padding: 60px 10px 10px 10px;
+}
+
+#alert {
+  top: 100px;
+  bottom: 100px;  
 }
 
 .modal header {
@@ -295,8 +300,18 @@ header .btn-right {
   border-top-right-radius: 5px;
 }
 
+#alert header {
+  top: 100px;
+}
+
 .modal .btn {
   width: 238px;
+}
+
+#alert .btn {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 
 #modal-background {
@@ -307,7 +322,7 @@ header .btn-right {
   bottom: 0;
   left: 0;
   z-index: 1000;
-  background: #fff;
+  background: #000;
   opacity: .75;
 }
 

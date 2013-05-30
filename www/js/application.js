@@ -88,7 +88,7 @@ function findPosts() {
   });
 }
 
-$('#message, #header h1').fastClick(function() {
+$('#message').fastClick(function() {
   window.scrollTo(0, 0);
   $('#post-content').addClass('open');
   $('#message').trigger('focus');

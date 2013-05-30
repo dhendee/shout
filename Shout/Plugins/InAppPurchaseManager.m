@@ -139,13 +139,14 @@
         productId = transaction.payment.productIdentifier;
                 break;
 
-      case SKPaymentTransactionStateFailed:
-        state = @"PaymentTransactionStateFailed";
-        error = transaction.error.localizedDescription;
-        errorCode = transaction.error.code;
-        NSLog(@"[IAP] error %d %@", errorCode, error);
+      // todo: put this back when things calm down -david
+      // case SKPaymentTransactionStateFailed:
+      //   state = @"PaymentTransactionStateFailed";
+      //   error = transaction.error.localizedDescription;
+      //   errorCode = transaction.error.code;
+      //   NSLog(@"[IAP] error %d %@", errorCode, error);
 
-                break;
+      //           break;
 
       case SKPaymentTransactionStateRestored:
         state = @"PaymentTransactionStateRestored";
