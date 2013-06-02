@@ -179,7 +179,7 @@ $('form#post').on('submit', function() {
             },
             data: JSON.stringify(params),
             success: function(post) {
-              console.log('Post image saved: ' + post.image.url);
+              console.log('Post image saved.');
               message.val('');
               distance.val(1);
               checkIn();

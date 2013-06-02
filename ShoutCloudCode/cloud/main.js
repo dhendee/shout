@@ -109,6 +109,10 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
   } else if (distance != 1 && distance != 10 && distance != 100 && distance != 1000) {
     response.error('Distance is invalid.');
   } else {
+    if (request.object.existed()) { 
+      console.log('Updating post, skipping points removal.');
+      response.success(); // skip points on update
+    }
     // load the user
     var user = request.object.get('user');
     user.fetch({
@@ -148,6 +152,9 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
 });
 
 Parse.Cloud.afterSave('Post', function(request) {
+  if (request.object.existed()) { 
+    return; // skip notifications on update
+  }
   console.log('Saved a Post.');
   var pushQuery = new Parse.Query(Parse.Installation);
   var location = request.object.get('location');
