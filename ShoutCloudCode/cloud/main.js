@@ -10,7 +10,9 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     account.save(null, {
       success: function(account) {
         user.set('account', account);
-        user.set('alert', 'Welcome to Schowt and congrats: you earned 10 points just for showing up. Check in once a day to earn more points. The more points you have, the more (and louder) you can shout.');
+        // temporarily changing this from points to shouts
+        // user.set('alert', 'Welcome to Schowt and congrats: you earned 10 points just for showing up. Check in once a day to earn more points. The more points you have, the more (and louder) you can shout.');
+        user.set('alert', 'Welcome to Schowt and congrats: you get 10 shouts just for showing up. Check in once a day to earn another shout. If you run out of shouts, you can always buy more.');
         response.success();
       }, 
       error: function(object, error) {
@@ -27,8 +29,11 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         var serverDay = getDay(new Date());
         if (today - lastDay >= 1 && today - serverDay <= 2) {
           console.log('User checking in, awarding a point.'); 
-          account.set('points', account.get('points') + 10);
-          user.set('alert', 'Congrats! You earned another 10 points for checking in today. Keep checking in each day so you can shout louder. Or buy some points and cheat.');
+          // temporarily changing this from points to shouts
+          // account.set('points', account.get('points') + 10);
+          // user.set('alert', 'Congrats! You earned another 10 points for checking in today. Keep checking in each day so you can shout louder. Or buy some points and cheat.');
+          account.set('points', account.get('points') + 1);
+          user.set('alert', 'Congrats! You earned another shout by checking in today.');
         } else {
           // user does not get a point
           console.log('Leaving user as is, with existing points: ' + account.get('points'));
@@ -125,7 +130,9 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
             // check to see if they have enough points
             if (points < distance) {
               // if they don't have enough points, send an error
-              response.error('Insufficient points for distance.');
+              // temporarily changing this to 'shout'
+              // response.error('Insufficient points for distance.');
+              response.error('You don\'t have any shouts left.');
             } else {
               // clean up the message
               message = filter(message);
@@ -159,6 +166,9 @@ Parse.Cloud.afterSave('Post', function(request) {
   var pushQuery = new Parse.Query(Parse.Installation);
   var location = request.object.get('location');
   var distance;
+  // temporarily switching to a fixed distance for all shouts to see if it's more appealing
+  distance = 1;
+  /*
   if (request.object.get('distance') == 1) {
     distance = 0.25; // a few blocks
   } else if (request.object.get('distance') == 10) {
@@ -168,6 +178,7 @@ Parse.Cloud.afterSave('Post', function(request) {
   } else if (request.object.get('distance') == 1000) {
     distance = 3958.8; // the radius of the earth
   }
+  */
   console.log('Sending notifications to installations within ' + distance + ' miles.');
   pushQuery.withinMiles('location', location, distance);
   Parse.Push.send({

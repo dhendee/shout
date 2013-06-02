@@ -148,15 +148,26 @@ small, #notice {
 }
 
 #post-content.open {
-  height: 140px;
+   height: 140px; 
+  /* temporarily making this bigger and removing distance to see if it's an improvement */
 }
 
 #post-content.open #message {
-  height: 50px;
+  height: 90px;
 }
 
 #post-content.open #message::-webkit-input-placeholder {
   color: transparent;
+}
+
+/* temporarily hiding this to see if it's better without */
+#distance {
+  display: none;
+  width: 300px;
+  height: 30px;
+  line-height: 36px;
+  background: #fff url(../img/select.png) no-repeat right top;
+  background-size: 26px 30px;
 }
 
 .btn:hover, .btn:active {
@@ -238,14 +249,6 @@ header .btn-right {
   top: 10px;
 }
 
-#distance {
-  width: 300px;
-  height: 30px;
-  line-height: 36px;
-  background: #fff url(../img/select.png) no-repeat right top;
-  background-size: 26px 30px;
-}
-
 #posts li {
   padding: 10px;
   border-bottom: 1px solid #ebf0f1; 
@@ -286,11 +289,6 @@ header .btn-right {
   padding: 60px 10px 10px 10px;
 }
 
-#alert {
-  top: 100px;
-  bottom: 100px;  
-}
-
 .modal header {
   width: 280px;
   left: 20px;
@@ -300,8 +298,22 @@ header .btn-right {
   border-top-right-radius: 5px;
 }
 
+#alert {
+  top: 100px;
+  bottom: 100px;  
+}
+
 #alert header {
   top: 100px;
+}
+
+#store {
+  top: 70px;
+  bottom: 70px;
+}
+
+#store header {
+  top: 70px;
 }
 
 .modal .btn {
@@ -324,6 +336,30 @@ header .btn-right {
   z-index: 1000;
   background: #000;
   opacity: .75;
+}
+
+#loading {
+  display: none;
+  width: 60px;
+  height: 60px;
+  position: fixed;
+  left: 130px;
+  top: 200px;
+  background: rgba(0, 0, 0, .5);
+  border-radius: 10px;
+}
+
+#spinner {
+  height: 20px;
+  width: 20px;
+  margin: 20px 0 0 20px;
+  background-image: url(../img/refresh.png);
+  background-size: 20px 40px;
+  background-position: 0 -20px;
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: .75s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
 }
 
 @-webkit-keyframes rotate {

@@ -67,7 +67,9 @@ function findPosts() {
           }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image').url : '';
-          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
+          // temporarily making all shouts the same distance to see if it's clearer
+          // list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
+          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></small></li>');
         }
         list.find('.action').fastClick(function() {
           var item = $(this);
@@ -269,7 +271,9 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
+              // temporarily changing 'pionts' to 'shouts'
+              // $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
+              $('#points').html(numberWithCommas(account.get('points'))).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
                 $('#alert, #modal-background').show();
@@ -508,7 +512,6 @@ $('#share-facebook').fastClick(function() {
 
 $('#points').fastClick(function() {
   $('#store, #modal-background').show();
-  return false;
 });
 
 $('.btn-close').fastClick(function() {
@@ -516,17 +519,30 @@ $('.btn-close').fastClick(function() {
   return false;
 });
 
+function loading(mode) {
+  var loading = $('#loading');
+  if (loading.length == 0) {
+    $('body').append('<div id="loading"><div id="spinner"></div></div>');
+    loading = $('#loading');
+  }
+  if (mode == 'show') {
+    loading.show();
+  } else {
+    loading.hide();
+  }
+}
+
 $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
       refreshLocation();
-      setupInAppPurchases();
       FB.init({
         appId: '460489950704243', 
         nativeInterface: CDV.FB, 
         useCachedDialogs: false 
       });
+      setupInAppPurchases();
       // var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
       // toolbar.hide();
     });
