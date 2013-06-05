@@ -66,17 +66,17 @@ function findPosts() {
               distance = 'somewhere in the world';
           }
           // todo: placeholder image for failed image saves?
-          var image = post.get('image') ? post.get('image').url : '';
+          var image = post.get('image') ? post.get('image')._url : '';
           // temporarily making all shouts the same distance to see if it's clearer
           // list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
-          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time></small></li>');
+          list.append('<li data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small class="info"><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
-        list.find('.action').fastClick(function() {
-          var item = $(this);
-          var shareContent = $('#share-content');
-          shareContent.html($('.message', item).html());
-          shareContent.data('image', item.data('image'));
-          $('#share, #modal-background').show();
+        list.find('.actions').fastClick(function() {
+          var item = $(this).closest('li');
+          var shareFacebook = $('#share-facebook');
+          shareFacebook.data('message', $('.message', item).text());
+          shareFacebook.data('image', item.data('image'));
+          $('#actions, #modal-background').show();
           return false;
         });
         $('time.timeago').timeago();
@@ -113,7 +113,9 @@ function setMapImage(val) {
     default:
       zoom = 1;
   }
-  var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
+  // temporarily switching this to always be 10
+  // var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
+  var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=12&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
   $('#post-content').css('background-image', 'url(' + url + ')').css('background-size', 'cover');
 }
 
@@ -151,7 +153,7 @@ $('form#post').on('submit', function() {
   post.set('distance', distance.val());
   post.save(null, {
     success: function(post) {
-      var image = textToImage(message.val());
+      var imageBlob = textToImage(message.val());
       $.ajax({
         type: "POST",
         beforeSend: function(request) {
@@ -160,7 +162,7 @@ $('form#post').on('submit', function() {
           request.setRequestHeader('Content-Type', 'image/png');
         },
         url: 'https://api.parse.com/1/files/' + post.id + '.png',
-        data: image,
+        data: imageBlob,
         processData: false,
         contentType: false,
         success: function(image) {
@@ -187,6 +189,7 @@ $('form#post').on('submit', function() {
               checkIn();
               $('#post-content').removeClass('open');
               $('#submit-post', form).attr('disabled', false);
+              $('#canvas').remove();
             },
             error: function(post, error) {
               alert('Post image save failed: ' + error.message);
@@ -467,47 +470,47 @@ function dataURItoBlob(dataURI) {
 }
 
 function textToImage(text) {
-  var width = 640;
-  var height = 960;
+  var width = 600;
+  // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
+  $('#posts').append('<li id="template" style="visibility: hidden"><p class="message">' + text + '</p></li>');
+  var template = $('#template');
+  var height = $('.message', template).outerHeight() * 2;
+  template.remove(); // we remove the canvas on save
   $('body').append('<canvas id="canvas" width="' + width + '" height="' + height + '" style="display: none"></canvas>');
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
   var maxWidth = 540;
-  var lineHeight = 60;
+  var lineHeight = 64;
   var x = (canvas.width - maxWidth) / 2;
-  var y = 120;
+  var y = 80;
 
-  context.fillStyle = '#000000';
-  context.fillRect(0, 0, 640, 960);
+  context.fillStyle = '#2d2d2d';
+  context.fillRect(0, 0, width, height);
 
   context.fillStyle = '#ffffff';
-  context.font = 'bold 50px helvetica';
+  context.font = 'bold 60px "Avant Garde Bold"';
   wrapText(context, text, x, y, maxWidth, lineHeight);
 
-  context.font = 'bold 18px helvetica';
-  context.fillText('Download Shout from the app store.', 50, 880);
-
-  var blob = dataURItoBlob(canvas.toDataURL('image/png'));
-
-  return blob;
+  drawLogo(context, canvas.width, canvas.height);
+  return dataURItoBlob(canvas.toDataURL('image/png'));
 }
 
-$('#share-facebook').fastClick(function() {
-  var shareContent = $('#share-content');
-  var text = shareContent.text();
-  var image = shareContent.data('image');
+$('#share-facebook').fastClick(function() {  
+  var link = $(this);
+  var text = link.data('message');
+  var image = link.data('image');
   var params = {
     method: 'feed',
     link: 'http://www.schowt.com',
     picture: image,
     name: 'Schowt',
-    caption: 'Shout anonymously to your block, your city, or to the world.',
+    caption: 'Heard on Schowt:',
     description: text
   };
   FB.ui(params, function(obj) { 
     console.log(obj);
   });
-  return false;
+  return true;
 });
 
 $('#points').fastClick(function() {

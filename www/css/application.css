@@ -130,7 +130,7 @@ small, #notice {
 
 #post-content {
   overflow: hidden;
-  height: 33px;
+  height: 30px;
   padding: 10px;
   background: #ebf0f1 center center no-repeat;
   background-size: 568px 568px;
@@ -181,9 +181,30 @@ small, #notice {
   background: #31485f;
 }
 
-.btn-primary:hover, .btn-primary:active, .btn-primary.pressed {
+.btn-primary:hover, .btn-primary:active {
   background: #3d5a77;
   border-color: #3d5a77;
+}
+
+.btn-danger {
+  border: 1px solid #e74c3c;
+  color: #fff;
+  background: #e74c3c;
+}
+
+.btn-danger:hover, .btn-danger:active {
+  background: #f55240;
+  border-color: #f55240;
+}
+
+.btn-small {
+  display: inline-block;
+  height: 15px;
+  line-height: 18px;
+  width: auto;
+  padding: 0 5px;
+  margin: 0;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, .25);   
 }
 
 .btn-icon {
@@ -257,7 +278,7 @@ header .btn-right {
 #posts .message {
   display: block;
   padding: 20px 15px;
-  margin: 0 0 5px 0;
+  margin: 0 0 10px 0;
   min-height: 260px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, .25);
   color: #fff;
@@ -265,65 +286,48 @@ header .btn-right {
   line-height: 32px;
   text-transform: uppercase;
   background: #2d2d2d;
+  overflow: hidden;
 }
 
 #posts small {
   display: block;
   font-size: 12px;
   line-height: 12px;
+  position: relative;
+}
+
+#posts .actions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 24px;
+  line-height: 8px;
 }
 
 .modal {
   display: none;
   position: fixed;
-  top: 20px;
-  right: 20px;
-  bottom: 20px;
-  left: 20px;
+  width: 278px;
+  top: 10px;
+  right: 10px;
+  left: 10px;
   z-index: 1001;
   background: #fff;
   color: #556471;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);  
   border: 1px solid #cacfd3;
-  border-radius: 5px;
   padding: 60px 10px 10px 10px;
 }
 
 .modal header {
-  width: 280px;
-  left: 20px;
-  top: 20px;
+  width: 300px;
+  left: 10px;
+  top: 10px;
   height: 40px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-}
-
-#alert {
-  top: 100px;
-  bottom: 100px;  
-}
-
-#alert header {
-  top: 100px;
-}
-
-#store {
-  top: 70px;
-  bottom: 70px;
-}
-
-#store header {
-  top: 70px;
 }
 
 .modal .btn {
-  width: 238px;
-}
-
-#alert .btn {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
+  width: 258px;
 }
 
 #modal-background {

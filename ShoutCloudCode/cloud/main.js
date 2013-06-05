@@ -181,6 +181,7 @@ Parse.Cloud.afterSave('Post', function(request) {
   */
   console.log('Sending notifications to installations within ' + distance + ' miles.');
   pushQuery.withinMiles('location', location, distance);
+  /*
   Parse.Push.send({
     where: pushQuery,
     data: {
@@ -195,6 +196,7 @@ Parse.Cloud.afterSave('Post', function(request) {
       console.log('Error: ' + error.code + ' ' + error.message);
     }
   });
+  */
 });
 
 function filter(text) {
