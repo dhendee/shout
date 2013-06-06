@@ -73,10 +73,18 @@ function findPosts() {
         }
         list.find('.actions').fastClick(function() {
           var item = $(this).closest('li');
+          var text = $('.message', item).text();
+          var image = item.data('image');
           var shareFacebook = $('#share-facebook');
-          shareFacebook.data('message', $('.message', item).text());
-          shareFacebook.data('image', item.data('image'));
-          $('#actions, #modal-background').show();
+          shareFacebook.data('message', text);
+          shareFacebook.data('image', image);
+          var shareTwitter = $('#share-twitter');
+          shareTwitter.attr('href', 'http://twitter.com/share?text=' + encodeURIComponent(text) + '&via=schowt&url=http://schowt.com');
+          var sharePinterest = $('#share-pinterest');
+          sharePinterest.attr('href', 'http://pinterest.com/pin/create/button/?url=http://schowt.com&description=' + encodeURIComponent('Heard on Schowt: ' + text) + '&media=' + image);
+          var flag = $('#flag');
+          flag.data('post', post.id);
+          $('#actions').modal('show');
           return false;
         });
         $('time.timeago').timeago();
@@ -279,7 +287,7 @@ function checkIn() {
               $('#points').html(numberWithCommas(account.get('points'))).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
-                $('#alert, #modal-background').show();
+                $('#alert').modal('show');
                 user.set('alert', null);
                 user.save();
               }
@@ -489,7 +497,7 @@ function textToImage(text) {
 
   context.fillStyle = '#ffffff';
   context.font = 'bold 60px "Avant Garde Bold"';
-  wrapText(context, text, x, y, maxWidth, lineHeight);
+  wrapText(context, text.toUpperCase(), x, y, maxWidth, lineHeight);
 
   drawLogo(context, canvas.width, canvas.height);
   return dataURItoBlob(canvas.toDataURL('image/png'));
@@ -513,12 +521,57 @@ $('#share-facebook').fastClick(function() {
   return true;
 });
 
+$('#flag').fastClick(function() {
+  $('#refresh').addClass('loading');
+  var link = $(this);
+  var postQuery = new Parse.Query(Post);
+  postQuery.get(link.data('post'), {
+    success: function(post) {
+      var flags = post.relation('flags');
+      flags.add(Parse.User.current());
+      post.save(null, {
+        success: function(post) {
+          $('#refresh').removeClass('loading');
+          notify('Thank you for help making Schowt a friendly community.');
+        },
+        error: function(object, error) {
+          alert('Could not update post: ' + error.message);
+        }
+      });
+      return true;
+    },
+    error: function(object, error) {
+      alert('Could not find post: ' + error.message);
+    }
+  });
+});
+
 $('#points').fastClick(function() {
-  $('#store, #modal-background').show();
+  $('#store').modal('show');
+});
+
+$.fn.extend({
+  modal: function(command) {
+    return this.each(function() {
+      var el = $(this);
+      var background = $('#modal-background');
+      if (command == 'show') {
+        var centeredTop = Math.round(($(window).height() - $(this).outerHeight()) / 2);
+        el.data('top', el.css('top'));
+        el.css('top', centeredTop);
+        background.addClass('show');
+        el.addClass('show');
+      } else {
+        background.removeClass('show');        
+        el.css('top', el.data('top'));
+        el.removeClass('show');
+      }
+    });
+  }
 });
 
 $('.btn-close').fastClick(function() {
-  $('.modal, #modal-background').hide();
+  $('.modal').modal('hide');
   return false;
 });
 
@@ -533,6 +586,11 @@ function loading(mode) {
   } else {
     loading.hide();
   }
+}
+
+function notify(text) {
+  $('#alert-content').html(text);
+  $('#alert').modal('show');
 }
 
 $(function() {

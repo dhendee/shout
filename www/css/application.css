@@ -59,6 +59,7 @@ header {
   position: fixed;
   top: 0;
   width: 320px;
+  z-index: 1;
 }
 
 header h1 {
@@ -124,6 +125,18 @@ small, #notice {
   color: #bcc3c7;
 }
 
+hr {
+  border: none;
+  height: 1px;
+  background: #ebf0f1;
+  margin: 0 0 10px 0;
+}
+
+.modal hr {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
 #notice {
   padding: 10px;
 }
@@ -134,11 +147,7 @@ small, #notice {
   padding: 10px;
   background: #ebf0f1 center center no-repeat;
   background-size: 568px 568px;
-  /*
-  transition: all .5s;
-  -webkit-transition: all .5s;
-  -moz-transition: all .5s;
-  */
+  -webkit-transition: height .5s;
 }
 
 #message {
@@ -302,28 +311,34 @@ header .btn-right {
   bottom: 0;
   font-size: 24px;
   line-height: 8px;
+  z-index: 0;  
 }
 
 .modal {
-  display: none;
+  opacity: 0;
   position: fixed;
-  width: 278px;
-  top: 10px;
+  width: 280px;
+  top: 1136px;
   right: 10px;
   left: 10px;
   z-index: 1001;
   background: #fff;
   color: #556471;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, .25);  
-  border: 1px solid #cacfd3;
-  padding: 60px 10px 10px 10px;
+  padding: 0 10px 10px 10px;
+  -webkit-transition: top .5s;
+}
+
+.modal.show {
+  opacity: 1;
+  top: 10px;
 }
 
 .modal header {
+  position: relative;
   width: 300px;
-  left: 10px;
-  top: 10px;
   height: 40px;
+  margin: 0 -10px 20px -10px;
 }
 
 .modal .btn {
@@ -332,6 +347,7 @@ header .btn-right {
 
 #modal-background {
   display: none;
+  opacity: 0;
   position: fixed;
   top: 0;
   right: 0;
@@ -339,6 +355,11 @@ header .btn-right {
   left: 0;
   z-index: 1000;
   background: #000;
+  -webkit-transition: opacity .5s;
+}
+
+#modal-background.show {
+  display: block;
   opacity: .75;
 }
 
