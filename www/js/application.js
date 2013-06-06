@@ -69,7 +69,7 @@ function findPosts() {
           var image = post.get('image') ? post.get('image')._url : '';
           // temporarily making all shouts the same distance to see if it's clearer
           // list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
-          list.append('<li data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small class="info"><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          list.append('<li data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small class="info"><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, within a mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('.actions').fastClick(function() {
           var item = $(this).closest('li');
