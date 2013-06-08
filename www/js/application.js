@@ -71,7 +71,7 @@ function findPosts() {
           // list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
           list.append('<li data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small class="info"><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, within a mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
-        list.find('.actions').fastClick(function() {
+        list.find('li:not(#template) .actions').fastClick(function() {
           var item = $(this).closest('li');
           var text = $('.message', item).text();
           var image = item.data('image');
@@ -79,9 +79,15 @@ function findPosts() {
           shareFacebook.data('message', text);
           shareFacebook.data('image', image);
           var shareTwitter = $('#share-twitter');
-          shareTwitter.attr('href', 'http://twitter.com/share?text=' + encodeURIComponent(text) + '&via=schowt&url=http://schowt.com');
+          shareTwitter.fastClick(function() {
+            $('.modal').modal('hide');
+            window.open('http://twitter.com/share?text=' + encodeURIComponent(text) + '&via=schowt&url=http://schowt.com', '_system');
+          });
           var sharePinterest = $('#share-pinterest');
-          sharePinterest.attr('href', 'http://pinterest.com/pin/create/button/?url=http://schowt.com&description=' + encodeURIComponent('Heard on Schowt: ' + text) + '&media=' + image);
+          sharePinterest.fastClick(function() {
+            $('.modal').modal('hide');
+            window.open('http://pinterest.com/pin/create/button/?url=http://schowt.com&description=' + encodeURIComponent('Heard on Schowt: ' + text) + '&media=' + image, '_system');
+          });
           var flag = $('#flag');
           flag.data('post', post.id);
           $('#actions').modal('show');
@@ -144,24 +150,45 @@ $('#posts-content, #header, #refresh, #points').on('click', function() {
   return false;
 });  
 
+$('#submit-post').on('click', function() {
+  var message = $('#message', 'form#post').val();
+  if (message == '') {
+    return false;
+  } else {
+    return true;
+  }
+});
+
+$('#message', 'form#post').on('blur', function() {
+  var message = $('#message', 'form#post').val();
+  if (message == '') {
+    $('#post-content').removeClass('open');
+  }
+});
+
 $('form#post').on('submit', function() {
   var form = $(this);
-  $('#refresh').addClass('loading');
   $('#submit-post', form).attr('disabled', true);
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
     longitude: longitude
   });
-  var message = $('#message', form);
-  var distance = $('#distance', form);
+  var messageField = $('#message', form);
+  var message = messageField.val();
+  $('#post-content').removeClass('open');
+  // temporarily hardcoding distance to 1
+  var distance = '1';
+  messageField.val('');
+  // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
+  $('#posts').prepend('<li id="template"><p class="message">' + message + '</p><small class="info"><time>less than a minute ago</time>, within a mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
   post.set('user', Parse.User.current());
   post.set('location', location);
-  post.set('message', message.val());
-  post.set('distance', distance.val());
+  post.set('message', message);
+  post.set('distance', distance);
   post.save(null, {
     success: function(post) {
-      var imageBlob = textToImage(message.val());
+      var imageBlob = textToImage(message);
       $.ajax({
         type: "POST",
         beforeSend: function(request) {
@@ -192,10 +219,7 @@ $('form#post').on('submit', function() {
             data: JSON.stringify(params),
             success: function(post) {
               console.log('Post image saved.');
-              message.val('');
-              distance.val(1);
               checkIn();
-              $('#post-content').removeClass('open');
               $('#submit-post', form).attr('disabled', false);
               $('#canvas').remove();
             },
@@ -414,7 +438,7 @@ function setupInAppPurchases() {
     window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
       function(result) {
         $('#products').append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
-        $('.product[data-product="' + result.id + '"]').on('click', function() {
+        $('.product[data-product="' + result.id + '"]').fastClick(function() {
           var button = $(this);
           window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
           return false;
@@ -479,11 +503,8 @@ function dataURItoBlob(dataURI) {
 
 function textToImage(text) {
   var width = 600;
-  // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
-  $('#posts').append('<li id="template" style="visibility: hidden"><p class="message">' + text + '</p></li>');
-  var template = $('#template');
+  var template = $('#template'); // created when post is saved for immediate feedback
   var height = $('.message', template).outerHeight() * 2;
-  template.remove(); // we remove the canvas on save
   $('body').append('<canvas id="canvas" width="' + width + '" height="' + height + '" style="display: none"></canvas>');
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
@@ -523,6 +544,7 @@ $('#share-facebook').fastClick(function() {
 
 $('#flag').fastClick(function() {
   $('#refresh').addClass('loading');
+  $('.modal').modal('hide');
   var link = $(this);
   var postQuery = new Parse.Query(Post);
   postQuery.get(link.data('post'), {
@@ -532,7 +554,7 @@ $('#flag').fastClick(function() {
       post.save(null, {
         success: function(post) {
           $('#refresh').removeClass('loading');
-          notify('Thank you for help making Schowt a friendly community.');
+          notify('We\'ll look into it. Thank\'s for keeping Schowt friendly.');
         },
         error: function(object, error) {
           alert('Could not update post: ' + error.message);
@@ -574,19 +596,6 @@ $('.btn-close').fastClick(function() {
   $('.modal').modal('hide');
   return false;
 });
-
-function loading(mode) {
-  var loading = $('#loading');
-  if (loading.length == 0) {
-    $('body').append('<div id="loading"><div id="spinner"></div></div>');
-    loading = $('#loading');
-  }
-  if (mode == 'show') {
-    loading.show();
-  } else {
-    loading.hide();
-  }
-}
 
 function notify(text) {
   $('#alert-content').html(text);
