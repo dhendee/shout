@@ -67,9 +67,7 @@ function findPosts() {
           }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image')._url : '';
-          // temporarily making all shouts the same distance to see if it's clearer
-          // list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '</small></li>');
-          list.append('<li data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small class="info"><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, within a mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('li:not(#template) .actions').fastClick(function() {
           var item = $(this).closest('li');
@@ -81,11 +79,13 @@ function findPosts() {
           var shareTwitter = $('#share-twitter');
           shareTwitter.fastClick(function() {
             $('.modal').modal('hide');
+            track('share', 'twitter', text);
             window.open('http://twitter.com/share?text=' + encodeURIComponent(text) + '&via=schowt&url=http://schowt.com', '_system');
           });
           var sharePinterest = $('#share-pinterest');
           sharePinterest.fastClick(function() {
             $('.modal').modal('hide');
+            track('share', 'pinterest', text);
             window.open('http://pinterest.com/pin/create/button/?url=http://schowt.com&description=' + encodeURIComponent('Heard on Schowt: ' + text) + '&media=' + image, '_system');
           });
           var flag = $('#flag');
@@ -109,6 +109,10 @@ $('#message').fastClick(function() {
   $('#post-content').addClass('open');
   $('#message').trigger('focus');
   return false;
+});
+
+$('#message').on('keyup', function() {
+  track('post', 'compose');
 });
 
 function setMapImage(val) {
@@ -141,7 +145,6 @@ $('#distance').on('change', function() {
 
 function closeMessageContent() {
   $('#message').val('');
-  $('#message').trigger('blur');
   $('#post-content').removeClass('open');
 }
 
@@ -162,7 +165,7 @@ $('#submit-post').on('click', function() {
 $('#message', 'form#post').on('blur', function() {
   var message = $('#message', 'form#post').val();
   if (message == '') {
-    $('#post-content').removeClass('open');
+    closeMessageContent();
   }
 });
 
@@ -176,7 +179,7 @@ $('form#post').on('submit', function() {
   });
   var messageField = $('#message', form);
   var message = messageField.val();
-  $('#post-content').removeClass('open');
+  closeMessageContent();
   // temporarily hardcoding distance to 1
   var distance = '1';
   messageField.val('');
@@ -186,6 +189,7 @@ $('form#post').on('submit', function() {
   post.set('location', location);
   post.set('message', message);
   post.set('distance', distance);
+  track('post', 'submit', message);
   post.save(null, {
     success: function(post) {
       var imageBlob = textToImage(message);
@@ -222,6 +226,7 @@ $('form#post').on('submit', function() {
               checkIn();
               $('#submit-post', form).attr('disabled', false);
               $('#canvas').remove();
+              track('post', 'create', post.get('message'));
             },
             error: function(post, error) {
               alert('Post image save failed: ' + error.message);
@@ -318,6 +323,7 @@ function checkIn() {
               if (window.phonegap) {
                 registerForPushNotifications();      
               }
+              track('user', 'checkin', Parse.User.current());
             }
           });
         }
@@ -434,20 +440,19 @@ function setupInAppPurchases() {
   var purchaseManager = window.plugins.inAppPurchaseManager;
   var productIds = ['com.davidhendee.shout.points.10', 'com.davidhendee.shout.points.100', 'com.davidhendee.shout.points.1000'];
   console.log('Fetching available products.');
+  var list = $('#products');
   for (var i = 0; i < productIds.length; i++) {
-    window.plugins.inAppPurchaseManager.requestProductData(productIds[i], 
-      function(result) {
-        $('#products').append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
-        $('.product[data-product="' + result.id + '"]').fastClick(function() {
-          var button = $(this);
-          window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
-          return false;
-        });
-      }, 
-      function(id) {
-        console.log("Invalid product id: " + result);
-      }
-    ); 
+    window.plugins.inAppPurchaseManager.requestProductData(productIds[i], function(result) {
+      list.append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
+      $('.product[data-product="' + result.id + '"]').fastClick(function() {
+        var button = $(this);
+        window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
+        return false;
+      });
+    }, 
+    function(id) {
+      console.log("Invalid product id: " + result);
+    }); 
   }
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
@@ -463,6 +468,7 @@ function setupInAppPurchases() {
         console.log('Saved transaction: ' + transactionId);
         $('#refresh').removeClass('loading');
         checkIn();
+        track('products', 'purchase', productId);
       },
       error: function(object, error) {
         console.log('Could not save transaction: ' + error.message);
@@ -539,6 +545,7 @@ $('#share-facebook').fastClick(function() {
   FB.ui(params, function(obj) { 
     console.log(obj);
   });
+  track('share', 'facebook', text);
   return true;
 });
 
@@ -560,6 +567,7 @@ $('#flag').fastClick(function() {
           alert('Could not update post: ' + error.message);
         }
       });
+      track('post', 'flag', post.get('message'));
       return true;
     },
     error: function(object, error) {
@@ -569,6 +577,7 @@ $('#flag').fastClick(function() {
 });
 
 $('#points').fastClick(function() {
+  track('products', 'browse');
   $('#store').modal('show');
 });
 
@@ -600,6 +609,10 @@ $('.btn-close').fastClick(function() {
 function notify(text) {
   $('#alert-content').html(text);
   $('#alert').modal('show');
+}
+
+function track(category, action, label) {
+  _gaq.push(['_trackEvent', category, action, label != undefined ? label : null]);
 }
 
 $(function() {
