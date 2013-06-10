@@ -170,6 +170,7 @@ $('#message', 'form#post').on('blur', function() {
 });
 
 $('form#post').on('submit', function() {
+  $('#refresh').addClass('loading');
   var form = $(this);
   $('#submit-post', form).attr('disabled', true);
   var post = new Post();
@@ -184,7 +185,7 @@ $('form#post').on('submit', function() {
   var distance = '1';
   messageField.val('');
   // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
-  $('#posts').prepend('<li id="template"><p class="message">' + message + '</p><small class="info"><time>less than a minute ago</time>, within a mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+  $('#posts').prepend('<li id="template"><p class="message">' + message + '</p><small class="info"><time>less than a minute ago</time>, within &frac14; mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message);
@@ -224,27 +225,35 @@ $('form#post').on('submit', function() {
             success: function(post) {
               console.log('Post image saved.');
               checkIn();
-              $('#submit-post', form).attr('disabled', false);
-              $('#canvas').remove();
+              resetPostForm();
               track('post', 'create', post.get('message'));
             },
             error: function(post, error) {
+              resetPostForm();
               alert('Post image save failed: ' + error.message);
             },
             dataType: 'json'
           });
         },
         error: function(error) {
-          console.log('Image upload failed: ' + error.message);
+          resetPostForm();
+          alert('Image upload failed: ' + error.message);
         }
       });
     },
     error: function(object, error) {
+      resetPostForm();
       alert('Post save failed: ' + error.message);
     }
   });
   return false;
 });
+
+function resetPostForm() {
+  $('#submit-post').attr('disabled', false);
+  $('#canvas').remove();
+  $('#refresh').removeClass('loading');  
+}
 
 function login() {
   if (Parse.User.current()) {
@@ -376,19 +385,19 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude; 
-    setMapImage(1);   
+    setMapImage(1);
     login();
   }, function(error) {
-    alert('Failed to update location for device: ' + error.message);
+    alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
     $('#refresh').addClass('loading');
   }, {
-    maximumAge: 10000, 
-    enableHighAccuracy: true,
-    timeout: 144000
-  });  
+    maximumAge: 0, 
+    enableHighAccuracy: false
+  });
 }
 
 $('#refresh').fastClick(function(e) {
+  window.scrollTo(0, 0);
   $('#refresh').addClass('loading');
   refreshLocation();
   return false;

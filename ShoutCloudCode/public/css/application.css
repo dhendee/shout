@@ -1,0 +1,107 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  padding: 60px 20px 0 20px;
+  color: #31485f;
+}
+
+body#home {
+  padding-top: 0;
+  background: #4c6e91 -webkit-linear-gradient(top, #31485f 0%, #4c6e91 100%) no-repeat;
+}
+
+a {
+  color: #4c6e91;
+}
+
+header {
+  box-shadow: 0 5px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-inverse .navbar-inner {
+  padding: 5px 0;
+}
+
+.navbar-inverse .brand {
+  width: 100px;
+  height: 31px;
+  background: url(../img/schowt.png) no-repeat;
+  background-size: 100px 31px;
+  margin: 5px 15px 0 0;
+  padding: 0;
+  overflow: hidden;
+  text-indent: -2000px;
+}
+
+#hero {
+  display: block;
+  width: 900px;
+  height: 400px;
+  margin: 0 auto 20px auto;
+  background: url(../img/hero.png) no-repeat;
+  background-size: 900px 400px;
+  overflow: hidden;
+  text-indent: -2000px;
+}
+
+#home h1 {
+  text-align: center;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+#itunes {
+  display: block;
+  width: 213px;
+  height: 63px;
+  margin: 0 auto 40px auto;
+  background: url(../img/itunes.png) no-repeat;
+  background-size: 213px 63px;
+  overflow: hidden;
+  text-indent: -2000px;
+}
+
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -60px;
+}
+
+#push, footer {
+  height: 40px;
+  padding: 20px 0;
+}
+
+footer {
+  box-shadow: 0 -2px rgba(0, 0, 0, 0.25);
+  margin: 0 -20px;
+  background: #eceff1;
+}
+
+.navbar-inverse .navbar-inner {
+  background-color: #31485f;
+  background-image: none;
+  border-color: #283a4c;
+}
+
+.navbar-inverse .brand, .navbar-inverse .nav>li>a {
+  color: rgba(255, 255, 255, 0.5);
+  text-shadow: 0 2px rgba(0, 0, 0, 0.25);
+}
+
+.navbar-inverse .nav .active>a, .navbar-inverse .nav .active>a:hover, .navbar-inverse .nav .active>a:focus {
+  background: none;
+  box-shadow: none;
+}
+
+.nav-pills>.active>a, .nav-pills>.active>a:hover, .nav-pills>.active>a:focus {
+  background-color: #31485f;
+}

@@ -16,7 +16,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         response.success();
       }, 
       error: function(object, error) {
-        console.log('Failed to save account: ' + error.message);
+        response.error('Failed to save account: ' + error.message);
       }
     });
   } else {
@@ -44,9 +44,12 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
             response.success();
           },
           error: function(object, error) {
-            console.log('Failed to save account: ' + error.message);
+            response.error('Failed to save account: ' + error.message);
           }
         });
+      },
+      error: function(object, error) {
+        response.error('Failed to load account: ' + error.message);
       }
     });
   }
@@ -63,6 +66,7 @@ Parse.Cloud.beforeSave('Transaction', function(request, response) {
   var transaction = request.object;
   Parse.Cloud.httpRequest({
     method: 'POST',
+    // todo, switch to real store for launch
     // url: 'https://buy.itunes.apple.com/verifyReceipt',
     url: 'https://sandbox.itunes.apple.com/verifyReceipt',
     headers: {
@@ -89,7 +93,7 @@ Parse.Cloud.beforeSave('Transaction', function(request, response) {
                     response.success();
                   },
                   error: function(object, error) {
-                    console.log('Failed to save account: ' + error.message);
+                    response.error('Failed to save account: ' + error.message);
                   }
                 });
               }
@@ -101,7 +105,7 @@ Parse.Cloud.beforeSave('Transaction', function(request, response) {
       }
     },
     error: function(httpResponse) {
-      console.error('Request failed with response code ' + httpResponse.status);
+      response.error('Request failed with response code ' + httpResponse.status);
     }
   });
 });
@@ -153,6 +157,9 @@ Parse.Cloud.beforeSave('Post', function(request, response) {
             }
           }
         });
+      },
+      error: function(object, error) {
+        response.error('Failed to load user: ' + error.message);
       }
     });
   }
