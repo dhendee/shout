@@ -447,7 +447,7 @@ function registerForPushNotifications() {
 function setupInAppPurchases() {
   console.log('Setting up in-app purchases.');
   var purchaseManager = window.plugins.inAppPurchaseManager;
-  var productIds = ['com.davidhendee.shout.points.10', 'com.davidhendee.shout.points.100', 'com.davidhendee.shout.points.1000'];
+  var productIds = ['com.davidhendee.schowt.product.10', 'com.davidhendee.schowt.product.100', 'com.davidhendee.schowt.product.1000'];
   console.log('Fetching available products.');
   var list = $('#products');
   for (var i = 0; i < productIds.length; i++) {

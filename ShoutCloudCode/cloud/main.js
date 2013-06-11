@@ -56,9 +56,9 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
 });
 
 var products = {
-  'com.davidhendee.shout.points.10': 10,
-  'com.davidhendee.shout.points.100': 100,
-  'com.davidhendee.shout.points.1000': 1000,
+  'com.davidhendee.schowt.product.10': 10,
+  'com.davidhendee.schowt.product.100': 100,
+  'com.davidhendee.schowt.product.1000': 1000,
 }
 
 Parse.Cloud.beforeSave('Transaction', function(request, response) {
