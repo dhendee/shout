@@ -67,12 +67,13 @@ function findPosts() {
           }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image')._url : '';
-          list.append('<li data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('li:not(#template) .actions').fastClick(function() {
-          var item = $(this).closest('li');
+          var item = $(this).parents('li');
           var text = $('.message', item).text();
           var image = item.data('image');
+          var post = item.data('post');
           var shareFacebook = $('#share-facebook');
           shareFacebook.data('message', text);
           shareFacebook.data('image', image);
@@ -89,7 +90,7 @@ function findPosts() {
             window.open('http://pinterest.com/pin/create/button/?url=http://schowt.com&description=' + encodeURIComponent('Heard on Schowt: ' + text) + '&media=' + image, '_system');
           });
           var flag = $('#flag');
-          flag.data('post', post.id);
+          flag.data('post', post);
           $('#actions').modal('show');
           return false;
         });
