@@ -28,12 +28,9 @@ body, input, select, textarea, button {
 }
 
 html, body {
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
   width: 320px;
+  height: 460px;
+  overflow: hidden;
 }
 
 input, textarea {
@@ -74,7 +71,7 @@ header h1 {
 }
 
 .container {
-  height: 480px;
+  height: 420px;
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
 }
@@ -415,4 +412,13 @@ header .btn-right {
   to { 
     -webkit-transform: rotate(360deg);
   }
+}
+
+@media only screen and (min-width: 560px) and (max-device-width: 1136px) {
+  .container {
+    height: 508px;
+  }
+  html, body {
+    height: 548px;
+  }  
 }

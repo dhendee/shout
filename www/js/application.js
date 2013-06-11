@@ -132,10 +132,8 @@ function setMapImage(val) {
     default:
       zoom = 1;
   }
-  // temporarily switching this to always be 10
-  // var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
   var mapImage = new Image();
-  mapImage.src = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=12&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
+  mapImage.src = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
   mapImage.onload = function() {
     $('#post-content').css('background-image', 'url(' + mapImage.src + ')').css('background-size', 'cover');
   }
@@ -185,8 +183,8 @@ $('form#post').on('submit', function() {
   });
   var messageField = $('#message', form);
   var message = messageField.val();
-  // temporarily hardcoding distance to 1
-  var distance = '1';
+  var distanceField = $('#distance', form);
+  var distance = distanceField.val();
   messageField.val('');
   post.set('user', Parse.User.current());
   post.set('location', location);
