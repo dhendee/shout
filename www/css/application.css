@@ -70,6 +70,7 @@ header h1 {
 
 #posts-content {
   box-shadow: 0 -5px 0 rgba(0, 0, 0, .25);  
+  position: relative;
 }
 
 input[type=text], textarea, select, .btn {
@@ -142,6 +143,7 @@ hr {
 }
 
 #post-content {
+  position: relative;
   overflow: hidden;
   height: 30px;
   padding: 10px;
@@ -161,12 +163,44 @@ hr {
   /* temporarily making this bigger and removing distance to see if it's an improvement */
 }
 
+#post-content .loading {
+  width: 320px;
+  height: 160px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(0, 0, 0, .75);
+}
+
+#post-content .loading .spinner {
+  height: 20px;
+  width: 20px;
+  margin: 40px auto 20px auto;
+  background: url(../img/refresh.png) no-repeat;
+  background-position: 0 -20px;
+  background-size: 20px 40px;
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: 1s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;  
+}
+
+#post-content .loading p {
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
 #post-content.open #message {
   height: 90px;
 }
 
 #post-content.open #message::-webkit-input-placeholder {
   color: transparent;
+}
+
+#template {
+  display: none;
 }
 
 /* temporarily hiding this to see if it's better without */

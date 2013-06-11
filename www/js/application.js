@@ -69,7 +69,7 @@ function findPosts() {
           var image = post.get('image') ? post.get('image')._url : '';
           list.append('<li data-post="' + post.id + '" data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
-        list.find('li:not(#template) .actions').fastClick(function() {
+        list.find('li .actions').fastClick(function() {
           var item = $(this).parents('li');
           var text = $('.message', item).text();
           var image = item.data('image');
@@ -171,9 +171,9 @@ $('#message', 'form#post').on('blur', function() {
 });
 
 $('form#post').on('submit', function() {
-  $('#refresh').addClass('loading');
   var form = $(this);
   $('#submit-post', form).attr('disabled', true);
+  $('#post-content').append('<div class="loading"><div class="spinner"></div><p>Saving Post</p></div>');
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
@@ -181,12 +181,9 @@ $('form#post').on('submit', function() {
   });
   var messageField = $('#message', form);
   var message = messageField.val();
-  closeMessageContent();
   // temporarily hardcoding distance to 1
   var distance = '1';
   messageField.val('');
-  // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
-  $('#posts').prepend('<li id="template"><p class="message">' + message + '</p><small class="info"><time>less than a minute ago</time>, within &frac14; mile<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message);
@@ -227,7 +224,7 @@ $('form#post').on('submit', function() {
               console.log('Post image saved.');
               checkIn();
               resetPostForm();
-              track('post', 'create', post.get('message'));
+              track('post', 'create');
             },
             error: function(post, error) {
               resetPostForm();
@@ -251,9 +248,10 @@ $('form#post').on('submit', function() {
 });
 
 function resetPostForm() {
+  closeMessageContent();
   $('#submit-post').attr('disabled', false);
   $('#canvas').remove();
-  $('#refresh').removeClass('loading');  
+  $('#post-content .loading').remove();
 }
 
 function login() {
@@ -519,8 +517,11 @@ function dataURItoBlob(dataURI) {
 
 function textToImage(text) {
   var width = 600;
-  var template = $('#template'); // created when post is saved for immediate feedback
+  // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
+  $('#posts').prepend('<li id="template"><p class="message">' + text + '</p></li>');
+  var template = $('#template');
   var height = $('.message', template).outerHeight() * 2;
+  template.remove();
   $('body').append('<canvas id="canvas" width="' + width + '" height="' + height + '" style="display: none"></canvas>');
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
