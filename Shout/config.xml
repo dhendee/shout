@@ -61,6 +61,7 @@
         <plugin name="InAppPurchaseManager" value="InAppPurchaseManager" />
         <plugin name="org.apache.cordova.facebook.Connect" value="FacebookConnectPlugin" />
         <plugin name="KeyboardToolbarRemover" value="KeyboardToolbarRemover" />
+        <plugin name="TapToScroll" value="TapToScroll" />
     </plugins>
 
     <access origin="*" />

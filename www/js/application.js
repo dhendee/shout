@@ -106,7 +106,7 @@ function findPosts() {
 }
 
 $('#message').fastClick(function() {
-  window.scrollTo(0, 0);
+  scrollToTop();
   $('#post-content').addClass('open');
   $('#message').trigger('focus');
   return false;
@@ -395,12 +395,20 @@ function refreshLocation () {
   });
 }
 
-$('#refresh').fastClick(function(e) {
-  window.scrollTo(0, 0);
+$('#refresh').fastClick(function() {
+  scrollToTop();
   $('#refresh').addClass('loading');
   refreshLocation();
   return false;
 });
+
+$('h1', '#header').fastClick(function() {
+  scrollToTop();
+});
+
+function scrollToTop() {
+  $('.container', '#index').animate({scrollTop: 0}, 'fast');
+}
 
 // phonegap code for push notifications
 function registerForPushNotifications() {
@@ -626,6 +634,13 @@ function track(category, action, label) {
   _gaq.push(['_trackEvent', category, action, label != undefined ? label : null]);
 }
 
+function setupStatusTap() {
+  window.plugins.tapToScroll.initListener();
+  window.addEventListener('statusTap', function() {
+    scrollToTop();
+  });
+}
+
 $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
@@ -639,6 +654,7 @@ $(function() {
       setupInAppPurchases();
       // var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
       // toolbar.hide();
+      setupStatusTap();
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();

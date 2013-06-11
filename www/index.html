@@ -14,24 +14,26 @@
         <h1>Schowt</h1>
         <a id="refresh" class="btn-right btn-icon btn-refresh" href="#">Refresh</a>
       </header>
-      <section id="post-content">
-        <form id="post">       
-          <textarea id="message" name="message" type="text" placeholder="What’s on your mind?"></textarea>
-          <select id="distance" name="distance">
-             <option value="1" selected="selected">&frac14; mile: 1 point</option>
-             <option value="10">1 mile: 10 points</option>
-             <option value="100">500 miles: 100 points</option>
-             <option value="1000">Earth: 1,000 pts</option>
-          </select>
-          <button id="submit-post" class="btn btn-primary" type="submit">Schowt</button>
-        </form>
-      </section>      
-      <section id="posts-content">
-        <ul id="posts">
-        </ul>
-        <div id="notice">
-        </div>
-      </section>
+      <div class="container">
+        <section id="post-content">
+          <form id="post">       
+            <textarea id="message" name="message" type="text" placeholder="What’s on your mind?"></textarea>
+            <select id="distance" name="distance">
+               <option value="1" selected="selected">&frac14; mile: 1 point</option>
+               <option value="10">1 mile: 10 points</option>
+               <option value="100">500 miles: 100 points</option>
+               <option value="1000">Earth: 1,000 pts</option>
+            </select>
+            <button id="submit-post" class="btn btn-primary" type="submit">Schowt</button>
+          </form>
+        </section>      
+        <section id="posts-content">
+          <ul id="posts">
+          </ul>
+          <div id="notice">
+          </div>
+        </section>
+      </div>
     </div>
     <div id="alert" class="modal">
       <header>
@@ -78,6 +80,7 @@
     <script src="js/plugins/cdv-plugin-fb-connect.js"></script>
     <script src="js/plugins/facebook_js_sdk.js"></script>
     <script src="js/plugins/keyboard_toolbar_remover.js"></script>
+    <script src="js/plugins/taptoscroll.js"></script>
     <!-- App files -->
     <script src="js/jquery.min.js"></script>
     <script src="http://www.parsecdn.com/js/parse-1.2.7.min.js"></script>

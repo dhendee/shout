@@ -27,8 +27,12 @@ body, input, select, textarea, button {
   line-height: 20px;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
-  padding-top: 40px;
   width: 320px;
 }
 
@@ -50,15 +54,13 @@ header, header a {
 }
 
 header {
+  position: relative;
   background: #31485f;
   height: 38px;
   border-top: 1px solid #3d5a77;
   border-bottom: 1px solid #283a4c;
   box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
   text-shadow: 2px 2px 0 rgba(0, 0, 0, .25);  
-  position: fixed;
-  top: 0;
-  width: 320px;
   z-index: 1;
 }
 
@@ -66,6 +68,15 @@ header h1 {
   font-size: 24px;
   line-height: 42px;
   text-align: center;
+  width: 100px;
+  height: 38px;
+  margin: 0 auto;
+}
+
+.container {
+  height: 480px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 #posts-content {

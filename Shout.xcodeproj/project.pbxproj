@@ -41,6 +41,7 @@
 		30A0434914DC770100060A13 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30A0434614DC770100060A13 /* Localizable.strings */; };
 		30E5649213A7FCAF007403D8 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30E5649113A7FCAF007403D8 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */; };
+		633C8BDF1767826D0041BA39 /* TapToScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = 633C8BDE1767826D0041BA39 /* TapToScroll.m */; };
 		636E0E971734BE79006D4E55 /* InAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 636E0E961734BE79006D4E55 /* InAppPurchaseManager.m */; };
 		636E0E9A1734BF49006D4E55 /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = 636E0E991734BF49006D4E55 /* SKProduct+LocalizedPrice.m */; };
 		636E0E9C1734C02B006D4E55 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 636E0E9B1734C02B006D4E55 /* StoreKit.framework */; };
@@ -125,6 +126,8 @@
 		30E5649113A7FCAF007403D8 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		32CA4F630368D1EE00C91783 /* Shout-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Shout-Prefix.pch"; sourceTree = "<group>"; };
 		5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		633C8BDD1767826D0041BA39 /* TapToScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapToScroll.h; sourceTree = "<group>"; };
+		633C8BDE1767826D0041BA39 /* TapToScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapToScroll.m; sourceTree = "<group>"; };
 		636E0E951734BE79006D4E55 /* InAppPurchaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InAppPurchaseManager.h; sourceTree = "<group>"; };
 		636E0E961734BE79006D4E55 /* InAppPurchaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InAppPurchaseManager.m; sourceTree = "<group>"; };
 		636E0E981734BF49006D4E55 /* SKProduct+LocalizedPrice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SKProduct+LocalizedPrice.h"; sourceTree = "<group>"; };
@@ -349,6 +352,7 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				633C8BDC176782490041BA39 /* TapToScroll */,
 				63EE17DB174DC293004BAC70 /* KeyboardToolbarRemover */,
 				6397BF09173F2DCD00DA9C76 /* ios */,
 				636E0E941734BE40006D4E55 /* InAppPurchaseManager */,
@@ -406,6 +410,15 @@
 				30A0434614DC770100060A13 /* Localizable.strings */,
 			);
 			path = se.lproj;
+			sourceTree = "<group>";
+		};
+		633C8BDC176782490041BA39 /* TapToScroll */ = {
+			isa = PBXGroup;
+			children = (
+				633C8BDD1767826D0041BA39 /* TapToScroll.h */,
+				633C8BDE1767826D0041BA39 /* TapToScroll.m */,
+			);
+			name = TapToScroll;
 			sourceTree = "<group>";
 		};
 		636E0E941734BE40006D4E55 /* InAppPurchaseManager */ = {
@@ -627,6 +640,7 @@
 				636E0E9A1734BF49006D4E55 /* SKProduct+LocalizedPrice.m in Sources */,
 				6397BF0C173F2E0D00DA9C76 /* FacebookConnectPlugin.m in Sources */,
 				63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */,
+				633C8BDF1767826D0041BA39 /* TapToScroll.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
