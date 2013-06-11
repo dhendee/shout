@@ -134,8 +134,11 @@ function setMapImage(val) {
   }
   // temporarily switching this to always be 10
   // var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
-  var url = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=12&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
-  $('#post-content').css('background-image', 'url(' + url + ')').css('background-size', 'cover');
+  var mapImage = new Image();
+  mapImage.src = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=12&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
+  mapImage.onload = function() {
+    $('#post-content').css('background-image', 'url(' + mapImage.src + ')').css('background-size', 'cover');
+  }
 }
 
 $('#distance').on('change', function() {
@@ -174,6 +177,7 @@ $('form#post').on('submit', function() {
   var form = $(this);
   $('#submit-post', form).attr('disabled', true);
   $('#post-content').append('<div class="loading"><div class="spinner"></div><p>Saving Post</p></div>');
+  return false;
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
