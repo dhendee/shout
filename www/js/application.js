@@ -123,12 +123,18 @@ $('a.distance').fastClick(function() {
   select.val(val);
   console.log($(select).val());
   $('#cost').html(numberWithCommas(val) + ' pt' + (val == 1 ? '' : 's'));
-  $('#set-distance').html($('option:selected', select).text());
+  $('#current-distance').html($('option:selected', select).text());
+  $('#set-distance').removeClass('selected');
+  $('#message').trigger('focus');
 });
 
 $('#set-distance').fastClick(function() {
   var link = $(this);
   link.addClass('selected');
+});
+
+$('#message').on('focus', function() {
+  window.scroll(0, 0);
 });
 
 $('#submit-post').fastClick(function() {
@@ -370,10 +376,6 @@ $('h1', '#header').fastClick(function() {
   $('#compose').modal('show', function() {
     $('#message').trigger('focus');
   });
-});
-
-$('#message').on('focus', function() {
-  window.scroll(0, 0);
 });
 
 function scrollToTop() {
