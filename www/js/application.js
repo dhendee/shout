@@ -63,11 +63,11 @@ function findPosts() {
               distance = 'within 500 miles';
               break;
             default:
-              distance = 'somewhere in the world';
+              distance = 'somewhere on earth';
           }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image')._url : '';
-          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><span class="message">' + post.get('message') + ' </span><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('li .actions').fastClick(function() {
           var item = $(this).parents('li');
@@ -105,77 +105,45 @@ function findPosts() {
   });
 }
 
-$('#message').fastClick(function() {
-  scrollToTop();
-  $('#post-content').addClass('open');
-  $('#message').trigger('focus');
-  return false;
-});
-
 $('#message').on('keyup', function() {
   track('post', 'compose');
 });
 
-function setMapImage(val) {
-  var zoom;
-  val = parseInt(val, 10);
-  switch (val) {
-    case 1:
-      zoom = 15;
-      break;
-    case 10:
-      zoom = 11;
-      break;
-    case 100:
-      zoom = 5;
-      break;
-    default:
-      zoom = 1;
-  }
-  var mapImage = new Image();
-  mapImage.src = 'http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + zoom + '&size=640x640&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8';
-  mapImage.onload = function() {
-    $('#post-content').css('background-image', 'url(' + mapImage.src + ')').css('background-size', 'cover');
-  }
+function setMapImages() {
+  $('#map #distance-1').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 15 + '&size=100x100&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
+  $('#map #distance-2').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 13 + '&size=240x240&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
+  $('#map #distance-3').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 5 + '&size=480x480&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
+  $('#map #distance-4').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 1 + '&size=600x400&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
 }
 
-$('#distance').on('change', function() {
-  var field = $(this);
-  setMapImage(field.val());
-  $('#message').trigger('focus');
+$('a.distance').fastClick(function() {
+  var link = $(this);
+  var select = $('#distance');
+  var val = link.data('val');
+  select.val(val);
+  console.log($(select).val());
+  $('#cost').html(numberWithCommas(val) + ' pt' + (val == 1 ? '' : 's'));
+  $('#set-distance').html($('option:selected', select).text());
 });
 
-function closeMessageContent() {
-  $('#message').val('');
-  $('#post-content').removeClass('open');
-}
+$('#set-distance').fastClick(function() {
+  var link = $(this);
+  link.addClass('selected');
+});
 
-$('#posts-content, #header, #refresh, #points').on('click', function() {
-  closeMessageContent();
-  return false;
-});  
-
-$('#submit-post').on('click', function() {
-  var message = $('#message', 'form#post').val();
+$('#submit-post').fastClick(function() {
+  var form = $('form#post');
+  var message = $('#message', form).val();
   if (message == '') {
     return false;
   } else {
-    return true;
-  }
-});
-
-$('#message', 'form#post').on('blur', function() {
-  var message = $('#message', 'form#post').val();
-  if (message == '') {
-    closeMessageContent();
+    form.submit();
   }
 });
 
 $('form#post').on('submit', function() {
+  $('#compose').modal('hide');
   var form = $(this);
-  $('#submit-post', form).attr('disabled', true);
-  $('#post-content').append('<div class="loading"><div class="spinner"></div><p>Saving Post</p></div>');
-  return false;
   var post = new Post();
   var location = new Parse.GeoPoint({
     latitude: latitude, 
@@ -250,10 +218,7 @@ $('form#post').on('submit', function() {
 });
 
 function resetPostForm() {
-  closeMessageContent();
-  $('#submit-post').attr('disabled', false);
   $('#canvas').remove();
-  $('#post-content .loading').remove();
 }
 
 function login() {
@@ -321,9 +286,7 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              // temporarily changing 'pionts' to 'shouts'
-              // $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
-              $('#points').html(numberWithCommas(account.get('points'))).show();
+              $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
                 $('#alert').modal('show');
@@ -382,11 +345,10 @@ function updateInstallation() {
 }
 
 function refreshLocation () {
-  closeMessageContent();
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude; 
-    setMapImage(1);
+    setMapImages();
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
@@ -405,11 +367,17 @@ $('#refresh').fastClick(function() {
 });
 
 $('h1', '#header').fastClick(function() {
-  scrollToTop();
+  $('#compose').modal('show', function() {
+    $('#message').trigger('focus');
+  });
+});
+
+$('#message').on('focus', function() {
+  window.scroll(0, 0);
 });
 
 function scrollToTop() {
-  $('.container', '#index').animate({scrollTop: 0}, 'fast');
+  $('#posts-content', '#index').animate({scrollTop: 0}, 'fast');
 }
 
 // phonegap code for push notifications
@@ -603,20 +571,25 @@ $('#points').fastClick(function() {
 });
 
 $.fn.extend({
-  modal: function(command) {
+  modal: function(command, cb) {
     return this.each(function() {
       var el = $(this);
       var background = $('#modal-background');
       if (command == 'show') {
-        var centeredTop = Math.round(($(window).height() - $(this).outerHeight()) / 2);
-        el.data('top', el.css('top'));
-        el.css('top', centeredTop);
+        if (el.hasClass('screen') == false) {
+          var centeredTop = Math.round(($(window).height() - $(this).outerHeight()) / 2);
+          el.data('top', el.css('top'));
+          el.css('top', centeredTop);
+        }
         background.addClass('show');
         el.addClass('show');
       } else {
         background.removeClass('show');        
         el.css('top', el.data('top'));
         el.removeClass('show');
+      }
+      if (cb && typeof cb === 'function') {
+        cb();
       }
     });
   }
@@ -654,8 +627,8 @@ $(function() {
         useCachedDialogs: false 
       });
       setupInAppPurchases();
-      // var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
-      // toolbar.hide();
+      var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
+      toolbar.hide();
       setupStatusTap();
     });
     document.addEventListener('resume', function onResume() {

@@ -14,26 +14,48 @@
         <h1>Schowt</h1>
         <a id="refresh" class="btn-right btn-icon btn-refresh" href="#">Refresh</a>
       </header>
-      <div class="container">
-        <section id="post-content">
-          <form id="post">       
-            <textarea id="message" name="message" type="text" placeholder="What’s on your mind?"></textarea>
-            <select id="distance" name="distance">
-               <option value="1" selected="selected">&frac14; mile: 1 point</option>
-               <option value="10">1 mile: 10 points</option>
-               <option value="100">500 miles: 100 points</option>
-               <option value="1000">Earth: 1,000 pts</option>
-            </select>
-            <button id="submit-post" class="btn btn-primary" type="submit">Schowt</button>
-          </form>
-        </section>      
-        <section id="posts-content">
-          <ul id="posts">
-          </ul>
-          <div id="notice">
-          </div>
-        </section>
+      <div id="posts-content">
+        <ul id="posts">
+        </ul>
+        <div id="notice">
+        </div>
       </div>
+    </div>
+    <div id="compose" class="modal screen">
+      <header>
+        <a class="btn-left btn-icon btn-back btn-close" href="#">Back</a>
+        <a id="submit-post" class="btn-right" href="#">Schowt</a>
+      </header>
+      <form id="post" action="#">       
+        <textarea id="message" class="message" name="message" type="text" placeholder="What’s up?"></textarea>
+        <select id="distance" name="distance">
+           <option value="1" selected="selected">&frac14; mi</option>
+           <option value="10">1 mi</option>
+           <option value="100">500 mi</option>
+           <option value="1000">Earth</option>
+        </select>
+        <div id="post-actions">
+          <a id="set-distance" href="#"><span id="current-distance">&frac14; mi</span></a>
+          <span id="cost">1 pt</span>
+          <a id="set-color" href="#"><span id="current-color"></span></a>
+        </div>
+        <div id="map">
+          <a id="distance-4" class="distance" data-val="1000" href="#">
+            <span id="distance-label-4" class="label">Earth<br>1,000 pts</span>
+          </a>
+          <a id="distance-3" class="distance" data-val="100" href="#">
+            <span id="distance-label-3" class="label">500 mi<br>100 pts</span>
+          </a>
+          <a id="distance-2" class="distance" data-val="10" href="#">
+            <span id="distance-label-2" class="label">1 mi<br>10 pts</span>
+          </a>
+          <a id="distance-1" class="distance" data-val="1" href="#">
+            <span id="distance-label-1" class="label">&frac14; mi<br>1pt</span>
+          </a>          
+        </div>
+        <div id="colors">
+        </div>
+      </form>
     </div>
     <div id="alert" class="modal">
       <header>
@@ -50,11 +72,7 @@
         <h1>Shop</h1>
         <a class="btn-right btn-icon btn-close" href="#">Close</a>
       </header>
-      <!-- temporarily changing points to shouts -->
-      <!--
-      <p id="store-content">Sure, you can check in once a day to earn points, but why wait when you can <em>cheat</em> and buy them right now? Then you can shout as much and as loud as you want.</p>
-      -->
-      <p id="store-content">Out of shouts for the day? You can get more right now. Then you can shout as much as you want.</p>
+      <p id="store-content">Sure, you can check in once a day to earn points, but why wait? Buy some so you can shout as much and as loud as you want.</p>
       <p id="products"></p>
     </div>
     <div id="actions" class="modal">
