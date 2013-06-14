@@ -134,8 +134,10 @@ function checkCost() {
   var cost = costLabel.data('total');
   if (cost > points) {
     costLabel.addClass('error');
+    $('submit-post').addClass('disabled');
   } else {
     costLabel.removeClass('error');
+    $('submit-post').removeClass('disabled');
   }
 }
 

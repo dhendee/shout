@@ -5,6 +5,13 @@
   font-weight: bold;
 }
 
+@font-face {
+  font-family: 'Avant Garde Extra Light';
+  src: url('fonts/ITCAvantGardeStd-XLt.eof');
+  src: local('☺'), url('fonts/ITCAvantGardeStd-XLt.woff') format('woff'), url('fonts/ITCAvantGardeStd-XLt.ttf') format('truetype'), url('fonts/ITCAvantGardeStd-XLt.svg') format('svg');
+  font-weight: bold;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -51,13 +58,14 @@ header, header a {
 }
 
 header {
+  font-family: 'Avant Garde Extra Light';
   position: relative;
   background: #31485f;
   height: 38px;
   border-top: 1px solid #3d5a77;
   border-bottom: 1px solid #283a4c;
   box-shadow: 0 5px 0 rgba(0, 0, 0, .25);
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, .25);  
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .25);  
   z-index: 1;
 }
 
