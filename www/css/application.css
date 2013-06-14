@@ -240,7 +240,7 @@ hr {
   background-size: 7px 4px;
 }
 
-#cost {
+a#cost {
   text-align: center;
   width: 110px;
   color: #bcc3c7;
@@ -285,11 +285,15 @@ hr {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
   border: 1px solid #fff;
   position: absolute;
-  opacity: .9;
+  opacity: .7;
 }
 
 #map a.distance:active {
-  opacity: .5;
+  opacity: .4;
+}
+
+#map a.distance.selected {
+  opacity: 1;
 }
 
 #map .label {
@@ -557,6 +561,11 @@ header .btn-right {
 #modal-background.show {
   display: block;
   opacity: .75;
+}
+
+.error,
+#cost.error {
+  color: #e74c3c;
 }
 
 @-webkit-keyframes rotate {

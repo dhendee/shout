@@ -118,15 +118,26 @@ function setMapImages() {
 
 $('a.distance').fastClick(function() {
   var link = $(this);
+  $('a.distance').removeClass('selected');
+  link.addClass('selected');
   var select = $('#distance');
   var val = link.data('val');
   select.val(val);
-  console.log($(select).val());
-  $('#cost').html(numberWithCommas(val) + ' pt' + (val == 1 ? '' : 's'));
+  $('#cost').data('total', val).html(numberWithCommas(val) + ' pt' + (val == 1 ? '' : 's'));
   $('#current-distance').html($('option:selected', select).text());
-  $('#set-distance').removeClass('selected');
-  $('#message').trigger('focus');
+  checkCost();
 });
+
+function checkCost() {
+  var points = $('#points').data('total');
+  var costLabel = $('#cost');
+  var cost = costLabel.data('total');
+  if (cost > points) {
+    costLabel.addClass('error');
+  } else {
+    costLabel.removeClass('error');
+  }
+}
 
 $('#set-distance').fastClick(function() {
   var link = $(this);
@@ -135,6 +146,7 @@ $('#set-distance').fastClick(function() {
 
 $('#message').on('focus', function() {
   window.scroll(0, 0);
+  $('#set-distance').removeClass('selected');
 });
 
 $('#submit-post').fastClick(function() {
@@ -292,7 +304,7 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
+              $('#points').data('total', account.get('points')).html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
                 $('#alert').modal('show');
@@ -567,7 +579,7 @@ $('#flag').fastClick(function() {
   });
 });
 
-$('#points').fastClick(function() {
+$('#points, #cost').fastClick(function() {
   track('products', 'browse');
   $('#store').modal('show');
 });
