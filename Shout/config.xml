@@ -34,7 +34,7 @@
     <preference name="AllowInlineMediaPlayback" value="false" />
     <preference name="BackupWebStorage" value="cloud" />
     <preference name="DisallowOverscroll" value="false" />
-    <preference name="HideKeyboardFormAccessoryBar" value="false" />
+    <preference name="HideKeyboardFormAccessoryBar" value="true" />
 
     <content src="index.html" />
 
@@ -62,6 +62,7 @@
         <plugin name="org.apache.cordova.facebook.Connect" value="FacebookConnectPlugin" />
         <plugin name="KeyboardToolbarRemover" value="KeyboardToolbarRemover" />
         <plugin name="TapToScroll" value="TapToScroll" />
+        <plugin name="NotificationEx" value="NotificationEx" />
     </plugins>
 
     <access origin="*" />

@@ -50,6 +50,9 @@
 		6397BF08173F2DB700DA9C76 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6397BF07173F2DB700DA9C76 /* AdSupport.framework */; };
 		6397BF0C173F2E0D00DA9C76 /* FacebookConnectPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 6397BF0B173F2E0D00DA9C76 /* FacebookConnectPlugin.m */; };
 		639F171F17179CF3005FC957 /* OpenUDID.m in Sources */ = {isa = PBXBuildFile; fileRef = 639F171D17179CF3005FC957 /* OpenUDID.m */; };
+		63C28F4A176B5FE600CD0C58 /* LoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C28F45176B5FE600CD0C58 /* LoadingView.m */; };
+		63C28F4C176B5FE600CD0C58 /* UIColor-Expanded.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C28F49176B5FE600CD0C58 /* UIColor-Expanded.m */; };
+		63C28F4E176B601100CD0C58 /* NotificationEx.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C28F4D176B601100CD0C58 /* NotificationEx.m */; };
 		63EC6A4E17146B46003CB4EA /* PushNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EC6A4D17146B46003CB4EA /* PushNotification.m */; };
 		63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */ = {isa = PBXBuildFile; fileRef = 63EE17DD174DC2A3004BAC70 /* KeyboardToolbarRemover.m */; };
 		63EE17E9174DCFBA004BAC70 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 63EE17DF174DCFBA004BAC70 /* Icon-72.png */; };
@@ -140,6 +143,12 @@
 		6397BF0B173F2E0D00DA9C76 /* FacebookConnectPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FacebookConnectPlugin.m; sourceTree = "<group>"; };
 		639F171D17179CF3005FC957 /* OpenUDID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenUDID.m; sourceTree = "<group>"; };
 		639F171E17179CF3005FC957 /* OpenUDID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenUDID.h; sourceTree = "<group>"; };
+		63C28F44176B5FE600CD0C58 /* LoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingView.h; sourceTree = "<group>"; };
+		63C28F45176B5FE600CD0C58 /* LoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingView.m; sourceTree = "<group>"; };
+		63C28F46176B5FE600CD0C58 /* NotificationEx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationEx.h; sourceTree = "<group>"; };
+		63C28F48176B5FE600CD0C58 /* UIColor-Expanded.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor-Expanded.h"; sourceTree = "<group>"; };
+		63C28F49176B5FE600CD0C58 /* UIColor-Expanded.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor-Expanded.m"; sourceTree = "<group>"; };
+		63C28F4D176B601100CD0C58 /* NotificationEx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationEx.m; sourceTree = "<group>"; };
 		63EC6A4C17146B46003CB4EA /* PushNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushNotification.h; sourceTree = "<group>"; };
 		63EC6A4D17146B46003CB4EA /* PushNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushNotification.m; sourceTree = "<group>"; };
 		63EE17DC174DC2A3004BAC70 /* KeyboardToolbarRemover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardToolbarRemover.h; sourceTree = "<group>"; };
@@ -352,6 +361,7 @@
 		307C750510C5A3420062BCA9 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				63C28F43176B5FD700CD0C58 /* NotificationEx */,
 				633C8BDC176782490041BA39 /* TapToScroll */,
 				63EE17DB174DC293004BAC70 /* KeyboardToolbarRemover */,
 				6397BF09173F2DCD00DA9C76 /* ios */,
@@ -439,6 +449,19 @@
 				6397BF0B173F2E0D00DA9C76 /* FacebookConnectPlugin.m */,
 			);
 			name = ios;
+			sourceTree = "<group>";
+		};
+		63C28F43176B5FD700CD0C58 /* NotificationEx */ = {
+			isa = PBXGroup;
+			children = (
+				63C28F44176B5FE600CD0C58 /* LoadingView.h */,
+				63C28F45176B5FE600CD0C58 /* LoadingView.m */,
+				63C28F46176B5FE600CD0C58 /* NotificationEx.h */,
+				63C28F4D176B601100CD0C58 /* NotificationEx.m */,
+				63C28F48176B5FE600CD0C58 /* UIColor-Expanded.h */,
+				63C28F49176B5FE600CD0C58 /* UIColor-Expanded.m */,
+			);
+			name = NotificationEx;
 			sourceTree = "<group>";
 		};
 		63EC6A4B17146B46003CB4EA /* PushNotification */ = {
@@ -641,6 +664,9 @@
 				6397BF0C173F2E0D00DA9C76 /* FacebookConnectPlugin.m in Sources */,
 				63EE17DE174DC2A3004BAC70 /* KeyboardToolbarRemover.m in Sources */,
 				633C8BDF1767826D0041BA39 /* TapToScroll.m in Sources */,
+				63C28F4A176B5FE600CD0C58 /* LoadingView.m in Sources */,
+				63C28F4C176B5FE600CD0C58 /* UIColor-Expanded.m in Sources */,
+				63C28F4E176B601100CD0C58 /* NotificationEx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

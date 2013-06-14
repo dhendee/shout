@@ -14,7 +14,7 @@ function clearData() {
 }
 
 function findPosts() {
-  $('#refresh').addClass('loading');
+  navigator.notificationEx.activityStart();
   $('#notice').html('');
 
   var location = new Parse.GeoPoint({
@@ -96,11 +96,11 @@ function findPosts() {
         });
         $('time.timeago').timeago();
       }
-      $('#refresh').removeClass('loading');
+      navigator.notificationEx.activityStop();
     },
     error: function(error) {
       alert('Error finding posts: ' + error.code + ' ' + error.message);
-      $('#refresh').removeClass('loading');
+      navigator.notificationEx.activityStop();
     }
   });
 }
@@ -162,6 +162,7 @@ $('#submit-post').fastClick(function() {
 });
 
 $('form#post').on('submit', function() {
+  navigator.notificationEx.activityStart();
   $('#compose').modal('hide');
   var form = $(this);
   var post = new Post();
@@ -372,7 +373,7 @@ function refreshLocation () {
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
-    $('#refresh').addClass('loading');
+    navigator.notificationEx.activityStop();
   }, {
     maximumAge: 0, 
     enableHighAccuracy: false
@@ -381,7 +382,7 @@ function refreshLocation () {
 
 $('#refresh').fastClick(function() {
   scrollToTop();
-  $('#refresh').addClass('loading');
+  navigator.notificationEx.activityStart();
   refreshLocation();
   return false;
 });
@@ -459,7 +460,7 @@ function setupInAppPurchases() {
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
     $('#store, #modal-background').hide();
-    $('#refresh').addClass('loading');
+    navigator.notificationEx.activityStart();
     var transaction = new Transaction();
     transaction.set('user', Parse.User.current());
     transaction.set('transactionId', transactionId);
@@ -468,7 +469,7 @@ function setupInAppPurchases() {
     transaction.save(null, {
       success: function(transaction) {
         console.log('Saved transaction: ' + transactionId);
-        $('#refresh').removeClass('loading');
+        navigator.notificationEx.activityStop();
         checkIn();
         track('products', 'purchase', productId);
       },
@@ -555,7 +556,7 @@ $('#share-facebook').fastClick(function() {
 });
 
 $('#flag').fastClick(function() {
-  $('#refresh').addClass('loading');
+  navigator.notificationEx.activityStart();
   $('.modal').modal('hide');
   var link = $(this);
   var postQuery = new Parse.Query(Post);
@@ -565,7 +566,7 @@ $('#flag').fastClick(function() {
       flags.add(Parse.User.current());
       post.save(null, {
         success: function(post) {
-          $('#refresh').removeClass('loading');
+          navigator.notificationEx.activityStop();
           notify('We\'ll look into it. Thank\'s for keeping Schowt friendly.');
         },
         error: function(object, error) {

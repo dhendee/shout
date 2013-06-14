@@ -107,7 +107,7 @@ button.btn {
 }
 
 a.btn {
-  height: 28px;
+  height: 30px;
 }
 
 input[type=text], select, .btn {
@@ -431,8 +431,9 @@ header .btn-close {
   top: 10px;
 }
 
-header a {
-  opacity: .5;
+header .btn {
+  width: auto;
+  background-color: transparent;
 }
 
 header a:hover,
