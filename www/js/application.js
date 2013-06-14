@@ -14,7 +14,7 @@ function clearData() {
 }
 
 function findPosts() {
-  navigator.notificationEx.activityStart();
+  loading(true);
   $('#notice').html('');
 
   var location = new Parse.GeoPoint({
@@ -96,11 +96,11 @@ function findPosts() {
         });
         $('time.timeago').timeago();
       }
-      navigator.notificationEx.activityStop();
+      loading(false);
     },
     error: function(error) {
       alert('Error finding posts: ' + error.code + ' ' + error.message);
-      navigator.notificationEx.activityStop();
+      loading(false);
     }
   });
 }
@@ -162,7 +162,7 @@ $('#submit-post').fastClick(function() {
 });
 
 $('form#post').on('submit', function() {
-  navigator.notificationEx.activityStart();
+  loading(true);
   $('#compose').modal('hide');
   var form = $(this);
   var post = new Post();
@@ -373,7 +373,7 @@ function refreshLocation () {
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
-    navigator.notificationEx.activityStop();
+    loading(false);
   }, {
     maximumAge: 0, 
     enableHighAccuracy: false
@@ -382,7 +382,7 @@ function refreshLocation () {
 
 $('#refresh').fastClick(function() {
   scrollToTop();
-  navigator.notificationEx.activityStart();
+  loading(true);
   refreshLocation();
   return false;
 });
@@ -460,7 +460,7 @@ function setupInAppPurchases() {
   var Transaction = Parse.Object.extend('Transaction');
   window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
     $('#store, #modal-background').hide();
-    navigator.notificationEx.activityStart();
+    loading(true);
     var transaction = new Transaction();
     transaction.set('user', Parse.User.current());
     transaction.set('transactionId', transactionId);
@@ -469,7 +469,7 @@ function setupInAppPurchases() {
     transaction.save(null, {
       success: function(transaction) {
         console.log('Saved transaction: ' + transactionId);
-        navigator.notificationEx.activityStop();
+        loading(false);
         checkIn();
         track('products', 'purchase', productId);
       },
@@ -556,7 +556,7 @@ $('#share-facebook').fastClick(function() {
 });
 
 $('#flag').fastClick(function() {
-  navigator.notificationEx.activityStart();
+  loading(true);
   $('.modal').modal('hide');
   var link = $(this);
   var postQuery = new Parse.Query(Post);
@@ -566,7 +566,7 @@ $('#flag').fastClick(function() {
       flags.add(Parse.User.current());
       post.save(null, {
         success: function(post) {
-          navigator.notificationEx.activityStop();
+          loading(false);
           notify('We\'ll look into it. Thank\'s for keeping Schowt friendly.');
         },
         error: function(object, error) {
@@ -620,6 +620,16 @@ $('.btn-close').fastClick(function() {
 function notify(text) {
   $('#alert-content').html(text);
   $('#alert').modal('show');
+}
+
+function loading(state) {
+  if (window.phonegap) {
+    if (state == false) {
+      navigator.notificationEx.activityStop();
+    } else {
+      navigator.notificationEx.activityStart();
+    }
+  }
 }
 
 function track(category, action, label) {

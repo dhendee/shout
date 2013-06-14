@@ -293,20 +293,23 @@ a#cost {
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
   border: 1px solid #fff;
   position: absolute;
-  opacity: .7;
+  opacity: .5;
 }
 
-#map a.distance:active {
-  opacity: .4;
+#map a.distance:active  {
+  box-shadow: inset 5px 5px 0 rgba(0, 0, 0, 0.25);
+  opacity: 1;
 }
 
-#map a.distance.selected {
+#map a.distance.selected  {
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.25);
   opacity: 1;
 }
 
 #map .label {
   position: absolute;
   display: block;
+  display: none;
   text-align: center;
   color: #fff;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1),  2px 2px 0 rgba(0, 0, 0, 0.25);
