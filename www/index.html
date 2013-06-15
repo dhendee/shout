@@ -12,7 +12,7 @@
       <header id="header">
         <a id="points" class="btn btn-left" href="#"></a>
         <h1>Schowt</h1>
-        <a id="create-post" class="btn btn-right" href="#">Post</a>
+        <a id="create-post" class="btn btn-right btn-new" href="#">New</a>
       </header>
       <div id="posts-content">
         <ul id="posts">
@@ -24,45 +24,47 @@
     <div id="compose" class="modal screen">
       <header>
         <a class="btn btn-left btn-icon btn-back btn-close" href="#">Back</a>
-        <a id="submit-post" class="btn btn-right" href="#">Schowt</a>
+        <a id="submit-post" class="btn btn-right disabled" href="#">Post</a>
       </header>
-      <form id="post" action="#">       
-        <textarea id="message" class="message" name="message" type="text" placeholder="What’s up?"></textarea>
-        <select id="distance" name="distance">
-           <option value="1" selected="selected">&frac14; mi</option>
-           <option value="10">1 mi</option>
-           <option value="100">500 mi</option>
-           <option value="1000">Earth</option>
-        </select>
-        <div id="post-actions">
-          <a id="set-distance" href="#"><span id="current-distance">&frac14; mi</span></a>
-          <a id="cost" href="#">1 pt</a>
-          <a id="set-color" href="#"><span id="current-color"></span></a>
-        </div>
-        <div id="map">
-          <a id="distance-4" class="distance" data-val="1000" href="#">
-            <span id="distance-label-4" class="label">Earth<br>1,000 pts</span>
-          </a>
-          <a id="distance-3" class="distance" data-val="100" href="#">
-            <span id="distance-label-3" class="label">500 mi<br>100 pts</span>
-          </a>
-          <a id="distance-2" class="distance" data-val="10" href="#">
-            <span id="distance-label-2" class="label">1 mi<br>10 pts</span>
-          </a>
-          <a id="distance-1" class="distance selected" data-val="1" href="#">
-            <span id="distance-label-1" class="label">&frac14; mi<br>1pt</span>
-          </a>          
-        </div>
-        <div id="colors">
-        </div>
-      </form>
+      <div class="content">
+        <form id="post" action="#">       
+          <textarea id="message" class="message" name="message" type="text" placeholder="What’s up?"></textarea>
+          <select id="distance" name="distance">
+             <option value="1" selected="selected">&frac14; mi</option>
+             <option value="10">1 mi</option>
+             <option value="100">500 mi</option>
+             <option value="1000">Earth</option>
+          </select>
+          <div id="post-actions">
+            <a id="set-distance" href="#"><span id="current-distance">&frac14; mi</span></a>
+            <a id="cost" href="#">1 pt</a>
+            <a id="set-color" href="#"><span id="current-color"></span></a>
+          </div>
+          <div id="map">
+            <a id="distance-4" class="distance" data-val="1000" href="#">
+              <span id="distance-label-4" class="label">Earth<br>1,000 pts</span>
+            </a>
+            <a id="distance-3" class="distance" data-val="100" href="#">
+              <span id="distance-label-3" class="label">500 mi<br>100 pts</span>
+            </a>
+            <a id="distance-2" class="distance" data-val="10" href="#">
+              <span id="distance-label-2" class="label">1 mi<br>10 pts</span>
+            </a>
+            <a id="distance-1" class="distance selected" data-val="1" href="#">
+              <span id="distance-label-1" class="label">&frac14; mi<br>1pt</span>
+            </a>          
+          </div>
+          <div id="colors">
+          </div>
+        </form>
+      </div>
     </div>
     <div id="alert" class="modal">
       <header>
         <h1>Alert</h1>
         <a class="btn btn-right btn-icon btn-close" href="#">Close</a>
       </header>
-      <div> 
+      <div class="content"> 
         <p id="alert-content"></p>
         <a class="btn btn-primary btn-close" href="#">Okie Dokie</a>
       </div>
@@ -72,22 +74,26 @@
         <h1>Shop</h1>
         <a class="btn btn-right btn-icon btn-close" href="#">Close</a>
       </header>
-      <p id="store-content">Sure, you can check in once a day to earn points, but why wait? Buy some so you can shout as much and as loud as you want.</p>
-      <p id="products"></p>
+      <div class="content">
+        <p id="store-content">Sure, you can check in once a day to earn points, but why wait? Buy some so you can shout as much and as loud as you want.</p>
+        <p id="products"></p>
+      </div>
     </div>
     <div id="actions" class="modal">
       <header>
         <h1>Actions</h1>
         <a class="btn-right btn-icon btn-close" href="#">Close</a>
       </header>
-      <a id="flag" class="btn btn-danger" href="#">Report Inappropriate</a>
-      <hr>
-      <a id="share-facebook" class="btn btn-primary" href="#">Share to Facebook</a>
-      <a id="share-pinterest" class="btn btn-primary" href="#">Pin It</a>
-      <a id="share-twitter" class="btn btn-primary" href="#">Tweet</a>
-      <!--
-      <a class="btn btn-close" href="#">Cancel</a>
-      -->
+      <div class="content">
+        <a id="flag" class="btn btn-danger" href="#">Report Inappropriate</a>
+        <hr>
+        <a id="share-facebook" class="btn btn-primary" href="#">Share to Facebook</a>
+        <a id="share-pinterest" class="btn btn-primary" href="#">Pin It</a>
+        <a id="share-twitter" class="btn btn-primary" href="#">Tweet</a>
+        <!--
+        <a class="btn btn-close" href="#">Cancel</a>
+        -->
+      </div>
     </div>
     <div id="fb-root"></div>
     <div id="modal-background"></div>

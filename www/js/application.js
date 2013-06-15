@@ -106,6 +106,13 @@ function findPosts() {
 }
 
 $('#message').on('keyup', function() {
+  var textarea = $(this);
+  var button = $('#submit-post');
+  if (textarea.val() == '') {
+    button.addClass('disabled');
+  } else {
+    button.removeClass('disabled');
+  }
   track('post', 'compose');
 });
 
@@ -387,7 +394,7 @@ $('#refresh').fastClick(function() {
   return false;
 });
 
-$('h1', '#header').fastClick(function() {
+$('#create-post').fastClick(function() {
   $('#compose').modal('show', function() {
     $('#message').trigger('focus');
   });
