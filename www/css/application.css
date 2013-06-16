@@ -57,7 +57,6 @@ header, header a {
 }
 
 header {
-  font-family: 'Avant Garde Extra Light';
   position: relative;
   background: #31485f;
   height: 40px;
@@ -72,6 +71,7 @@ header h1 {
   width: 100px;
   height: 38px;
   margin: 0 auto;
+  font-family: 'Avant Garde Extra Light';
 }
 
 #posts-content {
@@ -101,7 +101,7 @@ button.btn {
   line-height: 34px;
 }
 
-a.btn {
+.btn {
   height: 30px;
 }
 
@@ -123,7 +123,7 @@ input[type=text]::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder,
 select,
 .btn {
-  color: #8e949a;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 select {
@@ -186,15 +186,9 @@ hr {
   display: none;
 }
 
-#distance {
+#distance,
+#color {
   display: none;
-  /*
-  width: 300px;
-  height: 30px;
-  line-height: 36px;
-  background: #fff url(../img/select.png) no-repeat right top;
-  background-size: 26px 30px;
-  */
 }
 
 #post-actions,
@@ -213,12 +207,12 @@ hr {
   box-shadow: 0 5px 0 rgba(0, 0, 0, 0.25);
   position: relative;
   z-index: 1;
-  background: #ebf0f1;
-  border-top: 1px solid #bcc3c7;
+  background: #fff;
+  border-top: 1px solid #ebf0f1;
 }
 
 #set-distance,
-#cost,
+#price-info,
 #set-color {
   float: left;
   height: 39px;
@@ -226,24 +220,19 @@ hr {
 
 #set-distance {
   width: 40px;
-  background: transparent url(../img/distance.png) no-repeat 0 10px;
-  background-size: 20px 20px;
+  background: transparent url(../img/distance.png) no-repeat;
+  background-size: 20px 80px;
   padding-left: 25px;
   margin-right: 25px;
 }
 
 #current-distance {
-  display: block;
+  display: none;
   width: 40px;
   height: 39px;
 }
 
-#set-distance.selected #current-distance {
-  background: url(../img/selected.png) no-repeat left bottom;
-  background-size: 7px 4px;
-}
-
-a#cost {
+a#price-info {
   text-align: center;
   width: 110px;
   color: #bcc3c7;
@@ -251,8 +240,8 @@ a#cost {
 
 #set-color {
   float: right;
-  background: transparent url(../img/color.png) no-repeat right 10px;
-  background-size: 20px 20px;
+  background: transparent url(../img/color.png) no-repeat;
+  background-size: 20px 80px;
   width: 20px;
 }
 
@@ -261,17 +250,26 @@ a#cost {
   width: 12px;
   height: 12px;
   border-radius: 6px;
-  background: #2b2b2b;
   margin: 14px 0 0 4px;
 }
 
+#set-distance.selected,
+#set-color.selected {
+  background-position: 0 -40px;
+}
+
 #map,
-#distance-4 {
-  display: block;
+#colors {
+  display: none;
+}
+
+#map,
+#distance-4,
+#colors {
   width: 320px;
   height: 215px;
   overflow: hidden;
-  background-color: #8092a1;
+  background-color: #ECF0F1;
 }
 
 #map,
@@ -279,7 +277,8 @@ a#cost {
   position: relative;
 }
 
-#map {
+#map,
+#colors {
   margin: 0 -10px;
 }
 
@@ -356,11 +355,82 @@ a#cost {
   box-shadow: none;
   top: 0;
   left: 0;
+  background-position: 0 -1px;
 }
 
 #map #distance-label-4 {
   top: 180px;
   left: 255px;
+}
+
+#swatches {
+  padding: 30px 0 0 0;
+}
+
+.swatch {
+  display: block;
+  float: left;
+  margin: 0 0 20px 10px;
+  width: 65px;
+  height: 65px;
+  border-radius: 33px;
+  overflow: hidden;
+  text-indent: -2000px;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.swatch:active, 
+.swatch.selected {
+  border-color: #fff;
+}
+
+.swatch:active {
+  box-shadow: inset 5px 5px 0 rgba(0, 0, 0, 0.25);
+}
+
+.swatch.selected {
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.25);
+}
+
+#black,
+.black {
+  background: #2B2B2B;
+}
+
+#gray,
+.gray {
+  background: #7F8C8D;
+}
+
+#red,
+.red {
+  background: #E74C3C;
+}
+
+#yellow,
+.yellow {
+  background: #F1C40F;
+}
+
+#blue,
+.blue {
+  background: #2980B9;
+}
+
+#orange,
+.orange {
+  background: #E67E22;
+}
+
+#green,
+.green {
+  background: #27AE60;
+}
+
+#purple,
+.purple {
+  background: #8E44AD;
 }
 
 .content .btn:hover {
@@ -424,10 +494,25 @@ a#cost {
   -webkit-animation-timing-function: linear;
 }
 
-header .btn-close {
-  background-image: url(../img/close.png);
+header .btn-icon {
   background-size: 20px 20px;
   top: 10px;
+}
+
+header .btn-close {
+  background-image: url(../img/close.png);
+}
+
+header .btn-add {
+  background-image: url(../img/add.png);
+}
+
+header .btn-back {
+  background-image: url(../img/back.png);
+}
+
+header .btn-ok {
+  background-image: url(../img/ok.png);
 }
 
 header .btn,
@@ -436,8 +521,9 @@ header .btn,
   width: auto;
   color: #fff;
   border-color: transparent;
-  box-shadow: none;
   background-color: transparent;
+  box-shadow: none;
+  text-shadow: none;
   padding-left: 0;
   padding-right: 0;
 }
@@ -448,7 +534,7 @@ header .btn:active {
 }
 
 header .btn-icon, .modal.screen header .btn-icon, .modal header .btn-icon {
-  width: 40px;
+  width: 20px;
 }
 
 header .btn.disabled,
@@ -460,7 +546,7 @@ header .btn.disabled,
 header .btn-left, 
 header .btn-right {
   position: absolute;
-  top: 5px;
+  top: 4px;
 }
 
 header .btn-left {
@@ -503,7 +589,6 @@ header .btn-icon {
   font-size: 30px;
   line-height: 32px;
   text-transform: uppercase;
-  background: #2d2d2d;
   overflow: hidden;
   border-radius: 0;
   border: none;
@@ -524,6 +609,7 @@ header .btn-icon {
   line-height: 8px;
   height: 15px;
   z-index: 0;  
+  color: #bcc3c7;
 }
 
 .modal {
@@ -595,7 +681,7 @@ header .btn-icon {
 }
 
 .error,
-#cost.error {
+#price-info.error {
   color: #e74c3c;
 }
 

@@ -12,7 +12,7 @@
       <header id="header">
         <a id="points" class="btn btn-left" href="#"></a>
         <h1>Schowt</h1>
-        <a id="create-post" class="btn btn-right btn-new" href="#">New</a>
+        <a id="create-post" class="btn btn-right btn-icon btn-add" href="#">New</a>
       </header>
       <div id="posts-content">
         <ul id="posts">
@@ -23,38 +23,58 @@
     </div>
     <div id="compose" class="modal screen">
       <header>
-        <a class="btn btn-left btn-icon btn-back btn-close" href="#">Back</a>
-        <a id="submit-post" class="btn btn-right disabled" href="#">Post</a>
+        <a class="btn btn-left btn-icon btn-back" href="#">Back</a>
+        <a id="submit-post" class="btn btn-right btn-icon btn-ok disabled" href="#">Post</a>
       </header>
       <div class="content">
         <form id="post" action="#">       
-          <textarea id="message" class="message" name="message" type="text" placeholder="What’s up?"></textarea>
+          <textarea id="message" class="message black" name="message" type="text" placeholder="What’s on your mind?"></textarea>
           <select id="distance" name="distance">
-             <option value="1" selected="selected">&frac14; mi</option>
-             <option value="10">1 mi</option>
-             <option value="100">500 mi</option>
-             <option value="1000">Earth</option>
+            <option value="1" selected="selected">1 mi</option>
+            <option value="10">10 mi</option>
+            <option value="100">100 mi</option>
+            <option value="1000">Earth</option>
+          </select>
+          <select id="color" name="color">
+            <option value="black" selected="selected">Black</option>
+            <option value="gray">Gray</option>
+            <option value="red">Red</option>
+            <option value="orange">Orange</option>
+            <option value="yellow">Yellow</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+            <option value="purple">Purple</option>
           </select>
           <div id="post-actions">
             <a id="set-distance" href="#"><span id="current-distance">&frac14; mi</span></a>
-            <a id="cost" href="#">1 pt</a>
-            <a id="set-color" href="#"><span id="current-color"></span></a>
+            <a id="price-info" href="#"><span id="cost">1</span>/<span id="total"></span></a>
+            <a id="set-color" href="#"><span id="current-color" class="black"></span></a>
           </div>
           <div id="map">
             <a id="distance-4" class="distance" data-val="1000" href="#">
-              <span id="distance-label-4" class="label">Earth<br>1,000 pts</span>
+              <span id="distance-label-4" class="label">1,000 pts</span>
             </a>
             <a id="distance-3" class="distance" data-val="100" href="#">
-              <span id="distance-label-3" class="label">500 mi<br>100 pts</span>
+              <span id="distance-label-3" class="label">100 pts</span>
             </a>
             <a id="distance-2" class="distance" data-val="10" href="#">
-              <span id="distance-label-2" class="label">1 mi<br>10 pts</span>
+              <span id="distance-label-2" class="label">10 pts</span>
             </a>
             <a id="distance-1" class="distance selected" data-val="1" href="#">
-              <span id="distance-label-1" class="label">&frac14; mi<br>1pt</span>
+              <span id="distance-label-1" class="label">1pt</span>
             </a>          
           </div>
           <div id="colors">
+            <div id="swatches">
+              <a id="black" class="swatch selected" data-cost="0" href="#">Black</a>
+              <a id="gray" class="swatch" data-cost="2" href="#">Gray</a>
+              <a id="red" class="swatch" data-cost="2" href="#">Red</a>
+              <a id="orange" class="swatch" data-cost="2" href="#">Orange</a>
+              <a id="yellow" class="swatch" data-cost="2" href="#">Yellow</a>
+              <a id="green" class="swatch" data-cost="2" href="#">Green</a>
+              <a id="blue" class="swatch" data-cost="2" href="#">Blue</a>
+              <a id="purple" class="swatch" data-cost="2" href="#">Purple</a>
+            </div>
           </div>
         </form>
       </div>

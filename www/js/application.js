@@ -27,6 +27,7 @@ function findPosts() {
 
   var statePosts = new Parse.Query(Post);
   statePosts.equalTo('distance', '100');
+  statePosts.withinMiles('location', location, 100);
 
   var cityPosts = new Parse.Query(Post);
   cityPosts.equalTo('distance', '10');
@@ -36,7 +37,7 @@ function findPosts() {
   neighborhoodPosts.equalTo('distance', '1');
   neighborhoodPosts.withinMiles('location', location, 1);
 
-  var posts = Parse.Query.or(worldPosts, statePosts, cityPosts, neighborhoodPosts);
+  var posts = Parse.Query.or(neighborhoodPosts, cityPosts, statePosts, worldPosts);
   posts.limit(100);
   posts.descending('createdAt');
 
@@ -54,20 +55,21 @@ function findPosts() {
           var distance;
           switch (post.get('distance')) {
             case '1':
-              distance = 'within &frac14; mile';
+              distance = 'in this neighborhood';
               break;
             case '10':
-              distance = 'within 1 mile';
+              distance = 'in this city';
               break;
             case '100':
-              distance = 'within 500 miles';
+              distance = 'in this country';
               break;
             default:
               distance = 'somewhere on earth';
           }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image')._url : '';
-          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><p class="message">' + post.get('message') + ' </p><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          var color = post.get('color') ? post.get('color') : 'black';
+          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><p class="message ' + color + '">' + post.get('message') + ' </p><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('li .actions').fastClick(function() {
           var item = $(this).parents('li');
@@ -130,9 +132,20 @@ $('a.distance').fastClick(function() {
   var select = $('#distance');
   var val = link.data('val');
   select.val(val);
-  $('#cost').data('total', val).html(numberWithCommas(val) + ' pt' + (val == 1 ? '' : 's'));
+  $('#cost').data('total', val).html(numberWithCommas(val));
   $('#current-distance').html($('option:selected', select).text());
   checkCost();
+  return false;
+});
+
+$('a.swatch').fastClick(function() {
+  var link = $(this);
+  var select = $('#color');
+  $('a.swatch').removeClass('selected');
+  link.addClass('selected');
+  $('#message, #current-color').removeClass('black gray red orange yellow green blue purple').addClass(link.attr('id'));
+  select.val(link.attr('id'));
+  return false;
 });
 
 function checkCost() {
@@ -140,21 +153,34 @@ function checkCost() {
   var costLabel = $('#cost');
   var cost = costLabel.data('total');
   if (cost > points) {
-    costLabel.addClass('error');
+    costLabel.parent().addClass('error');
     $('submit-post').addClass('disabled');
   } else {
-    costLabel.removeClass('error');
+    costLabel.parent().removeClass('error');
     $('submit-post').removeClass('disabled');
   }
 }
 
 $('#set-distance').fastClick(function() {
   var link = $(this);
+  $('#post-actions a').removeClass('selected');
   link.addClass('selected');
+  $('#colors').hide();
+  $('#map').show();
+});
+
+$('#set-color').fastClick(function() {
+  var link = $(this);
+  $('#post-actions a').removeClass('selected');
+  link.addClass('selected');
+  $('#map').hide();
+  $('#colors').show();
 });
 
 $('#message').on('focus', function() {
-  window.scroll(0, 0);
+  window.setTimeout(function() {
+    window.scroll(0, 0); 
+  }, 1);
   $('#set-distance').removeClass('selected');
 });
 
@@ -181,15 +207,18 @@ $('form#post').on('submit', function() {
   var message = messageField.val();
   var distanceField = $('#distance', form);
   var distance = distanceField.val();
+  var colorField = $('#color', form);
+  var color = colorField.val();
   messageField.val('');
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message);
   post.set('distance', distance);
+  post.set('color', color);
   track('post', 'submit', message);
   post.save(null, {
     success: function(post) {
-      var imageBlob = textToImage(message);
+      var imageBlob = textToImage(message, color);
       $.ajax({
         type: "POST",
         beforeSend: function(request) {
@@ -314,7 +343,9 @@ function checkIn() {
           var account = user.get('account');
           account.fetch({
             success: function(account) {
-              $('#points').data('total', account.get('points')).html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
+              var link = $('#points');
+              link.data('total', account.get('points')).html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
+              $('#total').html(link.html());
               if (user.get('alert') != null) {
                 $('#alert-content').html(user.get('alert'));
                 $('#alert').modal('show');
@@ -452,9 +483,13 @@ function setupInAppPurchases() {
   console.log('Fetching available products.');
   var list = $('#products');
   for (var i = 0; i < productIds.length; i++) {
+    list.append('<a id="' + productIds[i] + '" class="btn btn-primary product" data-product="' + productIds[i] + '" href="#"></a>');
+  }  
+  for (var i = 0; i < productIds.length; i++) {
     window.plugins.inAppPurchaseManager.requestProductData(productIds[i], function(result) {
-      list.append('<a id="' + result.id + '" class="btn btn-primary product" data-product="' + result.id + '" href="#" data-role="button">' + result.title + ' (' + result.price + ')</a>');
-      $('.product[data-product="' + result.id + '"]').fastClick(function() {
+      var link = $('.product[data-product="' + result.id + '"]');
+      link.html(result.title + ' (' + result.price + ')');
+      link.fastClick(function() {
         var button = $(this);
         window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
         return false;
@@ -517,12 +552,13 @@ function dataURItoBlob(dataURI) {
   return new Blob([ab], { type: 'image/png' });
 }
 
-function textToImage(text) {
+function textToImage(text, color) {
   var width = 600;
   // create a mock of the layout to get the height for the canvas...might be a better way to dynamically size it.
-  $('#posts').prepend('<li id="template"><p class="message">' + text + '</p></li>');
+  $('#posts').prepend('<li id="template"><p class="message ' + color + '">' + text + '</p></li>');
   var template = $('#template');
   var height = $('.message', template).outerHeight() * 2;
+  var colorValue = $('.message', template).css('background-color');
   template.remove();
   $('body').append('<canvas id="canvas" width="' + width + '" height="' + height + '" style="display: none"></canvas>');
   var canvas = document.getElementById('canvas');
@@ -532,7 +568,7 @@ function textToImage(text) {
   var x = (canvas.width - maxWidth) / 2;
   var y = 80;
 
-  context.fillStyle = '#2d2d2d';
+  context.fillStyle = colorValue;
   context.fillRect(0, 0, width, height);
 
   context.fillStyle = '#ffffff';
@@ -619,7 +655,7 @@ $.fn.extend({
   }
 });
 
-$('.btn-close').fastClick(function() {
+$('.btn-close, .btn-back').fastClick(function() {
   $('.modal').modal('hide');
   return false;
 });

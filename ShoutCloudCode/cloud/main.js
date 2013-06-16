@@ -167,11 +167,11 @@ Parse.Cloud.afterSave('Post', function(request) {
   var location = request.object.get('location');
   var distance;
   if (request.object.get('distance') == 1) {
-    distance = 0.25; // a few blocks
+    distance = 1;
   } else if (request.object.get('distance') == 10) {
-    distance = 1; // one mile
-  } else if (request.object.get('distance') == 1000) {
-    distance = 500; // the length of california
+    distance = 10;
+  } else if (request.object.get('distance') == 100) {
+    distance = 100;
   } else if (request.object.get('distance') == 1000) {
     distance = 3958.8; // the radius of the earth
   }
