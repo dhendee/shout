@@ -38,8 +38,15 @@ function findPosts() {
   neighborhoodPosts.withinMiles('location', location, 1);
 
   var posts = Parse.Query.or(neighborhoodPosts, cityPosts, statePosts, worldPosts);
-  posts.limit(100);
   posts.descending('createdAt');
+  posts.limit(100);
+  // i'm not sure you can limit like this. 
+  // it's finding the nearest 100, not the most recent
+  // think you need to use a different query:
+  // withinGeoBox(key, southwest, northeast)
+  // and you can find the bounding box using this technique:
+  // http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
+  // the subqueries can't be limited either way, so they might just not work.
 
   posts.find({
     success: function(results) {
