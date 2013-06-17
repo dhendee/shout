@@ -92,7 +92,7 @@
 	if ([options valueForKey:durationKey]) {
 		NSTimeInterval duration = [options integerValueForKey:durationKey defaultValue:minMaxDuration.location withRange:minMaxDuration];
 		[self performSelector:@selector(loadingStop:withDict:) withObject:nil afterDelay:duration];
-	}
+	} 
 }
 
 - (void)loadingStop:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options

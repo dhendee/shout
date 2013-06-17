@@ -22,33 +22,18 @@ function findPosts() {
     longitude: longitude
   });
 
-  var worldPosts = new Parse.Query(Post);
-  worldPosts.equalTo('distance', '1000');
-
-  var statePosts = new Parse.Query(Post);
-  statePosts.equalTo('distance', '100');
-  statePosts.withinMiles('location', location, 100);
-
-  var cityPosts = new Parse.Query(Post);
-  cityPosts.equalTo('distance', '10');
-  cityPosts.withinMiles('location', location, 10);
-
-  var neighborhoodPosts = new Parse.Query(Post);
-  neighborhoodPosts.equalTo('distance', '1');
-  neighborhoodPosts.withinMiles('location', location, 1);
-
-  var posts = Parse.Query.or(neighborhoodPosts, cityPosts, statePosts, worldPosts);
-  posts.descending('createdAt');
-  posts.limit(100);
+  var postsQuery = new Parse.Query(Post);
+  postsQuery.withinMiles('location', location, 1);
+  postsQuery.descending('createdAt');
+  postsQuery.limit(1000);
   // i'm not sure you can limit like this. 
-  // it's finding the nearest 100, not the most recent
+  // it's finding the nearest 1000, not the most recent
   // think you need to use a different query:
   // withinGeoBox(key, southwest, northeast)
   // and you can find the bounding box using this technique:
   // http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
-  // the subqueries can't be limited either way, so they might just not work.
-
-  posts.find({
+  
+  postsQuery.find({
     success: function(results) {
       console.log('Found ' + results.length + ' posts nearby.');
       if (results.length == 0) {
@@ -59,24 +44,10 @@ function findPosts() {
         for (var i = 0; i < results.length; i++) {
           var post = results[i];
           var createdAt = post.createdAt.toISOString();
-          var distance;
-          switch (post.get('distance')) {
-            case '1':
-              distance = 'in this neighborhood';
-              break;
-            case '10':
-              distance = 'in this city';
-              break;
-            case '100':
-              distance = 'in this country';
-              break;
-            default:
-              distance = 'somewhere on earth';
-          }
           // todo: placeholder image for failed image saves?
           var image = post.get('image') ? post.get('image')._url : '';
           var color = post.get('color') ? post.get('color') : 'black';
-          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><p class="message ' + color + '">' + post.get('message') + ' </p><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time>, ' + distance +  '<a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
+          list.append('<li data-post="' + post.id + '" data-image="' + image + '"><p class="message ' + color + '">' + post.get('message') + ' </p><small><time class="timeago" datetime="' + createdAt + '">' + createdAt + '</time><a class="actions btn btn-small" href="#">&hellip;</a></small></li>');
         }
         list.find('li .actions').fastClick(function() {
           var item = $(this).parents('li');
@@ -125,26 +96,6 @@ $('#message').on('keyup', function() {
   track('post', 'compose');
 });
 
-function setMapImages() {
-  $('#map #distance-1').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 15 + '&size=100x100&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
-  $('#map #distance-2').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 13 + '&size=240x240&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
-  $('#map #distance-3').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 5 + '&size=480x480&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
-  $('#map #distance-4').css('background-image', 'url(http://maps.googleapis.com/maps/api/staticmap?center=' + latitude + ',' + longitude + '&zoom=' + 1 + '&size=600x400&maptype=terrain&sensor=true&scale=2&key=AIzaSyB8_6TbuII6dN7-I17b6N5v4z38uLQ-1P8)').css('background-size', 'cover');
-}
-
-$('a.distance').fastClick(function() {
-  var link = $(this);
-  $('a.distance').removeClass('selected');
-  link.addClass('selected');
-  var select = $('#distance');
-  var val = link.data('val');
-  select.val(val);
-  $('#cost').data('total', val).html(numberWithCommas(val));
-  $('#current-distance').html($('option:selected', select).text());
-  checkCost();
-  return false;
-});
-
 $('a.swatch').fastClick(function() {
   var link = $(this);
   var select = $('#color');
@@ -155,40 +106,10 @@ $('a.swatch').fastClick(function() {
   return false;
 });
 
-function checkCost() {
-  var points = $('#points').data('total');
-  var costLabel = $('#cost');
-  var cost = costLabel.data('total');
-  if (cost > points) {
-    costLabel.parent().addClass('error');
-    $('submit-post').addClass('disabled');
-  } else {
-    costLabel.parent().removeClass('error');
-    $('submit-post').removeClass('disabled');
-  }
-}
-
-$('#set-distance').fastClick(function() {
-  var link = $(this);
-  $('#post-actions a').removeClass('selected');
-  link.addClass('selected');
-  $('#colors').hide();
-  $('#map').show();
-});
-
-$('#set-color').fastClick(function() {
-  var link = $(this);
-  $('#post-actions a').removeClass('selected');
-  link.addClass('selected');
-  $('#map').hide();
-  $('#colors').show();
-});
-
 $('#message').on('focus', function() {
   window.setTimeout(function() {
     window.scroll(0, 0); 
-  }, 1);
-  $('#set-distance').removeClass('selected');
+  }, 10);
 });
 
 $('#submit-post').fastClick(function() {
@@ -212,15 +133,12 @@ $('form#post').on('submit', function() {
   });
   var messageField = $('#message', form);
   var message = messageField.val();
-  var distanceField = $('#distance', form);
-  var distance = distanceField.val();
   var colorField = $('#color', form);
   var color = colorField.val();
   messageField.val('');
   post.set('user', Parse.User.current());
   post.set('location', location);
   post.set('message', message);
-  post.set('distance', distance);
   post.set('color', color);
   track('post', 'submit', message);
   post.save(null, {
@@ -331,10 +249,6 @@ function guid() {
   });
 }
 
-function getDay(date) {
-  return parseInt(date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2));
-}
-
 function checkIn() {
   var userQuery = new Parse.Query(Parse.User);
   userQuery.get(Parse.User.current().id, {
@@ -344,41 +258,17 @@ function checkIn() {
         longitude: longitude
       });
       user.set('location', location);
-      user.set('checkIn', getDay(new Date()));
       user.save(null, {
         success: function(user) {
-          var account = user.get('account');
-          account.fetch({
-            success: function(account) {
-              var link = $('#points');
-              link.data('total', account.get('points')).html(numberWithCommas(account.get('points')) + ' pt' + (account.get('points') == 1 ? '' : 's')).show();
-              $('#total').html(link.html());
-              if (user.get('alert') != null) {
-                $('#alert-content').html(user.get('alert'));
-                $('#alert').modal('show');
-                user.set('alert', null);
-                user.save();
-              }
-              if (window.phonegap) {
-                registerForPushNotifications();      
-              }
-              track('user', 'checkin', Parse.User.current());
-            }
-          });
+          if (window.phonegap) {
+            registerForPushNotifications();      
+          }
+          track('user', 'checkin', Parse.User.current());
         }
       });
       findPosts();
-    },
-    error: function(user, error) {
-      // todo: this fails a lot on resume, so we should figure out why.
-      // but it's not hurting things overall and is worse as an alert.
-      // alert('Error getting user: ' + error.code + ' ' + error.message);
     }
   });
-}
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function updateInstallation() {
@@ -414,7 +304,7 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude; 
-    setMapImages();
+    setMapImage();
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
@@ -425,12 +315,9 @@ function refreshLocation () {
   });
 }
 
-$('#refresh').fastClick(function() {
-  scrollToTop();
-  loading(true);
-  refreshLocation();
-  return false;
-});
+function setMapImage() {
+  // find this back again. can use for pull to refresh?
+}
 
 $('#create-post').fastClick(function() {
   $('#compose').modal('show', function() {
@@ -480,53 +367,6 @@ function registerForPushNotifications() {
     findPosts();
     pushNotification.setApplicationIconBadgeNumber(0);
   });
-}
-
-// phonegap code for in-app purchases
-function setupInAppPurchases() {
-  console.log('Setting up in-app purchases.');
-  var purchaseManager = window.plugins.inAppPurchaseManager;
-  var productIds = ['com.davidhendee.schowt.product.10', 'com.davidhendee.schowt.product.100', 'com.davidhendee.schowt.product.1000'];
-  console.log('Fetching available products.');
-  var list = $('#products');
-  for (var i = 0; i < productIds.length; i++) {
-    list.append('<a id="' + productIds[i] + '" class="btn btn-primary product" data-product="' + productIds[i] + '" href="#"></a>');
-  }  
-  for (var i = 0; i < productIds.length; i++) {
-    window.plugins.inAppPurchaseManager.requestProductData(productIds[i], function(result) {
-      var link = $('.product[data-product="' + result.id + '"]');
-      link.html(result.title + ' (' + result.price + ')');
-      link.fastClick(function() {
-        var button = $(this);
-        window.plugins.inAppPurchaseManager.makePurchase(button.data('product'), 1);
-        return false;
-      });
-    }, 
-    function(id) {
-      console.log("Invalid product id: " + result);
-    }); 
-  }
-  var Transaction = Parse.Object.extend('Transaction');
-  window.plugins.inAppPurchaseManager.onPurchased = function(transactionId, productId, receipt) {
-    $('#store, #modal-background').hide();
-    loading(true);
-    var transaction = new Transaction();
-    transaction.set('user', Parse.User.current());
-    transaction.set('transactionId', transactionId);
-    transaction.set('productId', productId);
-    transaction.set('receipt', receipt);
-    transaction.save(null, {
-      success: function(transaction) {
-        console.log('Saved transaction: ' + transactionId);
-        loading(false);
-        checkIn();
-        track('products', 'purchase', productId);
-      },
-      error: function(object, error) {
-        console.log('Could not save transaction: ' + error.message);
-      }
-    });
-  }
 }
 
 function wrapText(context, text, x, y, maxWidth, lineHeight) {
@@ -632,11 +472,6 @@ $('#flag').fastClick(function() {
   });
 });
 
-$('#points, #cost').fastClick(function() {
-  track('products', 'browse');
-  $('#store').modal('show');
-});
-
 $.fn.extend({
   modal: function(command, cb) {
     return this.each(function() {
@@ -703,7 +538,6 @@ $(function() {
         nativeInterface: CDV.FB, 
         useCachedDialogs: false 
       });
-      setupInAppPurchases();
       var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
       toolbar.hide();
       setupStatusTap();

@@ -150,239 +150,60 @@ hr {
 }
 
 #message {
-  min-height: 100px;
-  height: 100px;
-}
-
-#post .loading {
-  width: 320px;
-  height: 160px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: rgba(0, 0, 0, .75);
-}
-
-#post .loading .spinner {
-  height: 20px;
-  width: 20px;
-  margin: 40px auto 20px auto;
-  background: url(../img/refresh.png) no-repeat;
-  background-position: 0 -20px;
-  background-size: 20px 40px;
-  -webkit-animation-name: rotate; 
-  -webkit-animation-duration: 1s; 
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;  
-}
-
-#post .loading p {
-  color: #fff;
-  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
-  text-align: center;
+  min-height: 140px;
+  height: 140px;
 }
 
 #template {
   display: none;
 }
 
-#distance,
 #color {
   display: none;
 }
 
-#post-actions,
-#post-actions a {
-  color: #8e939a;
-}
-
-#post-actions {
-  height: 39px;
-  overflow: auto;
-  font-size: 10px;
-  line-height: 45px;
-  width: 300px;
-  margin: 0 -10px;
-  padding: 0 10px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.25);
-  position: relative;
-  z-index: 1;
-  background: #fff;
-  border-top: 1px solid #ebf0f1;
-}
-
-#set-distance,
-#price-info,
 #set-color {
-  float: left;
-  height: 39px;
-}
-
-#set-distance {
-  width: 40px;
-  background: transparent url(../img/distance.png) no-repeat;
-  background-size: 20px 80px;
-  padding-left: 25px;
-  margin-right: 25px;
-}
-
-#current-distance {
-  display: none;
-  width: 40px;
-  height: 39px;
-}
-
-a#price-info {
-  text-align: center;
-  width: 110px;
-  color: #bcc3c7;
-}
-
-#set-color {
-  float: right;
-  background: transparent url(../img/color.png) no-repeat;
-  background-size: 20px 80px;
-  width: 20px;
-}
-
-#set-color #current-color {
+  position: absolute;
+  top: 200px;
+  right: 15px;
   display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-  margin: 14px 0 0 4px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  overflow: hidden;
+  text-indent: -2000px;
+  background: url(../img/colors.png) no-repeat 3px 3px;
+  background-size: 22px 22px;
 }
 
-#set-distance.selected,
-#set-color.selected {
-  background-position: 0 -40px;
+#set-color:active {
+  border-color: #fff;
 }
 
-#map,
-#colors {
-  display: none;
-}
-
-#map,
-#distance-4,
 #colors {
   width: 320px;
   height: 215px;
   overflow: hidden;
   background-color: #ECF0F1;
-}
-
-#map,
-#map a {
-  position: relative;
-}
-
-#map,
-#colors {
   margin: 0 -10px;
-}
-
-#map a.distance {
-  display: block;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
-  border: 1px solid #fff;
-  position: absolute;
-  opacity: .4;
-}
-
-#map a.distance:active  {
-  box-shadow: inset 5px 5px 0 rgba(0, 0, 0, 0.25);
-  opacity: 1;
-}
-
-#map a.distance.selected  {
-  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.25);
-  opacity: 1;
-}
-
-#map .label {
-  position: absolute;
-  display: block;
-  display: none;
-  text-align: center;
-  color: #fff;
-  text-shadow: 0 0 10px rgba(0, 0, 0, 1),  2px 2px 0 rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  line-height: 12px;
-}
-
-#map #distance-1 {
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
-  top: 82px;
-  left: 130px;
-}
-
-#map #distance-label-1 {
-  top: 15px;
-  left: 10px;
-}
-
-#map #distance-2 {
-  width: 140px;
-  height: 140px;
-  border-radius: 70px;
-  top: 38px;
-  left: 85px;
-}
-
-#map #distance-label-2 {
-  top: 80px;
-  left: 95px;
-}
-
-#map #distance-3 {
-  width: 240px;
-  height: 240px;
-  border-radius: 120px;
-  top: -13px;
-  left: 35px;
-}
-
-#map #distance-label-3 {
-  top: 160px;
-  left: 180px;
-}
-
-#map #distance-4 {
-  border: none;
-  box-shadow: none;
-  top: 0;
-  left: 0;
-  background-position: 0 -1px;
-}
-
-#map #distance-label-4 {
-  top: 180px;
-  left: 255px;
 }
 
 #swatches {
   padding: 30px 0 0 0;
+  box-shadow: inset 0 5px 0 rgba(0, 0, 0, 0.25);
 }
 
 .swatch {
   display: block;
   float: left;
-  margin: 0 0 20px 10px;
+  margin: 0 0 20px 12px;
   width: 65px;
   height: 65px;
   border-radius: 33px;
   overflow: hidden;
   text-indent: -2000px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-}
-
-.swatch:active, 
-.swatch.selected {
-  border-color: #fff;
 }
 
 .swatch:active {
@@ -481,19 +302,6 @@ a#price-info {
   text-indent: -2000px;
 }
 
-.btn-refresh {
-  background-image: url(../img/refresh.png);
-  background-size: 20px 40px;
-}
-
-.btn-refresh.loading {
-  background-position: 0 -20px;
-  -webkit-animation-name: rotate; 
-  -webkit-animation-duration: .75s; 
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
-}
-
 header .btn-icon {
   background-size: 20px 20px;
   top: 10px;
@@ -558,14 +366,6 @@ header .btn-right {
 }
 
 header .btn-icon {
-  top: 10px;
-}
-
-#points {
-  display: none;
-}
-
-#refresh {
   top: 10px;
 }
 
@@ -680,18 +480,8 @@ header .btn-icon {
   opacity: .75;
 }
 
-.error,
-#price-info.error {
+.error {
   color: #e74c3c;
-}
-
-@-webkit-keyframes rotate {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to { 
-    -webkit-transform: rotate(360deg);
-  }
 }
 
 @media only screen and (min-width: 560px) and (max-device-width: 1136px) {
@@ -702,12 +492,6 @@ header .btn-icon {
   html, body {
     height: 548px;
   }  
-  #post .loading {
-    height: 248px;
-  }
-  #post .loading .spinner {
-    margin: 84px;
-  }
   #message {
     min-height: 198px;
     height: 198px;

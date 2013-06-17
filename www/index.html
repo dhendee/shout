@@ -10,7 +10,6 @@
   <body>
     <div id="index">
       <header id="header">
-        <a id="points" class="btn btn-left" href="#"></a>
         <h1>Schowt</h1>
         <a id="create-post" class="btn btn-right btn-icon btn-add" href="#">New</a>
       </header>
@@ -24,17 +23,12 @@
     <div id="compose" class="modal screen">
       <header>
         <a class="btn btn-left btn-icon btn-back" href="#">Back</a>
+        <h1>Post</h1>
         <a id="submit-post" class="btn btn-right btn-icon btn-ok disabled" href="#">Post</a>
       </header>
       <div class="content">
         <form id="post" action="#">       
           <textarea id="message" class="message black" name="message" type="text" placeholder="What’s on your mind?"></textarea>
-          <select id="distance" name="distance">
-            <option value="1" selected="selected">1 mi</option>
-            <option value="10">10 mi</option>
-            <option value="100">100 mi</option>
-            <option value="1000">Earth</option>
-          </select>
           <select id="color" name="color">
             <option value="black" selected="selected">Black</option>
             <option value="gray">Gray</option>
@@ -45,25 +39,7 @@
             <option value="blue">Blue</option>
             <option value="purple">Purple</option>
           </select>
-          <div id="post-actions">
-            <a id="set-distance" href="#"><span id="current-distance">&frac14; mi</span></a>
-            <a id="price-info" href="#"><span id="cost">1</span>/<span id="total"></span></a>
-            <a id="set-color" href="#"><span id="current-color" class="black"></span></a>
-          </div>
-          <div id="map">
-            <a id="distance-4" class="distance" data-val="1000" href="#">
-              <span id="distance-label-4" class="label">1,000 pts</span>
-            </a>
-            <a id="distance-3" class="distance" data-val="100" href="#">
-              <span id="distance-label-3" class="label">100 pts</span>
-            </a>
-            <a id="distance-2" class="distance" data-val="10" href="#">
-              <span id="distance-label-2" class="label">10 pts</span>
-            </a>
-            <a id="distance-1" class="distance selected" data-val="1" href="#">
-              <span id="distance-label-1" class="label">1pt</span>
-            </a>          
-          </div>
+          <a id="set-color" href="#">Pick a Color</a>
           <div id="colors">
             <div id="swatches">
               <a id="black" class="swatch selected" data-cost="0" href="#">Black</a>
@@ -89,16 +65,6 @@
         <a class="btn btn-primary btn-close" href="#">Okie Dokie</a>
       </div>
     </div>
-    <div id="store" class="modal">
-      <header>
-        <h1>Shop</h1>
-        <a class="btn btn-right btn-icon btn-close" href="#">Close</a>
-      </header>
-      <div class="content">
-        <p id="store-content">Sure, you can check in once a day to earn points, but why wait? Buy some so you can shout as much and as loud as you want.</p>
-        <p id="products"></p>
-      </div>
-    </div>
     <div id="actions" class="modal">
       <header>
         <h1>Actions</h1>
@@ -120,7 +86,6 @@
     <!-- Phonegap files -->
     <script src="cordova-2.7.0.js"></script>
     <script src="js/plugins/PushNotification.js"></script>
-    <script src="js/plugins/InAppPurchaseManager.js"></script>
     <script src="js/plugins/cdv-plugin-fb-connect.js"></script>
     <script src="js/plugins/facebook_js_sdk.js"></script>
     <script src="js/plugins/keyboard_toolbar_remover.js"></script>
