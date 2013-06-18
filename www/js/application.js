@@ -76,6 +76,9 @@ function findPosts() {
         });
         $('time.timeago').timeago();
       }
+      setTimeout(function() {
+        myScroll.refresh();
+      }, 0);
       loading(false);
     },
     error: function(error) {
@@ -85,6 +88,19 @@ function findPosts() {
   });
 }
 
+$('#create-post').fastClick(function() {
+  track('post', 'compose');
+  $('#post').show();
+  $('#message').trigger('focus');
+  return false;
+});
+
+$('#message').on('focus', function() {
+  window.setTimeout(function() {
+    window.scroll(0, 0);
+  }, 100);
+})
+
 $('#message').on('keyup', function() {
   var textarea = $(this);
   var button = $('#submit-post');
@@ -93,7 +109,18 @@ $('#message').on('keyup', function() {
   } else {
     button.removeClass('disabled');
   }
-  track('post', 'compose');
+});
+
+$('#cancel-post').fastClick(function() {
+  track('post', 'cancel');
+  $('#post').hide();
+  $('#message').trigger('blur');
+  return false;
+});
+
+$('#set-color').fastClick(function() {
+  $('#message').trigger('blur');
+  return false;
 });
 
 $('a.swatch').fastClick(function() {
@@ -106,20 +133,17 @@ $('a.swatch').fastClick(function() {
   return false;
 });
 
-$('#message').on('focus', function() {
-  window.setTimeout(function() {
-    window.scroll(0, 0); 
-  }, 10);
-});
-
-$('#submit-post').fastClick(function() {
+$('#submit-post').on('click', function() {
+  var button = $(this);
   var form = $('form#post');
-  var message = $('#message', form).val();
-  if (message == '') {
-    return false;
+  if (button.hasClass('disabled')) {
+    $('#message').trigger('focus');
   } else {
+    $('#message').trigger('blur');
     form.submit();
+    form.hide();
   }
+  return false;
 });
 
 $('form#post').on('submit', function() {
@@ -319,14 +343,8 @@ function setMapImage() {
   // find this back again. can use for pull to refresh?
 }
 
-$('#create-post').fastClick(function() {
-  $('#compose').modal('show', function() {
-    $('#message').trigger('focus');
-  });
-});
-
 function scrollToTop() {
-  $('#posts-content', '#index').animate({scrollTop: 0}, 'fast');
+  myScroll.scrollTo(0, 0, 200);
 }
 
 // phonegap code for push notifications
@@ -482,8 +500,8 @@ $.fn.extend({
           var centeredTop = Math.round(($(window).height() - $(this).outerHeight()) / 2);
           el.data('top', el.css('top'));
           el.css('top', centeredTop);
+          background.addClass('show');
         }
-        background.addClass('show');
         el.addClass('show');
       } else {
         background.removeClass('show');        
@@ -508,7 +526,7 @@ function notify(text) {
 }
 
 function loading(state) {
-  if (window.phonegap) {
+  if (window.phonegap && navigator.notificationEx) {
     if (state == false) {
       navigator.notificationEx.activityStop();
     } else {
@@ -528,11 +546,17 @@ function setupStatusTap() {
   });
 }
 
+var myScroll;
+function loaded() {
+  myScroll = new iScroll('posts-content');
+}
+document.addEventListener('DOMContentLoaded', loaded, false);
+
 $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
   if (window.phonegap) {
     document.addEventListener('deviceready', function onDeviceReady() {
-      refreshLocation();
+      setupStatusTap();
       FB.init({
         appId: '460489950704243', 
         nativeInterface: CDV.FB, 
@@ -540,7 +564,7 @@ $(function() {
       });
       var toolbar = cordova.require('cordova/plugin/keyboard_toolbar_remover');
       toolbar.hide();
-      setupStatusTap();
+      refreshLocation();
     });
     document.addEventListener('resume', function onResume() {
       refreshLocation();

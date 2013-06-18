@@ -20,41 +20,34 @@
         </div>
       </div>
     </div>
-    <div id="compose" class="modal screen">
-      <header>
-        <a class="btn btn-left btn-icon btn-back" href="#">Back</a>
-        <h1>Post</h1>
-        <a id="submit-post" class="btn btn-right btn-icon btn-ok disabled" href="#">Post</a>
-      </header>
-      <div class="content">
-        <form id="post" action="#">       
-          <textarea id="message" class="message black" name="message" type="text" placeholder="What’s on your mind?"></textarea>
-          <select id="color" name="color">
-            <option value="black" selected="selected">Black</option>
-            <option value="gray">Gray</option>
-            <option value="red">Red</option>
-            <option value="orange">Orange</option>
-            <option value="yellow">Yellow</option>
-            <option value="green">Green</option>
-            <option value="blue">Blue</option>
-            <option value="purple">Purple</option>
-          </select>
-          <a id="set-color" href="#">Pick a Color</a>
-          <div id="colors">
-            <div id="swatches">
-              <a id="black" class="swatch selected" data-cost="0" href="#">Black</a>
-              <a id="gray" class="swatch" data-cost="2" href="#">Gray</a>
-              <a id="red" class="swatch" data-cost="2" href="#">Red</a>
-              <a id="orange" class="swatch" data-cost="2" href="#">Orange</a>
-              <a id="yellow" class="swatch" data-cost="2" href="#">Yellow</a>
-              <a id="green" class="swatch" data-cost="2" href="#">Green</a>
-              <a id="blue" class="swatch" data-cost="2" href="#">Blue</a>
-              <a id="purple" class="swatch" data-cost="2" href="#">Purple</a>
-            </div>
-          </div>
-        </form>
+    <form id="post" action="#">       
+      <textarea id="message" class="message black" name="message" type="text" placeholder="What’s on your mind?"></textarea>
+      <select id="color" name="color">
+        <option value="black" selected="selected">Black</option>
+        <option value="gray">Gray</option>
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+      </select>
+      <a id="set-color" class="post-action" href="#">Pick a Color</a>
+      <a id="cancel-post" class="post-action" href="#">Cancel Post</a>
+      <a id="submit-post" class="post-action disabled" href="#">Submit Post</a>
+      <div id="colors">
+        <div id="swatches">
+          <a id="black" class="swatch selected" data-cost="0" href="#">Black</a>
+          <a id="gray" class="swatch" data-cost="2" href="#">Gray</a>
+          <a id="red" class="swatch" data-cost="2" href="#">Red</a>
+          <a id="orange" class="swatch" data-cost="2" href="#">Orange</a>
+          <a id="yellow" class="swatch" data-cost="2" href="#">Yellow</a>
+          <a id="green" class="swatch" data-cost="2" href="#">Green</a>
+          <a id="blue" class="swatch" data-cost="2" href="#">Blue</a>
+          <a id="purple" class="swatch" data-cost="2" href="#">Purple</a>
+        </div>
       </div>
-    </div>
+    </form>
     <div id="alert" class="modal">
       <header>
         <h1>Alert</h1>
@@ -97,6 +90,7 @@
     <script src="js/jquery.timeago.js"></script>
     <script src="js/jQuery.fastClick.js"></script>
     <script src="js/logo.js"></script>
+    <script src="js/iscroll.js"></script>
     <script src="js/application.js"></script>
     <script>
       var _gaq = _gaq || [];
