@@ -64,7 +64,7 @@ header h1 {
   line-height: 44px;
   text-align: center;
   width: 100px;
-  height: 38px;
+  height: 40px;
   margin: 0 auto;
 }
 
@@ -148,10 +148,6 @@ hr {
   left: 0;
   width: 100%;
   overflow: auto;
-}
-
-#posts {
-  margin-top: 5px;
 }
 
 #post {
@@ -403,7 +399,7 @@ header .btn-icon {
 }
 
 #posts {
-  box-shadow: 0 -5px 0 rgba(0, 0, 0, 0.25);
+  margin-top: 5px;
 }
 
 #posts li {

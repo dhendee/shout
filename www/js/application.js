@@ -26,11 +26,6 @@ function findPosts() {
   postsQuery.withinMiles('location', location, 1);
   postsQuery.descending('createdAt');
   postsQuery.limit(1000);
-  // i'm not sure you can limit like this. 
-  // it's finding the nearest 1000, not the most recent
-  // think you need to use a different query:
-  // withinGeoBox(key, southwest, northeast)
-  // and you can find the bounding box using this technique:
   // http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
   
   postsQuery.find({
@@ -329,7 +324,6 @@ function refreshLocation () {
   navigator.geolocation.getCurrentPosition(function(position) {
     latitude = position.coords.latitude;
     longitude = position.coords.longitude; 
-    setMapImage();
     login();
   }, function(error) {
     alert('Failed to update location for device: ' + error.message + ' (code ' + error.code + ')');
@@ -338,10 +332,6 @@ function refreshLocation () {
     maximumAge: 0, 
     enableHighAccuracy: false
   });
-}
-
-function setMapImage() {
-  // find this back again. can use for pull to refresh?
 }
 
 function scrollToTop() {
@@ -549,9 +539,17 @@ function setupStatusTap() {
 
 var myScroll;
 function loaded() {
-  myScroll = new iScroll('posts-content');
+  myScroll = new iScroll('posts-content', {
+    hScroll: false,
+    hScrollbar: false, 
+    vScrollbar: false
+  });
 }
 document.addEventListener('DOMContentLoaded', loaded, false);
+
+$('body').on('touchmove', function(e) {
+  e.preventDefault();
+});
 
 $(function() {
   window.phonegap = document.URL.indexOf('http://') == -1;
