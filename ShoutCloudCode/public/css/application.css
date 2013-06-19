@@ -8,12 +8,11 @@ html, body {
 }
 
 body {
-  padding: 60px 20px 0 20px;
   color: #31485f;
 }
 
 body#home {
-  padding-top: 0;
+  padding: 0 20px;
   background: #4c6e91 -webkit-linear-gradient(top, #31485f 0%, #4c6e91 100%) no-repeat;
 }
 
@@ -104,4 +103,37 @@ footer {
 
 .nav-pills>.active>a, .nav-pills>.active>a:hover, .nav-pills>.active>a:focus {
   background-color: #31485f;
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+  #hero {
+    width: 675px;
+    height: 300px;
+    background-size: 675px 300px;
+  }
+  .navbar-inverse .brand {
+    margin-left: 20px;
+  }
+}
+ 
+@media (max-width: 767px) {
+  #hero {
+    width: 450px;
+    height: 200px;
+    background-size: 450px 200px;
+  }
+  .navbar-inverse .brand {
+    margin-left: 20px;
+  }
+}
+ 
+@media (max-width: 480px) {
+  #hero {
+    width: 225px;
+    height: 100px;
+    background-size: 225px 100px;
+  }
+  .navbar-inverse .brand {
+    margin-left: 20px;
+  }
 }
