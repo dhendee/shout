@@ -212,10 +212,6 @@ hr {
   background-size: 20px 20px;
 }
 
-#submit-post.disabled {
-  opacity: 0.5;
-}
-
 #cancel-post {
   left: 10px;
   background-color: #fff;
@@ -346,8 +342,10 @@ header .btn-close {
   background-image: url(../img/close.png);
 }
 
-header .btn-add {
+header .btn-add.btn-right {
   background-image: url(../img/add.png);
+  top: 8px;
+  right: 8px;
 }
 
 header .btn-back {
@@ -372,7 +370,8 @@ header .btn,
 }
 
 header .btn:active {
-  background-color: transparent;
+  opacity: 0.5;
+  box-shadow: none;
 }
 
 header .btn-icon, .modal.screen header .btn-icon, .modal header .btn-icon {
@@ -507,8 +506,7 @@ header .btn-icon {
   left: 0;
   z-index: 1000;
   background: #000;
-/*  -webkit-transition: opacity .5s;
-*/}
+}
 
 #modal-background.show {
   display: block;
@@ -521,14 +519,11 @@ header .btn-icon {
 
 @media only screen and (min-width: 560px) and (max-device-width: 1136px) {
   /* 88 extra pixels */
-  #posts-content {
-    height: 508px;
-  }
-  html, body {
-    height: 548px;
-  }  
   #message {
-    min-height: 198px;
-    height: 198px;
+    min-height: 246px;
+    height: 246px;
+  }
+  .post-action {
+    top: 296px;
   }
 }

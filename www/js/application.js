@@ -257,6 +257,7 @@ function login() {
           window.localStorage.setItem('username', username);
           window.localStorage.setItem('password', password);
           checkIn();
+          notify('Welcome to Schowt!<br><br>Communicate anonymously with people nearby. Please keep it friendly.');
         },
         error: function(user, error) {
           alert('Error signing up: ' + error.code + ' ' + error.message);
